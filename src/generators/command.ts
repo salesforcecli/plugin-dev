@@ -34,7 +34,7 @@ export default class Command extends Generator {
   public writing(): void {
     this.writeCmdFile();
     this.writeMessageFile();
-    // TODO: this.writeNutFile();
+    this.writeNutFile();
   }
 
   private getMessageFileName(): string {
@@ -42,17 +42,16 @@ export default class Command extends Generator {
   }
 
   private writeCmdFile(): void {
-    const cmdPath = this.options.name.split(':').join('/');
     this.sourceRoot(path.join(__dirname, '../../templates'));
+    const cmdPath = this.options.name.split(':').join('/');
     const commandPath = this.destinationPath(`src/commands/${cmdPath}.ts`);
     const className = pascalCase(this.options.name);
-    const year = new Date().getFullYear();
     const opts = {
       ...this.options,
       className,
       returnType: `${className}Result`,
       commandPath,
-      year,
+      year: new Date().getFullYear(),
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
     };
@@ -64,5 +63,18 @@ export default class Command extends Generator {
     const filename = this.getMessageFileName();
     const messagePath = this.destinationPath(`messages/${filename}.md`);
     this.fs.copyTpl(this.templatePath('messages/message.md.ejs'), messagePath, this.options);
+  }
+
+  private writeNutFile(): void {
+    this.sourceRoot(path.join(__dirname, '../../templates'));
+    const cmdPath = this.options.name.split(':').join('/');
+    const nutPah = this.destinationPath(`test/commands/${cmdPath}.nut.ts`);
+    const opts = {
+      cmd: this.options.name.split(':').join(' '),
+      year: new Date().getFullYear(),
+      pluginName: this.pjson.name,
+      messageFile: this.getMessageFileName(),
+    };
+    this.fs.copyTpl(this.templatePath('test/command.nut.ts.ejs'), nutPah, opts);
   }
 }
