@@ -1,7 +1,14 @@
 [
   {
     "command": "hello:world",
-    "plugin": "@salesforce/plugin-template-sf",
-    "flags": ["json", "name"]
+    "plugin": "@salesforce/plugin-dev",
+    "flags": ["json", "name"],
+    "alias": []
+  },
+  {
+    "command": "hook",
+    "plugin": "@salesforce/plugin-dev",
+    "flags": ["json", "plugin"],
+    "alias": []
   }
 ]
