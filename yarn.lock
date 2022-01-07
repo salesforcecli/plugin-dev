@@ -572,10 +572,10 @@
     chalk "^2.4.2"
     tslib "^1.9.3"
 
-"@oclif/plugin-command-snapshot@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-3.1.0.tgz#903f15c9d52d76da538aec880de6f31509a2169d"
-  integrity sha512-51deu59gxFAJZZ8y2E1BYcVF7+3bv6eF2HUFwDl57mvPK2+pmfCBzd9DsBnVwSt9p7d3t9P5br9GFc1zHh38XQ==
+"@oclif/plugin-command-snapshot@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-3.1.2.tgz#8b8abceac56a5c367e2e945becb6ddad3aa725d2"
+  integrity sha512-3jeFbmUkkcbUthEGjzFBGWUTuaQioje7FftYv3csbJfAZr1WsoWfcI92G7f5rPKHxpdzXF51GuxEudiExVOacA==
   dependencies:
     "@oclif/core" "^1.0.1"
     chalk "^4.1.1"
