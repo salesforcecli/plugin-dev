@@ -10,7 +10,6 @@ import { SfCommand, SfHook } from '@salesforce/sf-plugins-core';
 import { cli } from 'cli-ux';
 
 export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
-  public static hidden = true;
   public static readonly summary = 'Run a hook. For testing purposes only.';
   public static readonly examples = [
     {
