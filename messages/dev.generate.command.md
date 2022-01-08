@@ -18,10 +18,10 @@ Generate a NUT test file for the command.
 
 Generate a unit test file for the command.
 
-# args.name.description
+# flags.name.description
 
 Name of the new command. Must be separated by colons.
 
 # examples
 
-- <%= config.bin %> <%= command.id %> my:command
+- <%= config.bin %> <%= command.id %> --name my:command

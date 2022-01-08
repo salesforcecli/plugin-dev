@@ -17,3 +17,10 @@ export interface PackageJson {
   repository: string;
   homepage: string;
 }
+
+export enum Hook {
+  'sf:env:list' = 'sf env list',
+  'sf:env:display' = 'sf env display',
+  'sf:deploy' = 'sf deploy',
+  'sf:logout' = 'sf logout',
+}

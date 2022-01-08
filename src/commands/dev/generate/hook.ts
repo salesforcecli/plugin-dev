@@ -6,12 +6,15 @@
  */
 import { Flags } from '@oclif/core';
 import { Messages } from '@salesforce/core';
-import { GeneratorCommand } from '../../../generatorCommand';
+import { SfCommand } from '@salesforce/sf-plugins-core';
+import { generate } from '../../../util';
+import { Hook } from '../../../types';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.hook');
 
-export default class GenerateHook extends GeneratorCommand {
+export default class GenerateHook extends SfCommand<void> {
+  public static enableJsonFlag = false;
   public static summary = messages.getMessage('summary');
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
@@ -22,14 +25,14 @@ export default class GenerateHook extends GeneratorCommand {
     }),
     event: Flags.string({
       description: messages.getMessage('flags.event.description'),
-      options: ['sf:env:display', 'sf:env:list', 'sf:deploy', 'sf:logout'],
+      options: Object.keys(Hook),
       required: true,
     }),
   };
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(GenerateHook);
-    await super.generate('hook', {
+    generate('hook', {
       force: flags.force,
       event: flags.event,
     });

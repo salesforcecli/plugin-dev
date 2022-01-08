@@ -5,31 +5,22 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import { Messages } from '@salesforce/core';
-import { GeneratorCommand } from '../../../generatorCommand';
+import { SfCommand } from '@salesforce/sf-plugins-core';
+import { generate } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.plugin');
 
-export default class GeneratePlugin extends GeneratorCommand {
+export default class GeneratePlugin extends SfCommand<void> {
+  public static enableJsonFlag = false;
   public static summary = messages.getMessage('summary');
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
 
   public static flags = {};
 
-  public static args = [{ name: 'name', required: true, description: messages.getMessage('args.name.description') }];
-
+  // eslint-disable-next-line @typescript-eslint/require-await
   public async run(): Promise<void> {
-    const { args } = await this.parse(GeneratePlugin);
-    const pluginName = args.name as string;
-
-    if (!pluginName.startsWith('plugin-')) {
-      throw messages.createError('error.InvalidPluginName', [pluginName]);
-    }
-
-    await super.generate('plugin', {
-      name: pluginName,
-      force: true,
-    });
+    generate('plugin', { force: true });
   }
 }

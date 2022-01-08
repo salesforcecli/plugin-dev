@@ -11,53 +11,77 @@ import * as Generator from 'yeoman-generator';
 import yosay = require('yosay');
 import { exec } from 'shelljs';
 import replace = require('replace-in-file');
-import { PackageJson } from '../types';
+import { camelCase } from 'change-case';
+import { Hook, PackageJson } from '../types';
+import { addHookToPackageJson, readJson } from '../util';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');
 
-export interface PluginGeneratorOptions extends Generator.GeneratorOptions {
-  name: string;
-}
-
 export default class Plugin extends Generator {
-  private name: string;
   private answers!: {
+    name: string;
     description: string;
+    hooks: Hook[];
   };
 
-  public constructor(args: string | string[], opts: PluginGeneratorOptions) {
+  public constructor(args: string | string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
-    this.name = opts.name;
     this.env.options.nodePackageManager = 'yarn';
   }
 
   public async prompting(): Promise<void> {
     const msg = 'Time to build an sf plugin!';
-    const directory = path.resolve(this.name);
 
     this.log(yosay(`${msg} Version: ${version as string}`));
-    exec(`git clone git@github.com:salesforcecli/plugin-template-sf.git ${directory}`);
-    fs.rmSync(`${path.resolve(this.name, '.git')}`, { recursive: true });
 
-    this.destinationRoot(directory);
-    this.env.cwd = this.destinationPath();
-    this.answers = await this.prompt<{ description: string }>([
+    this.answers = await this.prompt<{ name: string; description: string; hooks: Hook[] }>([
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Name (must start with plugin-)',
+        validate: (input: string): boolean => /plugin-[a-z]+$/.test(input),
+      },
       {
         type: 'input',
         name: 'description',
-        message: 'description',
+        message: 'Description',
+      },
+      {
+        type: 'checkbox',
+        name: 'hooks',
+        message: 'Which commands do you plan to extend',
+        choices: Object.values(Hook),
       },
     ]);
+
+    const directory = path.resolve(this.answers.name);
+    exec(`git clone git@github.com:salesforcecli/plugin-template-sf.git ${directory}`);
+    fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
+    this.destinationRoot(directory);
+    this.env.cwd = this.destinationPath();
   }
 
   public writing(): void {
-    const pjsonRaw = fs.readFileSync(path.join(this.env.cwd, 'package.json'), 'utf-8');
-    const pjson = JSON.parse(pjsonRaw) as PackageJson;
+    let pjson = readJson<PackageJson>(path.join(this.env.cwd, 'package.json'));
+
+    this.sourceRoot(path.join(__dirname, '../../templates'));
+    const hooks = this.answers.hooks.map((h) => h.split(' ').join(':')) as Hook[];
+    for (const hook of hooks) {
+      const filename = camelCase(hook.replace('sf:', ''));
+      this.fs.copyTpl(
+        this.templatePath(`src/hooks/${hook.replace(/:/g, '.')}.ts.ejs`),
+        this.destinationPath(`src/hooks/${filename}.ts`),
+        { year: new Date().getFullYear() }
+      );
+
+      pjson = addHookToPackageJson(hook, filename, pjson);
+    }
+
     const updated = {
-      name: `@salesforce/${this.name}`,
-      repository: `salesforcecli/${this.name}`,
-      homepage: `https://github.com/salesforcecli/${this.name}`,
+      name: `@salesforce/${this.answers.name}`,
+      repository: `salesforcecli/${this.answers.name}`,
+      homepage: `https://github.com/salesforcecli/${this.answers.name}`,
       description: this.answers.description,
     };
     const final = Object.assign({}, pjson, updated);
@@ -66,7 +90,11 @@ export default class Plugin extends Generator {
     replace.sync({
       files: `${this.env.cwd}/**/*`,
       from: /plugin-template-sf/g,
-      to: this.name,
+      to: this.answers.name,
     });
+  }
+
+  public end(): void {
+    exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
   }
 }

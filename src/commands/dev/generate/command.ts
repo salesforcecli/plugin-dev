@@ -6,17 +6,23 @@
  */
 import { Flags } from '@oclif/core';
 import { Messages } from '@salesforce/core';
-import { GeneratorCommand } from '../../../generatorCommand';
+import { SfCommand } from '@salesforce/sf-plugins-core';
+import { generate } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.command');
 
-export default class GenerateCommand extends GeneratorCommand {
+export default class GenerateCommand extends SfCommand<void> {
+  public static enableJsonFlag = false;
   public static summary = messages.getMessage('summary');
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
 
   public static flags = {
+    name: Flags.string({
+      required: true,
+      description: messages.getMessage('flags.name.description'),
+    }),
     force: Flags.boolean({
       description: messages.getMessage('flags.force.description'),
     }),
@@ -32,12 +38,10 @@ export default class GenerateCommand extends GeneratorCommand {
     }),
   };
 
-  public static args = [{ name: 'name', required: true, description: messages.getMessage('args.name.description') }];
-
   public async run(): Promise<void> {
-    const { args, flags } = await this.parse(GenerateCommand);
-    await super.generate('command', {
-      name: args.name,
+    const { flags } = await this.parse(GenerateCommand);
+    generate('command', {
+      name: flags.name,
       force: flags.force,
       nuts: flags.nuts,
       unit: flags.unit,

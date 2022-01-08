@@ -9,31 +9,28 @@ import * as path from 'path';
 import { camelCase } from 'change-case';
 import * as Generator from 'yeoman-generator';
 import yosay = require('yosay');
-import { PackageJson } from '../types';
+import { Hook, PackageJson } from '../types';
+import { addHookToPackageJson, readJson } from '../util';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');
 
-export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
+export interface HookGeneratorOptions extends Generator.GeneratorOptions {
   name: string;
   event: string;
 }
 
-function toArray(item: string | string[]): string[] {
-  return Array.isArray(item) ? item : [item];
-}
-
-export default class Command extends Generator {
-  public options: CommandGeneratorOptions;
+export default class HookGenerator extends Generator {
+  public options: HookGeneratorOptions;
   public pjson!: PackageJson;
 
-  public constructor(args: string | string[], opts: CommandGeneratorOptions) {
+  public constructor(args: string | string[], opts: HookGeneratorOptions) {
     super(args, opts);
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
   public async prompting(): Promise<void> {
-    this.pjson = this.fs.readJSON('package.json') as unknown as PackageJson;
+    this.pjson = readJson<PackageJson>(path.join(this.env.cwd, 'package.json'));
     this.log(yosay(`Adding a ${this.options.event} hook to ${this.pjson.name} Version: ${version as string}`));
   }
 
@@ -46,22 +43,7 @@ export default class Command extends Generator {
       { year: new Date().getFullYear() }
     );
 
-    // TODO
-    // this.fs.copyTpl(
-    //   this.templatePath('test/hook.test.ts.ejs'),
-    //   this.destinationPath(`test/hooks/${this.options.event}/${this.options.name}.test.ts`),
-    //   this
-    // );
-
-    this.pjson.oclif.hooks = this.pjson.oclif.hooks || {};
-    const hooks = this.pjson.oclif.hooks;
-    const p = `./lib/hooks/${filename}`;
-    if (hooks[this.options.event]) {
-      hooks[this.options.event] = [...toArray(hooks[this.options.event]), p];
-    } else {
-      this.pjson.oclif.hooks[this.options.event] = p;
-    }
-
+    this.pjson = addHookToPackageJson(this.options.event as Hook, filename, this.pjson);
     this.fs.writeJSON(this.destinationPath('./package.json'), this.pjson);
   }
 }

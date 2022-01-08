@@ -16,4 +16,4 @@ Event to run hook on.
 
 # examples
 
-- <%= config.bin %> <%= command.id %> my:command
+- <%= config.bin %> <%= command.id %> --event sf:env:display
