@@ -7,7 +7,7 @@
 import { Flags } from '@oclif/core';
 import { Messages } from '@salesforce/core';
 import { SfCommand } from '@salesforce/sf-plugins-core';
-import { generate } from '../../../util';
+import { fileExists, generate } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.command');
@@ -40,6 +40,7 @@ export default class GenerateCommand extends SfCommand<void> {
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(GenerateCommand);
+    if (!fileExists('package.json')) messages.createError('InvalidDir');
     generate('command', {
       name: flags.name,
       force: flags.force,

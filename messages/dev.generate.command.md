@@ -25,3 +25,7 @@ Name of the new command. Must be separated by colons.
 # examples
 
 - <%= config.bin %> <%= command.id %> --name my:command
+
+# errros.InvalidDir
+
+This command can only be run inside a plugin directory.

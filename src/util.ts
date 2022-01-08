@@ -36,3 +36,12 @@ export function addHookToPackageJson(hook: Hook, filename: string, pjson: Packag
   }
   return pjson;
 }
+
+export function fileExists(file: string): boolean {
+  try {
+    fs.accessSync(file);
+    return true;
+  } catch {
+    return false;
+  }
+}

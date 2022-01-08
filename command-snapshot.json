@@ -1,12 +1,24 @@
 [
   {
-    "command": "hello:world",
+    "command": "dev:generate:command",
     "plugin": "@salesforce/plugin-dev",
-    "flags": ["json", "name"],
+    "flags": ["force", "name", "nuts", "unit"],
     "alias": []
   },
   {
-    "command": "hook",
+    "command": "dev:generate:hook",
+    "plugin": "@salesforce/plugin-dev",
+    "flags": ["event", "force"],
+    "alias": []
+  },
+  {
+    "command": "dev:generate:plugin",
+    "plugin": "@salesforce/plugin-dev",
+    "flags": [],
+    "alias": []
+  },
+  {
+    "command": "dev:hook",
     "plugin": "@salesforce/plugin-dev",
     "flags": ["json", "plugin"],
     "alias": []

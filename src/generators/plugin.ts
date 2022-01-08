@@ -95,6 +95,7 @@ export default class Plugin extends Generator {
   }
 
   public end(): void {
+    exec('yarn build', { cwd: this.env.cwd });
     exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
   }
 }

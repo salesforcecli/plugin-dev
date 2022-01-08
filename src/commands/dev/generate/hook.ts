@@ -7,7 +7,7 @@
 import { Flags } from '@oclif/core';
 import { Messages } from '@salesforce/core';
 import { SfCommand } from '@salesforce/sf-plugins-core';
-import { generate } from '../../../util';
+import { fileExists, generate } from '../../../util';
 import { Hook } from '../../../types';
 
 Messages.importMessagesDirectory(__dirname);
@@ -32,6 +32,7 @@ export default class GenerateHook extends SfCommand<void> {
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(GenerateHook);
+    if (!fileExists('package.json')) messages.createError('InvalidDir');
     generate('hook', {
       force: flags.force,
       event: flags.event,

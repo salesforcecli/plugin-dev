@@ -17,3 +17,7 @@ Event to run hook on.
 # examples
 
 - <%= config.bin %> <%= command.id %> --event sf:env:display
+
+# errros.InvalidDir
+
+This command can only be run inside a plugin directory.
