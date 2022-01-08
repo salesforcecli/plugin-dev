@@ -4,15 +4,23 @@ Generate a new sf command.
 
 # description
 
-This will clone the template repo 'salesforcecli/plugin-template-sf' and update package properties
+This will generate a basic hello world command, a .md file for messages, and test files.
 
 # flags.force.description
 
-overwrite existing files
+Overwrite existing files.
+
+# flags.nuts.description
+
+Generate a NUT test file for the command.
+
+# flags.unit.description
+
+Generate a unit test file for the command.
 
 # args.name.description
 
-Directory name of new plugin. Must begin with "plugin-"
+Name of the new command. Must be separated by colons.
 
 # examples
 

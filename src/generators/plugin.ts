@@ -11,25 +11,13 @@ import * as Generator from 'yeoman-generator';
 import yosay = require('yosay');
 import { exec } from 'shelljs';
 import replace = require('replace-in-file');
+import { PackageJson } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');
 
 export interface PluginGeneratorOptions extends Generator.GeneratorOptions {
   name: string;
-}
-
-export interface PackageJson {
-  name: string;
-  devDependencies: Record<string, string>;
-  dependencies: Record<string, string>;
-  oclif: {
-    bin: string;
-    dirname: string;
-    hooks: Record<string, string | string[]>;
-  };
-  repository: string;
-  homepage: string;
 }
 
 export default class Plugin extends Generator {

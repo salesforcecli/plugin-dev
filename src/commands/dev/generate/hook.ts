@@ -9,9 +9,9 @@ import { Messages } from '@salesforce/core';
 import { GeneratorCommand } from '../../../generatorCommand';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.command');
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.hook');
 
-export default class GenerateCommand extends GeneratorCommand {
+export default class GenerateHook extends GeneratorCommand {
   public static summary = messages.getMessage('summary');
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
@@ -20,27 +20,18 @@ export default class GenerateCommand extends GeneratorCommand {
     force: Flags.boolean({
       description: messages.getMessage('flags.force.description'),
     }),
-    nuts: Flags.boolean({
-      description: messages.getMessage('flags.nuts.description'),
-      allowNo: true,
-      default: true,
-    }),
-    unit: Flags.boolean({
-      description: messages.getMessage('flags.unit.description'),
-      allowNo: true,
-      default: false,
+    event: Flags.string({
+      description: messages.getMessage('flags.event.description'),
+      options: ['sf:env:display', 'sf:env:list', 'sf:deploy', 'sf:logout'],
+      required: true,
     }),
   };
 
-  public static args = [{ name: 'name', required: true, description: messages.getMessage('args.name.description') }];
-
   public async run(): Promise<void> {
-    const { args, flags } = await this.parse(GenerateCommand);
-    await super.generate('command', {
-      name: args.name,
+    const { flags } = await this.parse(GenerateHook);
+    await super.generate('hook', {
       force: flags.force,
-      nuts: flags.nuts,
-      unit: flags.unit,
+      event: flags.event,
     });
   }
 }

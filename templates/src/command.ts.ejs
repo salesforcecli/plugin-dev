@@ -23,9 +23,9 @@ export default class <%- className %> extends SfCommand<<%- returnType %>> {
 
   public static flags = {
     name: Flags.string({
-      description: messages.getMessage('flag.name.description'),
+      description: messages.getMessage('flags.name.description'),
       char: 'n',
-      required: true,
+      required: false,
     }),
   };
 

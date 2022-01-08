@@ -9,17 +9,20 @@ import * as path from 'path';
 import * as Generator from 'yeoman-generator';
 import yosay = require('yosay');
 import { pascalCase } from 'change-case';
+import { PackageJson } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');
 
 export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
   name: string;
+  nuts: boolean;
+  unit: boolean;
 }
 
 export default class Command extends Generator {
   public options: CommandGeneratorOptions;
-  public pjson!: { name: string };
+  public pjson!: PackageJson;
 
   public constructor(args: string | string[], opts: CommandGeneratorOptions) {
     super(args, opts);
@@ -27,7 +30,7 @@ export default class Command extends Generator {
 
   // eslint-disable-next-line @typescript-eslint/require-await
   public async prompting(): Promise<void> {
-    this.pjson = this.fs.readJSON('package.json') as unknown as { name: string };
+    this.pjson = this.fs.readJSON('package.json') as unknown as PackageJson;
     this.log(yosay(`Adding a command to ${this.pjson.name} Version: ${version as string}`));
   }
 
@@ -35,6 +38,7 @@ export default class Command extends Generator {
     this.writeCmdFile();
     this.writeMessageFile();
     this.writeNutFile();
+    this.writeUnitTestFile();
   }
 
   private getMessageFileName(): string {
@@ -66,6 +70,7 @@ export default class Command extends Generator {
   }
 
   private writeNutFile(): void {
+    if (!this.options.nuts) return;
     this.sourceRoot(path.join(__dirname, '../../templates'));
     const cmdPath = this.options.name.split(':').join('/');
     const nutPah = this.destinationPath(`test/commands/${cmdPath}.nut.ts`);
@@ -76,5 +81,16 @@ export default class Command extends Generator {
       messageFile: this.getMessageFileName(),
     };
     this.fs.copyTpl(this.templatePath('test/command.nut.ts.ejs'), nutPah, opts);
+  }
+
+  private writeUnitTestFile(): void {
+    if (!this.options.unit) return;
+    this.sourceRoot(path.join(__dirname, '../../templates'));
+    const cmdPath = this.options.name.split(':').join('/');
+    const unitPath = this.destinationPath(`test/commands/${cmdPath}.test.ts`);
+    this.fs.copyTpl(this.templatePath('test/command.test.ts.ejs'), unitPath, {
+      ...this.options,
+      year: new Date().getFullYear(),
+    });
   }
 }
