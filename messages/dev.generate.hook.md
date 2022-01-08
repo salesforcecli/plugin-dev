@@ -18,6 +18,6 @@ Event to run hook on.
 
 - <%= config.bin %> <%= command.id %> --event sf:env:display
 
-# errros.InvalidDir
+# errors.InvalidDir
 
 This command can only be run inside a plugin directory.
