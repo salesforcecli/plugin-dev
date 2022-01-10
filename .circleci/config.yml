@@ -36,6 +36,7 @@ workflows:
           github-release: true
           requires:
             - release-management/test-package
+          node_version: latest
           filters:
             branches:
               only: main
