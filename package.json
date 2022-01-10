@@ -1,6 +1,6 @@
 {
   "name": "@salesforce/plugin-dev",
-  "description": "A template repository for sf plugins",
+  "description": "commands for sf plugin development",
   "version": "0.0.1",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
