@@ -28,7 +28,7 @@ sf plugins install @salesforce/plugin-dev@x.y.z
 sf dev generate plugin
 ```
 
-This will generate a new `sf` plugin based on our [plugin tempalte](https://github.com/salesforcecli/plugin-template-sf).
+This will generate a new `sf` plugin based on our [plugin template](https://github.com/salesforcecli/plugin-template-sf).
 
 ### Generate a new `sf` command in your plugin
 
