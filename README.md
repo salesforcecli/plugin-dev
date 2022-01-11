@@ -5,18 +5,14 @@
 - [plugin-dev](#plugin-dev)
   - [Install](#install)
   - [Usage](#usage)
-    - [Generate a new `sf` plugin:](#generate-a-new-sf-plugin)
-    - [Generate a new `sf` command in your plugin:](#generate-a-new-sf-command-in-your-plugin)
+    - [Generate a new `sf` plugin](#generate-a-new-sf-plugin)
+    - [Generate a new `sf` command in your plugin](#generate-a-new-sf-command-in-your-plugin)
     - [Generate a hook that will be used for existing `sf` commands](#generate-a-hook-that-will-be-used-for-existing-sf-commands)
   - [Issues](#issues)
   - [Contributing](#contributing)
     - [CLA](#cla)
     - [Build](#build)
   - [Commands](#commands)
-  - [`sf dev generate command`](#sf-dev-generate-command)
-  - [`sf dev generate hook`](#sf-dev-generate-hook)
-  - [`sf dev generate plugin`](#sf-dev-generate-plugin)
-  - [`sf dev hook HOOK`](#sf-dev-hook-hook)
 
 ## Install
 
@@ -26,7 +22,7 @@ sf plugins install @salesforce/plugin-dev@x.y.z
 
 ## Usage
 
-### Generate a new `sf` plugin:
+### Generate a new `sf` plugin
 
 ```
 sf dev generate plugin
@@ -34,7 +30,7 @@ sf dev generate plugin
 
 This will generate a new `sf` plugin based on our [plugin tempalte](https://github.com/salesforcecli/plugin-template-sf).
 
-### Generate a new `sf` command in your plugin:
+### Generate a new `sf` command in your plugin
 
 ```
 sf dev generate command --name create:awesome:stuff
