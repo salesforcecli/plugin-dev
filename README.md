@@ -105,11 +105,10 @@ sf plugins
 ## Commands
 
 <!-- commands -->
-
-- [`sf dev generate command`](#sf-dev-generate-command)
-- [`sf dev generate hook`](#sf-dev-generate-hook)
-- [`sf dev generate plugin`](#sf-dev-generate-plugin)
-- [`sf dev hook HOOK`](#sf-dev-hook-hook)
+* [`sf dev generate command`](#sf-dev-generate-command)
+* [`sf dev generate hook`](#sf-dev-generate-hook)
+* [`sf dev generate plugin`](#sf-dev-generate-plugin)
+* [`sf dev hook HOOK`](#sf-dev-hook-hook)
 
 ## `sf dev generate command`
 
@@ -199,5 +198,4 @@ EXAMPLES
 
     $ sf dev hook sf:env:list --plugin env
 ```
-
 <!-- commandsstop -->
