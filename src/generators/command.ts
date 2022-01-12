@@ -21,7 +21,7 @@ export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
 }
 
 export default class Command extends Generator {
-  public options: CommandGeneratorOptions;
+  public declare options: CommandGeneratorOptions;
   public pjson!: PackageJson;
 
   public constructor(args: string | string[], opts: CommandGeneratorOptions) {

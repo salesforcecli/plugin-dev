@@ -21,7 +21,7 @@ export interface HookGeneratorOptions extends Generator.GeneratorOptions {
 }
 
 export default class HookGenerator extends Generator {
-  public options: HookGeneratorOptions;
+  public declare options: HookGeneratorOptions;
   public pjson!: PackageJson;
 
   public constructor(args: string | string[], opts: HookGeneratorOptions) {
