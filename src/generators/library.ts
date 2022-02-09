@@ -17,12 +17,15 @@ import { readJson } from '../util';
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');
 
-export default class Plugin extends Generator {
-  private answers!: {
-    name: string;
-    description: string;
-    org: string;
-  };
+type Answers = {
+  name: string;
+  description: string;
+  org: string;
+  scope: string;
+};
+
+export default class Library extends Generator {
+  private answers!: Answers;
 
   public constructor(args: string | string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
@@ -34,7 +37,13 @@ export default class Plugin extends Generator {
 
     this.log(yosay(`${msg} Version: ${version as string}`));
 
-    this.answers = await this.prompt<{ name: string; description: string; org: string }>([
+    this.answers = await this.prompt<Answers>([
+      {
+        type: 'input',
+        name: 'scope',
+        message: 'Npm Scope',
+        default: '@salesforce',
+      },
       {
         type: 'input',
         name: 'name',
@@ -66,7 +75,7 @@ export default class Plugin extends Generator {
     this.sourceRoot(path.join(__dirname, '../../templates'));
 
     const updated = {
-      name: `@salesforce/${this.answers.name}`,
+      name: `${this.answers.scope}/${this.answers.name}`,
       repository: `${this.answers.org}/${this.answers.name}`,
       homepage: `https://github.com/${this.answers.org}/${this.answers.name}`,
       description: this.answers.description,
@@ -84,6 +93,12 @@ export default class Plugin extends Generator {
       files: `${this.env.cwd}/**/*`,
       from: /forcedotcom/g,
       to: this.answers.org,
+    });
+
+    replace.sync({
+      files: `${this.env.cwd}/**/*`,
+      from: /@salesforce/g,
+      to: this.answers.scope,
     });
   }
 
