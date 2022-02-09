@@ -12,6 +12,12 @@
     "alias": []
   },
   {
+    "command": "dev:generate:library",
+    "plugin": "@salesforce/plugin-dev",
+    "flags": [],
+    "alias": []
+  },
+  {
     "command": "dev:generate:plugin",
     "plugin": "@salesforce/plugin-dev",
     "flags": [],
