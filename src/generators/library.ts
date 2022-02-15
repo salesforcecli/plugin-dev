@@ -25,9 +25,7 @@ type Answers = {
 };
 
 function containsInvalidChars(input: string): boolean {
-  const invalidChars = '!#$%^&*()12345679 ?/\\,.";\':|{}[]~`'.split('');
-  const intersection = input.split('').filter((i) => invalidChars.includes(i));
-  return intersection.length > 0;
+  return input.split('').some((i) => '!#$%^&*() ?/\\,.";\':|{}[]~`'.includes(i));
 }
 
 export default class Library extends Generator {
