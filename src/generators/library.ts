@@ -24,6 +24,12 @@ type Answers = {
   scope: string;
 };
 
+function containsInvalidChars(input: string): boolean {
+  const invalidChars = '!#$%^&*()12345679 ?/\\,.";\':|{}[]~`'.split('');
+  const intersection = input.split('').filter((i) => invalidChars.includes(i));
+  return intersection.length > 0;
+}
+
 export default class Library extends Generator {
   private answers!: Answers;
 
@@ -43,11 +49,22 @@ export default class Library extends Generator {
         name: 'scope',
         message: 'Npm Scope',
         default: '@salesforce',
+        validate: (input: string): boolean | string => {
+          if (!input) return 'You must provide a scope.';
+          if (!input.startsWith('@')) return 'Scope must start with @.';
+          if (containsInvalidChars(input)) return 'Scope must not cotain invalid characters.';
+          return true;
+        },
       },
       {
         type: 'input',
         name: 'name',
         message: 'Name',
+        validate: (input: string): boolean | string => {
+          if (!input) return 'You must provide a package name.';
+          if (containsInvalidChars(input)) return 'Name must not cotain invalid characters.';
+          else return true;
+        },
       },
       {
         type: 'input',
@@ -59,6 +76,11 @@ export default class Library extends Generator {
         name: 'org',
         message: 'Github Org',
         default: 'forcedotcom',
+        validate: (input: string): boolean | string => {
+          if (!input) return 'You must provide a Github Org.';
+          if (containsInvalidChars(input)) return 'Github Org must not cotain invalid characters.';
+          else return true;
+        },
       },
     ]);
 
@@ -96,7 +118,7 @@ export default class Library extends Generator {
     });
 
     replace.sync({
-      files: `${this.env.cwd}/**/*`,
+      files: `${this.env.cwd}/README.md`,
       from: /@salesforce/g,
       to: this.answers.scope,
     });
