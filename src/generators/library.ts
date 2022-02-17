@@ -50,7 +50,8 @@ export default class Library extends Generator {
         validate: (input: string): boolean | string => {
           if (!input) return 'You must provide a scope.';
           if (!input.startsWith('@')) return 'Scope must start with @.';
-          if (containsInvalidChars(input)) return 'Scope must not cotain invalid characters.';
+          if (containsInvalidChars(input)) return 'Scope must not contain invalid characters.';
+          if (input.length < 2) return 'Scope length must be greater than one';
           return true;
         },
       },
@@ -60,7 +61,7 @@ export default class Library extends Generator {
         message: 'Name',
         validate: (input: string): boolean | string => {
           if (!input) return 'You must provide a package name.';
-          if (containsInvalidChars(input)) return 'Name must not cotain invalid characters.';
+          if (containsInvalidChars(input)) return 'Name must not contain invalid characters.';
           else return true;
         },
       },
@@ -76,7 +77,7 @@ export default class Library extends Generator {
         default: 'forcedotcom',
         validate: (input: string): boolean | string => {
           if (!input) return 'You must provide a Github Org.';
-          if (containsInvalidChars(input)) return 'Github Org must not cotain invalid characters.';
+          if (containsInvalidChars(input)) return 'Github Org must not contain invalid characters.';
           else return true;
         },
       },
