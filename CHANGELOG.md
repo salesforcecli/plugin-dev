@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/salesforcecli/plugin-dev/compare/v0.0.3...v0.0.4) (2022-02-22)
+
+
+### Features
+
+* add library generator ([c766d29](https://github.com/salesforcecli/plugin-dev/commit/c766d298b867ee083d6c891cedaf6d400894dd04))
+
 ### [0.0.3](https://github.com/salesforcecli/plugin-dev/compare/v0.0.2...v0.0.3) (2022-01-12)
 
 

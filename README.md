@@ -107,6 +107,7 @@ sf plugins
 <!-- commands -->
 * [`sf dev generate command`](#sf-dev-generate-command)
 * [`sf dev generate hook`](#sf-dev-generate-hook)
+* [`sf dev generate library`](#sf-dev-generate-library)
 * [`sf dev generate plugin`](#sf-dev-generate-plugin)
 * [`sf dev hook HOOK`](#sf-dev-hook-hook)
 
@@ -153,6 +154,23 @@ DESCRIPTION
 
 EXAMPLES
   $ sf dev generate hook --event sf:env:display
+```
+
+## `sf dev generate library`
+
+Generate a new library.
+
+```
+USAGE
+  $ sf dev generate library
+
+DESCRIPTION
+  Generate a new library.
+
+  This will clone the template repo 'forcedotcom/library-template' and update package properties
+
+EXAMPLES
+  $ sf dev generate library
 ```
 
 ## `sf dev generate plugin`
