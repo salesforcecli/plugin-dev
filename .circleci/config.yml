@@ -32,7 +32,9 @@ workflows:
           requires:
             - release-management/test-package
       - release-management/release-package:
-          context: AWS
+          context:
+            - AWS
+            - release
           sign: true
           github-release: true
           requires:
