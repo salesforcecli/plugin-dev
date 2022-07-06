@@ -7,7 +7,7 @@
 
 import { Flags, Hook as OclifHook } from '@oclif/core';
 import { SfCommand, SfHook } from '@salesforce/sf-plugins-core';
-import { cli } from 'cli-ux';
+import { AnyJson } from '@salesforce/ts-types';
 
 export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
   public static readonly summary = 'Run a hook. For testing purposes only.';
@@ -50,13 +50,13 @@ export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
     const results = await SfHook.run(this.config, args.hook, {});
     if (!this.jsonEnabled()) {
       results.successes.forEach(({ result, plugin }) => {
-        cli.styledHeader(plugin.name);
-        cli.styledJSON(result);
+        this.styledHeader(plugin.name);
+        this.styledJSON(result);
       });
 
       results.failures.forEach(({ error, plugin }) => {
-        cli.styledHeader(plugin.name);
-        cli.styledJSON(error);
+        this.styledHeader(plugin.name);
+        this.styledJSON(error as unknown as AnyJson);
       });
     }
     return results;
