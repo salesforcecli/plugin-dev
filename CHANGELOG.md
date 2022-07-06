@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/salesforcecli/plugin-dev/compare/v0.0.4...v0.0.5) (2022-07-06)
+
+
+### Bug Fixes
+
+* remove cli-ux ([ba93fee](https://github.com/salesforcecli/plugin-dev/commit/ba93fee6757095346697a02aac87a281ad4999aa))
+
 ### [0.0.4](https://github.com/salesforcecli/plugin-dev/compare/v0.0.3...v0.0.4) (2022-02-22)
 
 
