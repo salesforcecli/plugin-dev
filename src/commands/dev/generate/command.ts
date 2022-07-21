@@ -22,6 +22,7 @@ export default class GenerateCommand extends SfCommand<void> {
     name: Flags.string({
       required: true,
       description: messages.getMessage('flags.name.description'),
+      char: 'n',
     }),
     force: Flags.boolean({
       description: messages.getMessage('flags.force.description'),
