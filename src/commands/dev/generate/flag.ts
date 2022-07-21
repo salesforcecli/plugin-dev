@@ -15,7 +15,15 @@ import ModuleLoader from '@oclif/core/lib/module-loader';
 import { fileExists } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.flag');
+const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.flag', [
+  'description',
+  'errors.InvalidDir',
+  'examples',
+  'flags.command.description',
+  'flags.name.description',
+  'errors.FlagExists',
+  'summary',
+]);
 
 export default class DevGenerateFlag extends SfCommand<void> {
   public static enableJsonFlag = false;
@@ -57,13 +65,20 @@ export default class DevGenerateFlag extends SfCommand<void> {
       summary: messages.getMessage('flags.${flags.name}.summary'),
     }),`.split('\n');
 
-    const contents = await fs.readFile(`${commandFilePath}.ts`, 'utf8');
-    const lines = contents.split('\n');
+    const lines = (await fs.readFile(`${commandFilePath}.ts`, 'utf8')).split('\n');
     const flagsStartIndex = lines.findIndex(
       (line) => line.includes('public static flags') || line.includes('public static readonly flags')
     );
     const flagsEndIndex = lines.slice(flagsStartIndex).findIndex((line) => line.endsWith('};')) + flagsStartIndex;
     lines.splice(flagsEndIndex, 0, ...newFlag);
+
+    const messagesStartIndex = lines.findIndex((line) => line.includes('Messages.load('));
+    if (messagesStartIndex) {
+      const messagesEndIndex =
+        lines.slice(messagesStartIndex).findIndex((line) => line.endsWith(';')) + messagesStartIndex;
+      lines.splice(messagesEndIndex, 0, `  'flags.${flags.name}.summary,'`);
+    }
+
     this.log('New file contents:');
     this.log(lines.join('\n'));
   }

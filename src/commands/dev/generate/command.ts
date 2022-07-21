@@ -4,13 +4,21 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { Flags } from '@oclif/core';
 import { Messages } from '@salesforce/core';
-import { SfCommand } from '@salesforce/sf-plugins-core';
+import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { fileExists, generate } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.command');
+const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.command', [
+  'description',
+  'errors.InvalidDir',
+  'examples',
+  'flags.force.description',
+  'flags.name.description',
+  'flags.nuts.description',
+  'flags.unit.description',
+  'summary',
+]);
 
 export default class GenerateCommand extends SfCommand<void> {
   public static enableJsonFlag = false;
