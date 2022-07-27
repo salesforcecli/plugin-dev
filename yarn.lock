@@ -649,10 +649,44 @@
     is-wsl "^2.1.1"
     tslib "^2.0.0"
 
-"@oclif/core@^1.0.8", "@oclif/core@^1.2.0", "@oclif/core@^1.2.1", "@oclif/core@^1.3.1", "@oclif/core@^1.3.4", "@oclif/core@^1.5.1", "@oclif/core@^1.6.3", "@oclif/core@^1.6.4", "@oclif/core@^1.9.0", "@oclif/core@^1.9.5":
+"@oclif/core@^1.0.8", "@oclif/core@^1.2.0", "@oclif/core@^1.2.1", "@oclif/core@^1.3.1", "@oclif/core@^1.3.4", "@oclif/core@^1.6.3", "@oclif/core@^1.6.4", "@oclif/core@^1.9.0", "@oclif/core@^1.9.5":
   version "1.9.5"
   resolved "https://registry.npmjs.org/@oclif/core/-/core-1.9.5.tgz#4dd00f35fceb89906245da791b14bd503103771a"
   integrity sha512-C605Cr4RhHTMXYApLxdVt/PL6IA5cguN6MPvsMjxkvBppk2Fvcsj05dtRdDqShskRpZzHtu65emG1tHy8TWPWQ==
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^3.0.2"
+    ansi-escapes "^4.3.2"
+    ansi-styles "^4.3.0"
+    cardinal "^2.1.1"
+    chalk "^4.1.2"
+    clean-stack "^3.0.1"
+    cli-progress "^3.10.0"
+    debug "^4.3.4"
+    ejs "^3.1.6"
+    fs-extra "^9.1.0"
+    get-package-type "^0.1.0"
+    globby "^11.1.0"
+    hyperlinker "^1.0.0"
+    indent-string "^4.0.0"
+    is-wsl "^2.2.0"
+    js-yaml "^3.14.1"
+    natural-orderby "^2.0.3"
+    object-treeify "^1.1.33"
+    password-prompt "^1.1.2"
+    semver "^7.3.7"
+    string-width "^4.2.3"
+    strip-ansi "^6.0.1"
+    supports-color "^8.1.1"
+    supports-hyperlinks "^2.2.0"
+    tslib "^2.3.1"
+    widest-line "^3.1.0"
+    wrap-ansi "^7.0.0"
+
+"@oclif/core@^1.5.1":
+  version "1.12.0"
+  resolved "https://registry.npmjs.org/@oclif/core/-/core-1.12.0.tgz#f438d12c6085580e3f7c43c73ccd6edc4b193862"
+  integrity sha512-TR7k5EaekRH+TI1KxpxGda6DirGmUjVi+rz/RBtVxXTyGS446ZHRjlmogU7TIfTGLd1fdS0w0Eo8AHPjd3kh1w==
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^3.0.2"
@@ -953,7 +987,32 @@
     sfdx-faye "^1.0.9"
     ts-retry-promise "^0.6.0"
 
-"@salesforce/core@^3.11.0", "@salesforce/core@^3.19.2", "@salesforce/core@^3.23.4":
+"@salesforce/core@^3.11.0":
+  version "3.24.0"
+  resolved "https://registry.npmjs.org/@salesforce/core/-/core-3.24.0.tgz#ecfa4ae3c23dab37b7431e5d8e7b623db2ba4f12"
+  integrity sha512-PiiJAfCIw0Gj9CUm0Y9C211JXgyJASoywHPmWKe6RY4Ul+WuHkFBDGmdRkuxHLA23P0PVZaclT0Av3CbWwmPSg==
+  dependencies:
+    "@salesforce/bunyan" "^2.0.0"
+    "@salesforce/kit" "^1.5.41"
+    "@salesforce/schemas" "^1.1.0"
+    "@salesforce/ts-types" "^1.5.20"
+    "@types/graceful-fs" "^4.1.5"
+    "@types/mkdirp" "^1.0.2"
+    "@types/semver" "^7.3.9"
+    ajv "^8.11.0"
+    archiver "^5.3.0"
+    change-case "^4.1.2"
+    debug "^3.2.7"
+    faye "^1.4.0"
+    form-data "^4.0.0"
+    graceful-fs "^4.2.9"
+    js2xmlparser "^4.0.1"
+    jsforce beta
+    jsonwebtoken "8.5.1"
+    mkdirp "1.0.4"
+    ts-retry-promise "^0.6.0"
+
+"@salesforce/core@^3.19.2", "@salesforce/core@^3.23.4":
   version "3.23.4"
   resolved "https://registry.npmjs.org/@salesforce/core/-/core-3.23.4.tgz#89c348c5573f30dd3d23a266de928464f534c7bc"
   integrity sha512-gJB2NbWjxcN0SqOy3GLyzwUytYR1bmXZvUi7r8j0Eeu2L7qJFoYBgtkXBfIk7F/urFqYd4VRlXCeJj6ZQEWImw==
@@ -5105,7 +5164,7 @@ jsforce@2.0.0-beta.14:
 
 jsforce@2.0.0-beta.7:
   version "2.0.0-beta.7"
-  resolved "https://registry.yarnpkg.com/jsforce/-/jsforce-2.0.0-beta.7.tgz#5d594b1b280f1ee37992b75220b4c7701a1e536c"
+  resolved "https://registry.npmjs.org/jsforce/-/jsforce-2.0.0-beta.7.tgz#5d594b1b280f1ee37992b75220b4c7701a1e536c"
   integrity sha512-aiJRbf6v0eQSJLpAg4aEB/yXsQwV9WM3ewT2v/WTLmeeZQ4ZtwlcJhQCTwW4tKX/S8U+t5nL+Iluz8jFSZFqnA==
   dependencies:
     "@babel/runtime" "^7.12.5"
@@ -5148,6 +5207,32 @@ jsforce@^1.10.1:
     readable-stream "^2.1.0"
     request "^2.72.0"
     xml2js "^0.4.16"
+
+jsforce@beta:
+  version "2.0.0-beta.15"
+  resolved "https://registry.npmjs.org/jsforce/-/jsforce-2.0.0-beta.15.tgz#05255f3b54a001421c973b1a7b4dbb4468ded2a3"
+  integrity sha512-AfwIxG+y+WOsqSGKlezyL3G+4ItmR/zfcvg38x4CDa3eizDD0wWZBAOnJbOQ8U76zAQqrMsyWs+s3ozJzSLtZA==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@babel/runtime-corejs3" "^7.12.5"
+    "@types/node" "^12.19.9"
+    abort-controller "^3.0.0"
+    base64url "^3.0.1"
+    commander "^4.0.1"
+    core-js "^3.6.4"
+    csv-parse "^4.8.2"
+    csv-stringify "^5.3.4"
+    faye "^1.4.0"
+    form-data "^4.0.0"
+    fs-extra "^8.1.0"
+    https-proxy-agent "^5.0.0"
+    inquirer "^7.0.0"
+    multistream "^3.1.0"
+    node-fetch "^2.6.1"
+    open "^7.0.0"
+    regenerator-runtime "^0.13.3"
+    strip-ansi "^6.0.0"
+    xml2js "^0.4.22"
 
 json-parse-better-errors@^1.0.1:
   version "1.0.2"
