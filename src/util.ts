@@ -8,13 +8,15 @@ import * as fs from 'fs';
 import { createEnv } from 'yeoman-environment';
 import { Hook, PackageJson } from './types';
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-export function generate(type: string, generatorOptions: Record<string, unknown> = {}): void {
+export async function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
   const env = createEnv();
   env.register(require.resolve(`./generators/${type}`), `sf:${type}`);
-  // @ts-ignore
-  env.run(`sf:${type}`, generatorOptions);
+  return new Promise((resolve, reject) => {
+    env.run(`sf:${type}`, generatorOptions, (err: Error) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
 }
 
 export function readJson<T>(filePath: string): T {

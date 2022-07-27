@@ -19,8 +19,7 @@ export default class GeneratePlugin extends SfCommand<void> {
 
   public static flags = {};
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   public async run(): Promise<void> {
-    generate('plugin', { force: true });
+    await generate('plugin', { force: true });
   }
 }

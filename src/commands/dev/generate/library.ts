@@ -19,8 +19,7 @@ export default class GenerateLibrary extends SfCommand<void> {
 
   public static flags = {};
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   public async run(): Promise<void> {
-    generate('library', { force: true });
+    await generate('library', { force: true });
   }
 }
