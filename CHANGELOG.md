@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/salesforcecli/plugin-dev/compare/v0.0.7...v0.0.8) (2022-07-27)
+
+
+### Bug Fixes
+
+* await generators ([4470a81](https://github.com/salesforcecli/plugin-dev/commit/4470a812c2219adf97f59bb116617d747ac78225))
+
 ### [0.0.7](https://github.com/salesforcecli/plugin-dev/compare/v0.0.6...v0.0.7) (2022-07-21)
 
 
