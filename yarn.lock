@@ -3474,7 +3474,7 @@ execa@^0.10.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-execa@^4.0.0, execa@^4.1.0:
+execa@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-4.1.0.tgz#4e5491ad1572f2f17a77d388c6c857135b22847a"
   integrity sha512-j5W0//W7f8UxAn8hXVnwG8tLwdiUy4FJLcSupCg6maBYZDpyBvTApK7KyuI4bKj8KOh1r2YH+6ucuYtJv1bTZA==
@@ -5846,12 +5846,12 @@ minimist-options@4.1.0:
     is-plain-obj "^1.1.0"
     kind-of "^6.0.3"
 
-minimist@1.2.5, minimist@^1.1.0, minimist@^1.2.0, minimist@^1.2.3, minimist@^1.2.5:
+minimist@1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
 
-minimist@^1.2.6:
+minimist@^1.1.0, minimist@^1.2.0, minimist@^1.2.3, minimist@^1.2.5, minimist@^1.2.6:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
   integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
@@ -8901,14 +8901,14 @@ yeoman-environment@^3.5.1, yeoman-environment@^3.9.1:
     untildify "^4.0.0"
 
 yeoman-generator@^5.5.2, yeoman-generator@^5.6.1:
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/yeoman-generator/-/yeoman-generator-5.6.1.tgz#850fd266a5ab26d9d1cb9c46ad646f06eade4a1d"
-  integrity sha512-XllgFvmDEwoPMq2rKtL4/N52WlINJW6a3I3XtlCrMb3/dqO5dW0nPNgR0L3IIUIdf9y1EHb1ZFMs2Qp3ZEEFxg==
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/yeoman-generator/-/yeoman-generator-5.7.0.tgz#5cf24b9fca331646263749121d4f8d477698a83a"
+  integrity sha512-z9ZwgKoDOd+llPDCwn8Ax2l4In5FMhlslxdeByW4AMxhT+HbTExXKEAahsClHSbwZz1i5OzRwLwRIUdOJBr5Bw==
   dependencies:
     chalk "^4.1.0"
     dargs "^7.0.0"
     debug "^4.1.1"
-    execa "^4.1.0"
+    execa "^5.1.1"
     github-username "^6.0.0"
     lodash "^4.17.11"
     minimist "^1.2.5"
