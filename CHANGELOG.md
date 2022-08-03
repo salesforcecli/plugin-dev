@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/salesforcecli/plugin-dev/compare/v0.0.8...v0.0.9) (2022-08-03)
+
+
+### Bug Fixes
+
+* use https instead of ssh for git cloning ([f248be6](https://github.com/salesforcecli/plugin-dev/commit/f248be69f38705adcfff376e70d3bf13e58465c3))
+
 ### [0.0.8](https://github.com/salesforcecli/plugin-dev/compare/v0.0.7...v0.0.8) (2022-07-27)
 
 
