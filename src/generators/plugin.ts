@@ -56,7 +56,7 @@ export default class Plugin extends Generator {
     ]);
 
     const directory = path.resolve(this.answers.name);
-    exec(`git clone git@github.com:salesforcecli/plugin-template-sf.git ${directory}`);
+    exec(`git clone https://github.com/salesforcecli/plugin-template-sf.git ${directory}`);
     fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
     this.destinationRoot(directory);
     this.env.cwd = this.destinationPath();
