@@ -11,12 +11,7 @@ import { Hook, PackageJson } from './types';
 export async function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
   const env = createEnv();
   env.register(require.resolve(`./generators/${type}`), `sf:${type}`);
-  return new Promise((resolve, reject) => {
-    env.run(`sf:${type}`, generatorOptions, (err: Error) => {
-      if (err) reject(err);
-      else resolve();
-    });
-  });
+  return Promise.resolve(env.run(`sf:${type}`, generatorOptions));
 }
 
 export function readJson<T>(filePath: string): T {
