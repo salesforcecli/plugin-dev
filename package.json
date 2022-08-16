@@ -7,7 +7,7 @@
   "dependencies": {
     "@oclif/core": "^1.9.5",
     "@salesforce/core": "^3.23.4",
-    "@salesforce/kit": "^1.5.44",
+    "@salesforce/kit": "^1.6.0",
     "@salesforce/sf-plugins-core": "^1.13.0",
     "change-case": "^4.1.2",
     "replace-in-file": "^6.3.2",
