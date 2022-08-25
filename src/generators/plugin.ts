@@ -138,6 +138,7 @@ export default class Plugin extends Generator {
       // Can't use the class's this.fs since it doesn't delete the directory, just the files in it.
       fs.rmSync(this.destinationPath('./schemas'), { recursive: true });
       fs.rmSync(this.destinationPath('./.git2gus'), { recursive: true });
+      fs.rmSync(this.destinationPath('./.github'), { recursive: true });
       fs.rmSync(this.destinationPath('./command-snapshot.json'));
 
       this.fs.delete(this.destinationPath('./.circleci/config.yml'));
