@@ -16,6 +16,15 @@ export interface PackageJson {
   };
   repository: string;
   homepage: string;
+  bugs: string;
+  author: string;
+  description: string;
+  scripts: {
+    posttest: string;
+    'test:command-reference': string;
+    'test:deprecation-policy': string;
+    'test:json-schema': string;
+  };
 }
 
 export enum Hook {

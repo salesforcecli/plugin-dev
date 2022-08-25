@@ -18,12 +18,17 @@ import { addHookToPackageJson, readJson } from '../util';
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');
 
+type PluginAnswers = {
+  internal: boolean;
+  name: string;
+  description: string;
+  hooks?: Hook[];
+  author?: string;
+};
+
 export default class Plugin extends Generator {
-  private answers!: {
-    name: string;
-    description: string;
-    hooks: Hook[];
-  };
+  private answers!: PluginAnswers;
+  private githubUsername!: string;
 
   public constructor(args: string | string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
@@ -34,13 +39,26 @@ export default class Plugin extends Generator {
     const msg = 'Time to build an sf plugin!';
 
     this.log(yosay(`${msg} Version: ${version as string}`));
+    this.githubUsername = await this.user.github.username();
 
-    this.answers = await this.prompt<{ name: string; description: string; hooks: Hook[] }>([
+    this.answers = await this.prompt<PluginAnswers>([
+      {
+        type: 'confirm',
+        name: 'internal',
+        message: 'Are you building a plugin for an internal team?',
+      },
       {
         type: 'input',
         name: 'name',
         message: 'Name (must start with plugin-)',
         validate: (input: string): boolean => /plugin-[a-z]+$/.test(input),
+        when: (answers: { internal: boolean }): boolean => answers.internal,
+      },
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Name',
+        when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
       {
         type: 'input',
@@ -48,10 +66,18 @@ export default class Plugin extends Generator {
         message: 'Description',
       },
       {
+        type: 'input',
+        name: 'author',
+        message: 'author',
+        default: this.githubUsername,
+        when: (answers: { internal: boolean }): boolean => !answers.internal,
+      },
+      {
         type: 'checkbox',
         name: 'hooks',
         message: 'Which commands do you plan to extend',
         choices: Object.values(Hook),
+        when: (answers: { internal: boolean }): boolean => answers.internal,
       },
     ]);
 
@@ -66,7 +92,7 @@ export default class Plugin extends Generator {
     let pjson = readJson<PackageJson>(path.join(this.env.cwd, 'package.json'));
 
     this.sourceRoot(path.join(__dirname, '../../templates'));
-    const hooks = this.answers.hooks.map((h) => h.split(' ').join(':')) as Hook[];
+    const hooks = (this.answers.hooks ?? []).map((h) => h.split(' ').join(':')) as Hook[];
     for (const hook of hooks) {
       const filename = camelCase(hook.replace('sf:', ''));
       this.fs.copyTpl(
@@ -78,24 +104,64 @@ export default class Plugin extends Generator {
       pjson = addHookToPackageJson(hook, filename, pjson);
     }
 
-    const updated = {
-      name: `@salesforce/${this.answers.name}`,
-      repository: `salesforcecli/${this.answers.name}`,
-      homepage: `https://github.com/salesforcecli/${this.answers.name}`,
-      description: this.answers.description,
-    };
+    const updated: Partial<PackageJson> = this.answers.internal
+      ? {
+          name: `@salesforce/${this.answers.name}`,
+          repository: `salesforcecli/${this.answers.name}`,
+          homepage: `https://github.com/salesforcecli/${this.answers.name}`,
+          description: this.answers.description,
+        }
+      : {
+          name: this.answers.name,
+          description: this.answers.description,
+        };
+
+    if (this.answers.author) updated.author = this.answers.author;
+
     const final = Object.assign({}, pjson, updated);
+
+    if (!this.answers.internal) {
+      // If we are building a 3PP plugin, we don't want to set defaults for these properties.
+      // We could ask these questions in the prompt, but that would be too many questions for a good UX.
+      // We want developers to be able to quickly get up and running with their plugin.
+      delete final.homepage;
+      delete final.repository;
+      delete final.bugs;
+
+      // 3PP plugins don't need these tests.
+      delete final.scripts['test:json-schema'];
+      delete final.scripts['test:deprecation-policy'];
+      delete final.scripts['test:command-reference'];
+      final.scripts.posttest = 'yarn lint';
+
+      // 3PP plugins don't need these either.
+      // Can't use the class's this.fs since it doesn't delete the directory, just the files in it.
+      fs.rmSync(this.destinationPath('./schemas'), { recursive: true });
+      fs.rmSync(this.destinationPath('./.git2gus'), { recursive: true });
+      fs.rmSync(this.destinationPath('./command-snapshot.json'));
+
+      this.fs.delete(this.destinationPath('./.circleci/config.yml'));
+      this.fs.copy(
+        this.destinationPath('./.circleci/external.config.yml'),
+        this.destinationPath('./.circleci/config.yml')
+      );
+    }
+
+    this.fs.delete(this.destinationPath('./.circleci/external.config.yml'));
+
     this.fs.writeJSON(this.destinationPath('./package.json'), final);
 
     replace.sync({
       files: `${this.env.cwd}/**/*`,
-      from: /plugin-template-sf/g,
+      from: this.answers.internal ? /plugin-template-sf/g : /@salesforce\/plugin-template-sf/g,
       to: this.answers.name,
     });
   }
 
   public end(): void {
     exec('yarn build', { cwd: this.env.cwd });
-    exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
+    if (this.answers.internal) {
+      exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
+    }
   }
 }
