@@ -5,6 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+export type Topic = {
+  description?: string;
+  external?: boolean;
+  subtopics: Topic;
+};
+
 export interface PackageJson {
   name: string;
   devDependencies: Record<string, string>;
@@ -13,6 +19,7 @@ export interface PackageJson {
     bin: string;
     dirname: string;
     hooks: Record<string, string | string[]>;
+    topics: Record<string, Topic>;
   };
   repository: string;
   homepage: string;

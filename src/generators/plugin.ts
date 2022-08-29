@@ -161,6 +161,7 @@ export default class Plugin extends Generator {
 
   public end(): void {
     exec('yarn build', { cwd: this.env.cwd });
+    exec('yarn install', { cwd: this.env.cwd });
     if (this.answers.internal) {
       exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
     }

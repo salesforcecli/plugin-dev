@@ -8,8 +8,11 @@
 import * as path from 'path';
 import * as Generator from 'yeoman-generator';
 import yosay = require('yosay');
+import got from 'got';
 import { pascalCase } from 'change-case';
-import { PackageJson } from '../types';
+import { set } from '@salesforce/kit';
+import { get } from '@salesforce/ts-types';
+import { PackageJson, Topic } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');
@@ -18,6 +21,40 @@ export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
   name: string;
   nuts: boolean;
   unit: boolean;
+}
+
+export function addTopics(newCmd: string, commands: string[] = []): Record<string, Topic> {
+  const updated: Record<string, Topic> = {};
+
+  const paths: string[] = [];
+  const parts = newCmd.split(':').slice(0, -1);
+  while (parts.length > 0) {
+    const name = parts.join('.');
+    if (name) paths.push(name);
+    parts.pop();
+  }
+
+  for (const p of paths) {
+    const isExternal = commands.includes(p);
+    const existing = get(updated, p);
+    if (existing) {
+      const merged = isExternal
+        ? {
+            external: true,
+            subtopics: existing,
+          }
+        : {
+            description: `description for ${p}`,
+            subtopics: existing,
+          };
+      set(updated, p, merged);
+    } else {
+      const entry = isExternal ? { external: true } : { description: `description for ${p}` };
+      set(updated, p, entry);
+    }
+  }
+
+  return updated;
 }
 
 export default class Command extends Generator {
@@ -32,6 +69,19 @@ export default class Command extends Generator {
   public async prompting(): Promise<void> {
     this.pjson = this.fs.readJSON('package.json') as unknown as PackageJson;
     this.log(yosay(`Adding a command to ${this.pjson.name} Version: ${version as string}`));
+
+    if (this.pjson.scripts['test:command-reference']) {
+      const commandSnapshotUrl = 'https://raw.githubusercontent.com/salesforcecli/cli/main/command-snapshot.json';
+      const commandSnapshot = await got(commandSnapshotUrl).json<Array<{ command: string }>>();
+      const commands = commandSnapshot.map((c) => c.command.replace(/:/g, '.'));
+      const newTopics = addTopics(this.options.name, commands);
+      this.pjson.oclif.topics = { ...this.pjson.oclif.topics, ...newTopics };
+    } else {
+      const newTopics = addTopics(this.options.name);
+      this.pjson.oclif.topics = { ...this.pjson.oclif.topics, ...newTopics };
+    }
+
+    this.fs.writeJSON('package.json', this.pjson);
   }
 
   public writing(): void {
