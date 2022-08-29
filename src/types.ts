@@ -12,13 +12,11 @@ export type Topic = {
 };
 
 export type NYC = {
-  nyc: {
-    extends: string;
-    lines: number;
-    statements: number;
-    branches: number;
-    functions: number;
-  };
+  extends: string;
+  lines: number;
+  statements: number;
+  branches: number;
+  functions: number;
 };
 
 export type PackageJson = {

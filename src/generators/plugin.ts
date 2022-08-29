@@ -164,10 +164,10 @@ export default class Plugin extends Generator {
       if (this.answers.codeCoverage !== '50%') {
         const nycConfig = readJson<NYC>(path.join(this.env.cwd, '.nycrc'));
         const codeCoverage = Number.parseInt(this.answers.codeCoverage.replace('%', ''), 10);
-        nycConfig.nyc.lines = codeCoverage;
-        nycConfig.nyc.statements = codeCoverage;
-        nycConfig.nyc.functions = codeCoverage;
-        nycConfig.nyc.branches = codeCoverage;
+        nycConfig.lines = codeCoverage;
+        nycConfig.statements = codeCoverage;
+        nycConfig.functions = codeCoverage;
+        nycConfig.branches = codeCoverage;
 
         this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
       }
