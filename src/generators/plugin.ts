@@ -12,7 +12,7 @@ import yosay = require('yosay');
 import { exec } from 'shelljs';
 import replace = require('replace-in-file');
 import { camelCase } from 'change-case';
-import { Hook, PackageJson } from '../types';
+import { Hook, NYC, PackageJson } from '../types';
 import { addHookToPackageJson, readJson } from '../util';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
@@ -24,6 +24,7 @@ type PluginAnswers = {
   description: string;
   hooks?: Hook[];
   author?: string;
+  codeCoverage?: string;
 };
 
 export default class Plugin extends Generator {
@@ -45,7 +46,7 @@ export default class Plugin extends Generator {
       {
         type: 'confirm',
         name: 'internal',
-        message: 'Are you building a plugin for an internal team?',
+        message: 'Are you building a plugin for an internal Salesforce team?',
       },
       {
         type: 'input',
@@ -58,6 +59,7 @@ export default class Plugin extends Generator {
         type: 'input',
         name: 'name',
         message: 'Name',
+        validate: (input: string): boolean => Boolean(input),
         when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
       {
@@ -70,6 +72,14 @@ export default class Plugin extends Generator {
         name: 'author',
         message: 'author',
         default: this.githubUsername,
+        when: (answers: { internal: boolean }): boolean => !answers.internal,
+      },
+      {
+        type: 'list',
+        name: 'codeCoverage',
+        message: 'What % code coverage do you want to enforce',
+        default: '50%',
+        choices: ['0%', '25%', '50%', '75%', '90%', '100%'],
         when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
       {
@@ -141,11 +151,26 @@ export default class Plugin extends Generator {
       fs.rmSync(this.destinationPath('./.github'), { recursive: true });
       fs.rmSync(this.destinationPath('./command-snapshot.json'));
 
+      // Remove /schemas from the published files.
+      final.files = final.files.filter((f) => f !== '/schemas');
+
       this.fs.delete(this.destinationPath('./.circleci/config.yml'));
       this.fs.copy(
         this.destinationPath('./.circleci/external.config.yml'),
         this.destinationPath('./.circleci/config.yml')
       );
+
+      // @salesforce/dev-config/nyc defaults to 50 so there's no need to set it.
+      if (this.answers.codeCoverage !== '50%') {
+        const nycConfig = readJson<NYC>(path.join(this.env.cwd, '.nycrc'));
+        const codeCoverage = Number.parseInt(this.answers.codeCoverage.replace('%', ''), 10);
+        nycConfig.nyc.lines = codeCoverage;
+        nycConfig.nyc.statements = codeCoverage;
+        nycConfig.nyc.functions = codeCoverage;
+        nycConfig.nyc.branches = codeCoverage;
+
+        this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
+      }
     }
 
     this.fs.delete(this.destinationPath('./.circleci/external.config.yml'));
@@ -160,7 +185,9 @@ export default class Plugin extends Generator {
   }
 
   public end(): void {
+    exec('git init', { cwd: this.env.cwd });
     exec('yarn build', { cwd: this.env.cwd });
+    // Run yarn install in case dev-scripts detected changes during yarn build.
     exec('yarn install', { cwd: this.env.cwd });
     if (this.answers.internal) {
       exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });

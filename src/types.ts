@@ -11,10 +11,21 @@ export type Topic = {
   subtopics: Topic;
 };
 
-export interface PackageJson {
+export type NYC = {
+  nyc: {
+    extends: string;
+    lines: number;
+    statements: number;
+    branches: number;
+    functions: number;
+  };
+};
+
+export type PackageJson = {
   name: string;
   devDependencies: Record<string, string>;
   dependencies: Record<string, string>;
+  files: string[];
   oclif: {
     bin: string;
     dirname: string;
@@ -32,7 +43,7 @@ export interface PackageJson {
     'test:deprecation-policy': string;
     'test:json-schema': string;
   };
-}
+};
 
 export enum Hook {
   'sf:env:list' = 'sf env list',
