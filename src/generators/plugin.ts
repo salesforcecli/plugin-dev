@@ -160,17 +160,15 @@ export default class Plugin extends Generator {
         this.destinationPath('./.circleci/config.yml')
       );
 
-      // @salesforce/dev-config/nyc defaults to 50 so there's no need to set it.
-      if (this.answers.codeCoverage !== '50%') {
-        const nycConfig = readJson<NYC>(path.join(this.env.cwd, '.nycrc'));
-        const codeCoverage = Number.parseInt(this.answers.codeCoverage.replace('%', ''), 10);
-        nycConfig.lines = codeCoverage;
-        nycConfig.statements = codeCoverage;
-        nycConfig.functions = codeCoverage;
-        nycConfig.branches = codeCoverage;
+      const nycConfig = readJson<NYC>(path.join(this.env.cwd, '.nycrc'));
+      const codeCoverage = Number.parseInt(this.answers.codeCoverage.replace('%', ''), 10);
+      nycConfig['check-coverage'] = true;
+      nycConfig.lines = codeCoverage;
+      nycConfig.statements = codeCoverage;
+      nycConfig.functions = codeCoverage;
+      nycConfig.branches = codeCoverage;
 
-        this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
-      }
+      this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
     }
 
     this.fs.delete(this.destinationPath('./.circleci/external.config.yml'));
