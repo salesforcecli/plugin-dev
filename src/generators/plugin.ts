@@ -167,6 +167,7 @@ export default class Plugin extends Generator {
       nycConfig.statements = codeCoverage;
       nycConfig.functions = codeCoverage;
       nycConfig.branches = codeCoverage;
+      delete nycConfig.extends;
 
       this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
     }
