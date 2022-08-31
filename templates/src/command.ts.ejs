@@ -13,7 +13,7 @@ const messages = Messages.load('<%- pluginName %>', '<%- messageFile %>', [
   'summary',
   'description',
   'examples',
-  'flags.name.description',
+  'flags.name.summary',
 ]);
 
 export type <%- returnType %> = {
@@ -27,7 +27,7 @@ export default class <%- className %> extends SfCommand<<%- returnType %>> {
 
   public static flags = {
     name: Flags.string({
-      description: messages.getMessage('flags.name.description'),
+      summary: messages.getMessage('flags.name.summary'),
       char: 'n',
       required: false,
     }),
