@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.13](https://github.com/salesforcecli/plugin-dev/compare/v0.0.12...v0.0.13) (2022-08-31)
+
+
+### Bug Fixes
+
+* default github username ([565a908](https://github.com/salesforcecli/plugin-dev/commit/565a908b79e9025a72925b6ecf96f7590a01595a))
+
 ### [0.0.12](https://github.com/salesforcecli/plugin-dev/compare/v0.0.11...v0.0.12) (2022-08-30)
 
 
