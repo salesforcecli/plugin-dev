@@ -12,8 +12,22 @@ import yosay = require('yosay');
 import { exec } from 'shelljs';
 import replace = require('replace-in-file');
 import { camelCase } from 'change-case';
+import { Messages } from '@salesforce/core';
 import { Hook, NYC, PackageJson } from '../types';
 import { addHookToPackageJson, readJson } from '../util';
+
+Messages.importMessagesDirectory(__dirname);
+const messages = Messages.load('@salesforce/plugin-dev', 'plugin.generator', [
+  'info.start',
+  'question.internal',
+  'question.internal.name',
+  'question.external.name',
+  'question.description',
+  'question.author',
+  'question.code-coverage',
+  'question.hooks',
+  'error.InvalidName',
+]);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');
@@ -37,52 +51,51 @@ export default class Plugin extends Generator {
   }
 
   public async prompting(): Promise<void> {
-    const msg = 'Time to build an sf plugin!';
+    this.log(yosay(messages.getMessage('info.start', [version as string])));
 
-    this.log(yosay(`${msg} Version: ${version as string}`));
     this.githubUsername = await this.getGitUsername();
 
     this.answers = await this.prompt<PluginAnswers>([
       {
         type: 'confirm',
         name: 'internal',
-        message: 'Are you building a plugin for an internal Salesforce team?',
+        message: messages.getMessage('question.internal'),
       },
       {
         type: 'input',
         name: 'name',
-        message: 'Name (must start with plugin-)',
+        message: messages.getMessage('question.internal.name'),
         validate: (input: string): boolean | string => {
           const result = /plugin-[a-z]+$/.test(input);
           if (result) return true;
 
-          return 'Name must start with plugin- and be lowercase';
+          return messages.getMessage('error.InvalidName');
         },
         when: (answers: { internal: boolean }): boolean => answers.internal,
       },
       {
         type: 'input',
         name: 'name',
-        message: 'Name',
+        message: messages.getMessage('question.external.name'),
         validate: (input: string): boolean => Boolean(input),
         when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
       {
         type: 'input',
         name: 'description',
-        message: 'Description',
+        message: messages.getMessage('question.description'),
       },
       {
         type: 'input',
         name: 'author',
-        message: 'author',
+        message: messages.getMessage('question.author'),
         default: this.githubUsername,
         when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
       {
         type: 'list',
         name: 'codeCoverage',
-        message: 'What % code coverage do you want to enforce',
+        message: messages.getMessage('question.code-coverage'),
         default: '50%',
         choices: ['0%', '25%', '50%', '75%', '90%', '100%'],
         when: (answers: { internal: boolean }): boolean => !answers.internal,
@@ -90,7 +103,7 @@ export default class Plugin extends Generator {
       {
         type: 'checkbox',
         name: 'hooks',
-        message: 'Which commands do you plan to extend',
+        message: messages.getMessage('question.hooks'),
         choices: Object.values(Hook),
         when: (answers: { internal: boolean }): boolean => answers.internal,
       },
