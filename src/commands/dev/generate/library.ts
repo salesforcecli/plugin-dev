@@ -9,7 +9,11 @@ import { SfCommand } from '@salesforce/sf-plugins-core';
 import { generate } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.library');
+const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.library', [
+  'summary',
+  'description',
+  'examples',
+]);
 
 export default class GenerateLibrary extends SfCommand<void> {
   public static enableJsonFlag = false;

@@ -6,11 +6,15 @@
  */
 
 import { Flags, Hook as OclifHook } from '@oclif/core';
+import { Messages } from '@salesforce/core';
 import { SfCommand, SfHook } from '@salesforce/sf-plugins-core';
 import { AnyJson } from '@salesforce/ts-types';
 
+Messages.importMessagesDirectory(__dirname);
+const messages = Messages.load('@salesforce/plugin-dev', 'dev.hook', ['summary', 'flags.plugin.summary']);
+
 export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
-  public static readonly summary = 'Run a hook. For testing purposes only.';
+  public static readonly summary = messages.getMessage('summary');
   public static readonly examples = [
     {
       description: 'Execute a hook by name:',
@@ -24,10 +28,11 @@ export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
 
   public static flags = {
     plugin: Flags.string({
-      description: 'Specific plugin from which to execute hook',
+      summary: messages.getMessage('flags.plugin.summary'),
       char: 'p',
     }),
   };
+
   public static args = [
     {
       name: 'hook',
@@ -51,7 +56,7 @@ export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
     if (!this.jsonEnabled()) {
       results.successes.forEach(({ result, plugin }) => {
         this.styledHeader(plugin.name);
-        this.styledJSON(result);
+        this.styledJSON(result as AnyJson);
       });
 
       results.failures.forEach(({ error, plugin }) => {
