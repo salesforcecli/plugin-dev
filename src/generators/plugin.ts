@@ -40,7 +40,7 @@ export default class Plugin extends Generator {
     const msg = 'Time to build an sf plugin!';
 
     this.log(yosay(`${msg} Version: ${version as string}`));
-    this.githubUsername = await this.user.github.username();
+    this.githubUsername = await this.getGitUsername();
 
     this.answers = await this.prompt<PluginAnswers>([
       {
@@ -190,6 +190,14 @@ export default class Plugin extends Generator {
     exec('yarn install', { cwd: this.env.cwd });
     if (this.answers.internal) {
       exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
+    }
+  }
+
+  private async getGitUsername(): Promise<string | null> {
+    try {
+      return await this.user.github.username();
+    } catch {
+      return null;
     }
   }
 }
