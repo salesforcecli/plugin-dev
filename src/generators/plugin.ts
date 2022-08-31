@@ -52,7 +52,12 @@ export default class Plugin extends Generator {
         type: 'input',
         name: 'name',
         message: 'Name (must start with plugin-)',
-        validate: (input: string): boolean => /plugin-[a-z]+$/.test(input),
+        validate: (input: string): boolean | string => {
+          const result = /plugin-[a-z]+$/.test(input);
+          if (result) return true;
+
+          return 'Name must start with plugin- and be lowercase';
+        },
         when: (answers: { internal: boolean }): boolean => answers.internal,
       },
       {
