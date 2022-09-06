@@ -4,32 +4,32 @@ Time to build an sf plugin! Version %s
 
 # question.internal
 
-Are you building a plugin for an internal Salesforce team
+Are you building a plugin for an internal Salesforce team?
 
 # question.internal.name
 
-Name (must start with plugin-)
+What's your plugin name?  (Internal plugins must start with "plugin-", such as "plugin-commerce"):
 
 # question.external.name
 
-Name
+What's your plugin name?
 
 # error.InvalidName
 
-Name must start with plugin- and be lowercase
+The name must start with "plugin-" and be lowercase.
 
 # question.description
 
-Description
+Enter a robust description for your plugin:
 
 # question.author
 
-Author
+Who is the author of the plugin?
 
 # question.code-coverage
 
-What % code coverage do you want to enforce
+What % code coverage do you want to enforce?
 
 # question.hooks
 
-Which commands do you plan to extend
+Which existing "sf" commands do you plan to extend?
