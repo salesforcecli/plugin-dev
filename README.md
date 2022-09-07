@@ -121,17 +121,29 @@ USAGE
 
 FLAGS
   --force         Overwrite existing files.
-  --name=<value>  (required) Name of the new command. Must be separated by colons.
+  --name=<value>  (required) Name of the new command. Use colons to separate the topic and command names.
   --[no-]nuts     Generate a NUT test file for the command.
   --[no-]unit     Generate a unit test file for the command.
 
 DESCRIPTION
   Generate a new sf command.
 
-  This will generate a basic hello world command, a .md file for messages, and test files.
+  You must run this command from within a plugin directory, such as the directory created with the "sf generate plugin"
+  command.
+
+  The command updates the package.json file, so if it detects conflicts with the existing file, you're prompted whether
+  you want to overwrite the file. There are a number of package.json updates required for a new command, so we recommend
+  you answer "y" so the command takes care of them all. If you answer "n", you must update the package.json file
+  manually.
+
+  The command generates basic source, messages (\*.md), and test files for your command.  The Typescript files contain
+  import statements for the minimum required Salesforce libraries, and scaffold some basic code. The new type names come
+  from the value you passed to the --name flag.
 
 EXAMPLES
-  $ sf dev generate command --name my:command
+  Generate the files for a new "sf my exciting command":
+
+    $ sf dev generate command --name my:exciting:command
 ```
 
 ## `sf dev generate hook`
@@ -143,17 +155,28 @@ USAGE
   $ sf dev generate hook --event sf:env:list|sf:env:display|sf:deploy|sf:logout [--force]
 
 FLAGS
-  --event=<option>  (required) Event to run hook on.
+  --event=<option>  (required) Event to run hook on. Use colons to separate topic and command names of the event.
                     <options: sf:env:list|sf:env:display|sf:deploy|sf:logout>
   --force           Overwrite existing files.
 
 DESCRIPTION
   Generate a new sf hook.
 
-  This will generate a basic hook, add the hook to the package.json, and a generate a test file.
+  You must run this command from within a plugin directory, such as the directory created with the "sf generate plugin"
+  command.
+
+  The command updates the package.json file, so if it detects conflicts with the existing file, you're prompted whether
+  you want to overwrite the file. There are a number of package.json updates required for a new hook, so we recommend
+  you answer "y" so the command takes care of them all. If you answer "n", you must update the package.json file
+  manually.
+
+  The command generates a basic Typescript source file in the "src/hooks" directory to get you started. The source
+  file's name is based on the event you're hooking into, such as envList.ts for the "sf env list" command.
 
 EXAMPLES
-  $ sf dev generate hook --event sf:env:display
+  Generate source file for a hook into the "sf env display" command:
+
+    $ sf dev generate hook --event sf:env:display
 ```
 
 ## `sf dev generate library`
@@ -167,7 +190,12 @@ USAGE
 DESCRIPTION
   Generate a new library.
 
-  This will clone the template repo 'forcedotcom/library-template' and update package properties
+  This command is interactive. You're prompted for information to populate the new library, such as the npm scope (which
+  must start with "@"), the name and description of the library, and its GitHub organization. The command clones the
+  'forcedotcom/library-template' GitHub repository, installs the library's npm package dependencies using yarn install,
+  and updates the package properties.
+
+  When the command completes, your new library contains a few sample source and test files to get you started.
 
 EXAMPLES
   $ sf dev generate library
@@ -184,7 +212,13 @@ USAGE
 DESCRIPTION
   Generate a new sf plugin.
 
-  This will clone the template repo 'salesforcecli/plugin-template-sf' and update package properties
+  This command is interactive. You're prompted for information to populate your new plugin, such as its name,
+  description, author, and percentage of code coverage you want. The command clones the
+  'salesforcecli/plugin-template-sf' GitHub repository, installs the plug-in's npm package dependencies using yarn
+  install, and updates the package properties.
+
+  When the command completes, your new plugin contains the source, message, and test files for a sample "sf hello world"
+  command.
 
 EXAMPLES
   $ sf dev generate plugin
