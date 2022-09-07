@@ -8,7 +8,7 @@ Are you building a plugin for an internal Salesforce team?
 
 # question.internal.name
 
-What's your plugin name?  (Internal plugins must start with "plugin-", such as "plugin-commerce"):
+What's your plugin name?  (Internal plugins must start with "plugin-", such as "plugin-commerce")
 
 # question.external.name
 
