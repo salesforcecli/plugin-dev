@@ -743,10 +743,10 @@
     is-wsl "^2.1.1"
     tslib "^2.3.1"
 
-"@oclif/core@^1.0.8", "@oclif/core@^1.13.9", "@oclif/core@^1.2.1", "@oclif/core@^1.3.4", "@oclif/core@^1.3.6", "@oclif/core@^1.6.3", "@oclif/core@^1.6.4":
-  version "1.13.10"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.13.10.tgz#d2014cd75efcd8529d78f1eda5ddc2a4d07c860e"
-  integrity sha512-nwpjXwWscETdvO+/z94V1zd95vnzmCB6VRaobR4BdBllwWU6jHF/eCi1Ud2Tk9RSedChoLneZuDCkKnRCmxyng==
+"@oclif/core@^1.0.8", "@oclif/core@^1.2.1", "@oclif/core@^1.3.4", "@oclif/core@^1.3.6", "@oclif/core@^1.6.3", "@oclif/core@^1.6.4":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.16.0.tgz#4b53261eeb0c0244700bfc9eb41159d483436f21"
+  integrity sha512-xtqhAbjQHBcz+xQpEHJ3eJEVfRQ4zl41Yw5gw/N+D1jgaIUrHTxCY/sfTvhw93LAQo7B++ozHzSb7DISFXsQFQ==
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^3.0.2"
@@ -1101,9 +1101,9 @@
     ts-retry-promise "^0.6.0"
 
 "@salesforce/core@^3.23.4", "@salesforce/core@^3.25.0", "@salesforce/core@^3.8.0":
-  version "3.26.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-3.26.1.tgz#8d65c6b12085494106a2c7d2545902fa1ff95522"
-  integrity sha512-B2mhsiiAu9hkLAwkDu+Y5ArAtRJIx2oeqP8ofupLlSH4tohzcUmfKgCDZEk9iLC1sc5kmD1S/4DlS1QZhnNs8A==
+  version "3.26.2"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-3.26.2.tgz#94b361bd62967feb3eedc624fc6cf444e7347f84"
+  integrity sha512-GDrho8jbh1UDjcsYRRUzhNv4KUsMcBtux/yEqB2ycvHXhjVnrNkJcl99KESiU1eZMl2DGZEE1IO8yxnb2rSvgg==
   dependencies:
     "@salesforce/bunyan" "^2.0.0"
     "@salesforce/kit" "^1.5.41"
@@ -1204,24 +1204,12 @@
   resolved "https://registry.yarnpkg.com/@salesforce/schemas/-/schemas-1.1.3.tgz#fce83f55c7557d47b9c814d5d02978ad734300b3"
   integrity sha512-XWohlOT2oQDqAJH00OXS3f2MGjkwZ6pr4emnnkHSQbg7UdGW0rvGpEnRKqBbDUfZ4K5YKSo9Gj216ZtaP3JLXg==
 
-"@salesforce/sf-plugins-core@^1.14.1":
+"@salesforce/sf-plugins-core@^1.14.1", "@salesforce/sf-plugins-core@^1.9.0":
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/@salesforce/sf-plugins-core/-/sf-plugins-core-1.14.1.tgz#d2cd21ecc1017d6f61b2389a4efb0e2acde17d2d"
   integrity sha512-1Ri4k8vl6aS6QVvSkGsOPxBMm0w2rDhtzAwlEJzyt6Yi5cKSK+j3fDItEgvtXcIzwkHaXd0Z6fPCIJL5iEKStQ==
   dependencies:
     "@oclif/core" "^1.15.0"
-    "@salesforce/core" "^3.25.0"
-    "@salesforce/kit" "^1.5.44"
-    "@salesforce/ts-types" "^1.5.20"
-    chalk "^4"
-    inquirer "^8.2.0"
-
-"@salesforce/sf-plugins-core@^1.9.0":
-  version "1.13.2"
-  resolved "https://registry.yarnpkg.com/@salesforce/sf-plugins-core/-/sf-plugins-core-1.13.2.tgz#f9675265ff7e829604b0da38db6af13c73a161fe"
-  integrity sha512-7uCLtHeWOwzbVTG6fuO/luEKC5wgZpBb/1OZ5nMWwMNb8hUAUfHOaBcJmYu5f8T0/Dbnre/NVG6QcReVYaar/w==
-  dependencies:
-    "@oclif/core" "^1.13.9"
     "@salesforce/core" "^3.25.0"
     "@salesforce/kit" "^1.5.44"
     "@salesforce/ts-types" "^1.5.20"
@@ -1426,6 +1414,13 @@
     "@types/through" "*"
     rxjs "^7.2.0"
 
+"@types/inquirer@^8":
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/@types/inquirer/-/inquirer-8.2.3.tgz#985515d04879a0d0c1f5f49ec375767410ba9dab"
+  integrity sha512-ZlBqD+8WIVNy3KIVkl+Qne6bGLW2erwN0GJXY9Ri/9EMbyupee3xw3H0Mmv5kJoLyNpfd/oHlwKxO0DUDH7yWA==
+  dependencies:
+    "@types/through" "*"
+
 "@types/jsforce@^1.9.41":
   version "1.9.43"
   resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.43.tgz#407907aac838b1828133958ef326ce649d03138f"
@@ -1608,13 +1603,13 @@
     rxjs "^6.4.0"
 
 "@types/yeoman-generator@*", "@types/yeoman-generator@^5.2.10":
-  version "5.2.10"
-  resolved "https://registry.yarnpkg.com/@types/yeoman-generator/-/yeoman-generator-5.2.10.tgz#5b6a30d6f208bff985b5c8c9c5590a615f58b76c"
-  integrity sha512-Biim11Yamd2NYSt0nxYwmqf1sFwJX3LAEMnaavbwhtp8rSIz8/TaqTemJnZgm0Hwh7za5q9GPNw8EgVsYB/tlA==
+  version "5.2.11"
+  resolved "https://registry.yarnpkg.com/@types/yeoman-generator/-/yeoman-generator-5.2.11.tgz#fa6bdab74b44d27f07e309c8ae387b62edbc6bc1"
+  integrity sha512-Eu56V69QPODdnHhdHil2xzw8SvR6cJdgkQBmGkyYDNz6dTErr3wCCUv+Uvw5jPATZjyB+b2CNyZbidI79KBcdw==
   dependencies:
     "@types/debug" "*"
     "@types/ejs" "*"
-    "@types/inquirer" "*"
+    "@types/inquirer" "^8"
     "@types/mem-fs-editor" "*"
     "@types/yeoman-environment" "*"
     rxjs "^6.4.0"
