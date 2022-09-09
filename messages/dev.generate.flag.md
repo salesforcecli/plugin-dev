@@ -6,13 +6,9 @@ Summary of a command.
 
 Description of a command.
 
-# flags.name.description
+# flags.dry-run.summary
 
-Name of the flag to create.
-
-# flags.command.description
-
-Command to add flag to.
+Print new flag instead of adding it to the command file.
 
 # examples
 
@@ -21,7 +17,3 @@ Command to add flag to.
 # errors.InvalidDir
 
 This command can only be run inside a plugin directory.
-
-# errors.FlagExists
-
-This command already has a flag named %s.
