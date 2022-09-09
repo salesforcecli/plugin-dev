@@ -6,19 +6,19 @@ Generate a new sf command.
 
 This will generate a basic hello world command, a .md file for messages, and test files.
 
-# flags.force.description
+# flags.force.summary
 
 Overwrite existing files.
 
-# flags.nuts.description
+# flags.nuts.summary
 
 Generate a NUT test file for the command.
 
-# flags.unit.description
+# flags.unit.summary
 
 Generate a unit test file for the command.
 
-# flags.name.description
+# flags.name.summary
 
 Name of the new command. Must be separated by colons.
 

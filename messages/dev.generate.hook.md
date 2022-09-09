@@ -6,11 +6,11 @@ Generate a new sf hook.
 
 This will generate a basic hook, add the hook to the package.json, and a generate a test file.
 
-# flags.force.description
+# flags.force.summary
 
 Overwrite existing files.
 
-# flags.event.description
+# flags.event.summary
 
 Event to run hook on.
 

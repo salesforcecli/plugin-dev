@@ -6,17 +6,13 @@
  */
 import * as fs from 'fs';
 import { createEnv } from 'yeoman-environment';
+import { ensureArray } from '@salesforce/kit';
 import { Hook, PackageJson } from './types';
 
-export async function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
+export function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
   const env = createEnv();
   env.register(require.resolve(`./generators/${type}`), `sf:${type}`);
-  return new Promise((resolve, reject) => {
-    env.run(`sf:${type}`, generatorOptions, (err: Error) => {
-      if (err) reject(err);
-      else resolve();
-    });
-  });
+  return env.run(`sf:${type}`, generatorOptions);
 }
 
 export function readJson<T>(filePath: string): T {
@@ -24,15 +20,11 @@ export function readJson<T>(filePath: string): T {
   return JSON.parse(pjsonRaw) as T;
 }
 
-export function toArray(item: string | string[]): string[] {
-  return Array.isArray(item) ? item : [item];
-}
-
 export function addHookToPackageJson(hook: Hook, filename: string, pjson: PackageJson): PackageJson {
   pjson.oclif.hooks = pjson.oclif.hooks || {};
   const p = `./lib/hooks/${filename}`;
   if (pjson.oclif.hooks[hook]) {
-    pjson.oclif.hooks[hook] = [...toArray(pjson.oclif.hooks[hook]), p];
+    pjson.oclif.hooks[hook] = [...ensureArray(pjson.oclif.hooks[hook]), p];
   } else {
     pjson.oclif.hooks[hook] = p;
   }

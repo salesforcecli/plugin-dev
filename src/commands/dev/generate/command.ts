@@ -10,14 +10,14 @@ import { fileExists, generate } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.command', [
-  'description',
-  'errors.InvalidDir',
-  'examples',
-  'flags.force.description',
-  'flags.name.description',
-  'flags.nuts.description',
-  'flags.unit.description',
   'summary',
+  'description',
+  'examples',
+  'flags.name.summary',
+  'flags.force.summary',
+  'flags.nuts.summary',
+  'flags.unit.summary',
+  'errors.InvalidDir',
 ]);
 
 export default class GenerateCommand extends SfCommand<void> {
@@ -29,19 +29,18 @@ export default class GenerateCommand extends SfCommand<void> {
   public static flags = {
     name: Flags.string({
       required: true,
-      description: messages.getMessage('flags.name.description'),
-      char: 'n',
+      summary: messages.getMessage('flags.name.summary'),
     }),
     force: Flags.boolean({
-      description: messages.getMessage('flags.force.description'),
+      summary: messages.getMessage('flags.force.summary'),
     }),
     nuts: Flags.boolean({
-      description: messages.getMessage('flags.nuts.description'),
+      summary: messages.getMessage('flags.nuts.summary'),
       allowNo: true,
       default: true,
     }),
     unit: Flags.boolean({
-      description: messages.getMessage('flags.unit.description'),
+      summary: messages.getMessage('flags.unit.summary'),
       allowNo: true,
       default: false,
     }),
