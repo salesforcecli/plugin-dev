@@ -23,7 +23,6 @@ const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.flag', [
   'errors.InvalidDir',
   'examples',
   'flags.dry-run.summary',
-  'errors.FlagExists',
   'summary',
 ]);
 
@@ -78,7 +77,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
       {
         type: 'list',
         name: 'command',
-        message: 'Which command is this for',
+        message: 'Select a command to add a flag to',
         choices: ids.map((c) => toConfiguredId(c, this.config)),
       },
     ]);
@@ -108,7 +107,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
         message: 'What is the name of the flag',
         validate: (input: string): string | boolean => {
           if (toLowerKebabCase(input) !== input) {
-            return 'Flag name must be in kebab case';
+            return 'Flag name must be in kebab case (example: my-flag)';
           }
 
           if (Object.keys(existingFlags).includes(input)) {
@@ -169,9 +168,10 @@ export default class DevGenerateFlag extends SfCommand<void> {
       {
         type: 'input',
         name: 'salesforceIdStartsWith',
-        message: 'Required prefix for salesforceId',
+        message: 'Required prefix for salesforceId (optional)',
         when: (ans: Answers): boolean => ans.type === 'salesforceId',
         validate: (input: string): string | boolean => {
+          if (!input) return true;
           return input.length === 3 ? true : 'Must be 3 characters';
         },
       },
