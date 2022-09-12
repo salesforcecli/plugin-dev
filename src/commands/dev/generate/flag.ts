@@ -321,7 +321,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
   private async updateMarkdownFile(commandName: string, flagName: string): Promise<void> {
     const filePath = path.join('messages', `${commandName.split(':').join('.')}.md`);
-    await fs.appendFile(filePath, `# flags.${flagName}.summary\n\nDescription of ${flagName}.\n`);
+    await fs.appendFile(filePath, `\n# flags.${flagName}.summary\n\nDescription of ${flagName}.\n`);
   }
 
   private constructFlag(answers: Answers): string[] {
