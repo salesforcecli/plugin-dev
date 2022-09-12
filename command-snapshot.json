@@ -6,6 +6,12 @@
     "alias": []
   },
   {
+    "command": "dev:generate:flag",
+    "plugin": "@salesforce/plugin-dev",
+    "flags": ["dry-run"],
+    "alias": []
+  },
+  {
     "command": "dev:generate:hook",
     "plugin": "@salesforce/plugin-dev",
     "flags": ["event", "force"],
