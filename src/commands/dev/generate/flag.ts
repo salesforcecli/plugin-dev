@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import * as fs from 'fs/promises';
+import { exec } from 'shelljs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Nullable } from '@salesforce/ts-types';
@@ -34,6 +35,8 @@ type Answers = {
   multiple: boolean;
   durationUnit: Lowercase<keyof typeof Duration.Unit>;
   durationDefaultValue: number;
+  durationMin: number;
+  durationMax: number;
   salesforceIdLength: '15' | '18' | 'None';
   salesforceIdStartsWith: string;
   fileOrDirExists: boolean;
@@ -65,25 +68,88 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     if (!fileExists('package.json')) throw messages.createError('errors.InvalidDir');
 
-    const ids = (await fg('src/commands/**/*.ts')).map((file) => {
-      const p = path.parse(file.replace(path.join('.', 'src', 'commands'), ''));
-      const topics = p.dir.split('/');
-      const command = p.name !== 'index' && p.name;
-      const id = [...topics, command].filter((f) => f).join(':');
-      return id === '' ? '.' : id;
-    });
+    const ids = await this.findExistingCommands();
 
     const { command } = await this.prompt<{ command: string }>([
       {
         type: 'list',
         name: 'command',
         message: 'Select a command to add a flag to',
-        choices: ids.map((c) => toConfiguredId(c, this.config)),
+        choices: ids,
       },
     ]);
 
-    const commandFilePath = path.join('.', 'src', 'commands', ...toStandardizedId(command, this.config).split(':'));
+    const standardizedCommandId = toStandardizedId(command, this.config);
+    const commandFilePath = path.join('.', 'src', 'commands', ...standardizedCommandId.split(':'));
 
+    const answers = await this.askQuestions(commandFilePath);
+
+    const newFlag = this.constructFlag(answers);
+
+    if (flags['dry-run']) {
+      this.styledHeader('New flag:');
+      this.log(newFlag.join('\n'));
+      return;
+    }
+
+    const lines = (await fs.readFile(`${commandFilePath}.ts`, 'utf8')).split('\n');
+    const flagsStartIndex = lines.findIndex(
+      (line) => line.includes('public static flags') || line.includes('public static readonly flags')
+    );
+
+    // If index isn't found, that means that no flags are defined yet
+    if (flagsStartIndex === -1) {
+      const altFlagsStartIndex = lines.findIndex((line) => line.includes('public async run')) - 1;
+      lines.splice(altFlagsStartIndex, 0, `public static flags = {${newFlag.join('\n')}};\n`);
+    } else {
+      const flagsEndIndex = lines.slice(flagsStartIndex).findIndex((line) => line.endsWith('};')) + flagsStartIndex;
+      lines.splice(flagsEndIndex, 0, ...newFlag);
+    }
+
+    const messagesStartIndex = lines.findIndex((line) => line.includes('Messages.load('));
+    if (messagesStartIndex) {
+      const messagesEndIndex =
+        lines.slice(messagesStartIndex).findIndex((line) => line.endsWith(';')) + messagesStartIndex;
+
+      // if the indices are equal that means that the messages are on the same line
+      if (messagesEndIndex === messagesStartIndex) {
+        const line = lines[messagesStartIndex];
+        const endIndex = line.indexOf(']');
+        const updated = line.substring(0, endIndex) + `, 'flags.${answers.name}.summary'` + line.substring(endIndex);
+        lines[messagesStartIndex] = updated;
+      } else {
+        lines.splice(messagesEndIndex, 0, `'flags.${answers.name}.summary',`);
+      }
+    }
+
+    const sfPluginsCoreImport = lines.findIndex((line) => line.includes("from '@salesforce/sf-plugins-core'"));
+
+    const oclifCoreImport = lines.findIndex((line) => line.includes("from '@oclif/core'"));
+
+    // add the Flags import from @salesforce/sf-plugins-core if it doesn't exist already
+    if (!lines[sfPluginsCoreImport].includes('Flags')) {
+      const line = lines[sfPluginsCoreImport];
+      const endIndex = line.indexOf('}');
+      lines[sfPluginsCoreImport] = line.substring(0, endIndex) + ', Flags' + line.substring(endIndex);
+    }
+
+    // ensure the Flags import is from @salesforce/sf-plugins-core
+    if (oclifCoreImport !== -1 && lines[oclifCoreImport].includes('Flags')) {
+      if (lines[oclifCoreImport] === "import { Flags } from '@oclif/core';") lines.splice(oclifCoreImport, 1);
+      else {
+        lines[oclifCoreImport] = lines[oclifCoreImport].replace('Flags,', '').replace(', Flags', '');
+      }
+    }
+
+    await fs.writeFile(`${commandFilePath}.ts`, lines.join('\n'));
+
+    await this.updateMarkdownFile(standardizedCommandId, answers.name);
+
+    exec(`yarn prettier --write ${commandFilePath}.ts`);
+    this.log(`Added ${answers.name} flag to ${commandFilePath}.ts`);
+  }
+
+  private async askQuestions(commandFilePath: string): Promise<Answers> {
     const existingFlags = await this.loadExistingFlags(commandFilePath);
 
     const charToFlag = Object.entries(existingFlags).reduce((acc, [key, value]) => {
@@ -94,7 +160,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
       (unit) => unit.toLowerCase()
     );
 
-    const answers = await this.prompt<Answers>([
+    return await this.prompt<Answers>([
       {
         type: 'list',
         name: 'type',
@@ -140,6 +206,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
         name: 'multiple',
         message: 'Can this flag be specified multiple times',
         default: false,
+        when: (ans: Answers): boolean => ans.type !== 'boolean',
       },
       {
         type: 'list',
@@ -159,6 +226,26 @@ export default class DevGenerateFlag extends SfCommand<void> {
         when: (ans: Answers): boolean => ans.type === 'duration',
       },
       {
+        type: 'input',
+        name: 'durationMin',
+        message: 'Minimum required value for duration flag (optional)',
+        when: (ans: Answers): boolean => ans.type === 'duration',
+        validate: (input: string): string | boolean => {
+          if (!input) return true;
+          return Number.isInteger(Number(input)) ? true : 'Must be an integer';
+        },
+      },
+      {
+        type: 'input',
+        name: 'durationMax',
+        message: 'Maximum required value for duration flag (optional)',
+        when: (ans: Answers): boolean => ans.type === 'duration',
+        validate: (input: string): string | boolean => {
+          if (!input) return true;
+          return Number.isInteger(Number(input)) ? true : 'Must be an integer';
+        },
+      },
+      {
         type: 'list',
         name: 'salesforceIdLength',
         message: 'Required length for salesforceId',
@@ -168,7 +255,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
       {
         type: 'input',
         name: 'salesforceIdStartsWith',
-        message: 'Required prefix for salesforceId (optional)',
+        message: 'Required 3 character prefix for salesforceId (optional)',
         when: (ans: Answers): boolean => ans.type === 'salesforceId',
         validate: (input: string): string | boolean => {
           if (!input) return true;
@@ -203,47 +290,6 @@ export default class DevGenerateFlag extends SfCommand<void> {
         },
       },
     ]);
-
-    const flagOptions = [`summary: messages.getMessage('flags.${answers.name}.summary')`];
-
-    if (answers.char) flagOptions.push(`char: '${answers.char}'`);
-    if (answers.required) flagOptions.push('required: true');
-    if (answers.multiple) flagOptions.push('multiple: true');
-    if (answers.durationUnit) flagOptions.push(`unit: ${answers.durationUnit}`);
-    if (answers.durationDefaultValue) flagOptions.push(`defaultValue: ${answers.durationDefaultValue}`);
-    if (['15', '18'].includes(answers.salesforceIdLength)) flagOptions.push(`length: ${answers.salesforceIdLength}`);
-    if (answers.salesforceIdStartsWith) flagOptions.push(`startsWith: ${answers.salesforceIdStartsWith}`);
-    if (answers.fileOrDirExists) flagOptions.push('exists: true');
-    if (answers.integerMin) flagOptions.push(`min: ${answers.integerMin}`);
-    if (answers.integerMax) flagOptions.push(`max: ${answers.integerMax}`);
-
-    const newFlag = `    ${answers.name}: Flags.${answers.type}({
-      ${flagOptions.join(',\n      ')},
-    }),`.split('\n');
-
-    if (flags['dry-run']) {
-      this.styledHeader('New flag:');
-      this.log(newFlag.join('\n'));
-      return;
-    }
-
-    const lines = (await fs.readFile(`${commandFilePath}.ts`, 'utf8')).split('\n');
-    const flagsStartIndex = lines.findIndex(
-      (line) => line.includes('public static flags') || line.includes('public static readonly flags')
-    );
-    const flagsEndIndex = lines.slice(flagsStartIndex).findIndex((line) => line.endsWith('};')) + flagsStartIndex;
-    lines.splice(flagsEndIndex, 0, ...newFlag);
-
-    const messagesStartIndex = lines.findIndex((line) => line.includes('Messages.load('));
-    if (messagesStartIndex) {
-      const messagesEndIndex =
-        lines.slice(messagesStartIndex).findIndex((line) => line.endsWith(';')) + messagesStartIndex;
-      lines.splice(messagesEndIndex, 0, `  'flags.${answers.name}.summary',`);
-    }
-
-    await fs.writeFile(`${commandFilePath}.ts`, lines.join('\n'));
-
-    this.log(`Added ${answers.name} flag to ${commandFilePath}.ts`);
   }
 
   private async loadExistingFlags(
@@ -258,5 +304,46 @@ export default class DevGenerateFlag extends SfCommand<void> {
     const existingFlags = module.default.flags as Record<string, { type: 'boolean' | 'option'; char?: string }>;
 
     return existingFlags;
+  }
+
+  private async findExistingCommands(): Promise<string[]> {
+    return (await fg('src/commands/**/*.ts'))
+      .map((file) => {
+        const p = path.parse(file.replace(path.join('.', 'src', 'commands'), ''));
+        const topics = p.dir.split('/');
+        const command = p.name !== 'index' && p.name;
+        const id = [...topics, command].filter((f) => f).join(':');
+        return id === '' ? '.' : id;
+      })
+      .sort()
+      .map((c) => toConfiguredId(c, this.config));
+  }
+
+  private async updateMarkdownFile(commandName: string, flagName: string): Promise<void> {
+    const filePath = path.join('messages', `${commandName.split(':').join('.')}.md`);
+    await fs.appendFile(filePath, `# flags.${flagName}.summary\n\nDescription of ${flagName}.\n`);
+  }
+
+  private constructFlag(answers: Answers): string[] {
+    const flagOptions = [`summary: messages.getMessage('flags.${answers.name}.summary')`];
+
+    if (answers.char) flagOptions.push(`char: '${answers.char}'`);
+    if (answers.required) flagOptions.push('required: true');
+    if (answers.multiple) flagOptions.push('multiple: true');
+    if (answers.durationUnit) flagOptions.push(`unit: '${answers.durationUnit}'`);
+    if (answers.durationDefaultValue) flagOptions.push(`defaultValue: ${answers.durationDefaultValue}`);
+    if (answers.durationMin) flagOptions.push(`min: ${answers.durationMin}`);
+    if (answers.durationMax) flagOptions.push(`max: ${answers.durationMax}`);
+    if (['15', '18'].includes(answers.salesforceIdLength)) flagOptions.push(`length: ${answers.salesforceIdLength}`);
+    if (answers.salesforceIdStartsWith) flagOptions.push(`startsWith: '${answers.salesforceIdStartsWith}'`);
+    if (answers.fileOrDirExists) flagOptions.push('exists: true');
+    if (answers.integerMin) flagOptions.push(`min: ${answers.integerMin}`);
+    if (answers.integerMax) flagOptions.push(`max: ${answers.integerMax}`);
+
+    const newFlag = `    ${answers.name}: Flags.${answers.type}({
+      ${flagOptions.join(',\n      ')},
+    }),`.split('\n');
+
+    return newFlag;
   }
 }
