@@ -19,7 +19,10 @@ const messages = Messages.load('@salesforce/plugin-dev', 'configure.repo', [
 ]);
 
 export type ConfigureRepoResult = {
-  path: string;
+  botAccess: boolean;
+  labels: boolean;
+  prRestrictions: boolean;
+  prBypass: boolean;
 };
 
 const BOT_LOGIN = 'SF-CLI-BOT';
@@ -43,6 +46,12 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
 
   public async run(): Promise<ConfigureRepoResult> {
     const { flags } = await this.parse(ConfigureRepo);
+    const output: ConfigureRepoResult = {
+      botAccess: false,
+      labels: false,
+      prRestrictions: false,
+      prBypass: false,
+    };
     // TODO: nice error if no token exists
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
     const repoBase = {
@@ -58,11 +67,11 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
       );
     } else {
       this.logSuccess(`✓ ${BOT_LOGIN} has necessary access to ${flags.repository}`);
+      output.botAccess = true;
     }
 
     try {
       await octokit.rest.repos.getBranchProtection({ ...repoBase, branch: 'main' });
-      // this.styledJSON(protectedBranch);
     } catch (e) {
       if (e.response.data) {
         if (!flags['dry-run'] && e.response.data.message === 'Branch not protected') {
@@ -135,9 +144,11 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
           branch: 'main',
           bypass_pull_request_allowances: updatePayload,
         });
+        output.prBypass = true;
       }
     } else {
       this.logSuccess(`✓ ${BOT_LOGIN} can bypass pull request requirements`);
+      output.prBypass = true;
     }
 
     protectedBranch = (
@@ -158,17 +169,14 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
           users: [BOT_LOGIN],
         });
       }
+      output.prRestrictions = true;
     } else {
       this.logSuccess(`✓ ${BOT_LOGIN} can push directly to main`);
+      output.prRestrictions = true;
     }
 
-    //// secret stuff--there's not a good way to ask, "what organizational secrets are shared with this repo?"
-    // has secrets for dependabot
-    // has secrets for npm publish
-    // if sign, has aws secrets
-    // if nuts, has nuts auth secrets
-
     // labels setup: labels should have dependencies and the corresponding git2gus labels for bug and feature
+    // TODO: git2gus labels
     const { data: labels } = await octokit.rest.issues.listLabelsForRepo({ ...repoBase });
     if (!labels.find((l) => l.name === 'dependencies')) {
       if (flags['dry-run']) {
@@ -176,8 +184,12 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
       } else {
         this.log(`creating dependencies label`);
         await octokit.rest.issues.createLabel({ ...repoBase, name: 'dependencies' });
+        output.labels = true;
       }
+    } else {
+      output.labels = true;
     }
-    return { path: '' };
+
+    return output;
   }
 }

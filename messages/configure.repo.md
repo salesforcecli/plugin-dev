@@ -1,10 +1,10 @@
 # summary
 
-Summary of a command.
+Configure github repo for Actions pipeline.
 
 # description
 
-Description of a command.
+Sets up labels and exempts the CLI bot for branch protection and PR rules
 
 # flags.repository.summary
 
