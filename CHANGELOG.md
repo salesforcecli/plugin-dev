@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.19](https://github.com/salesforcecli/plugin-dev/compare/v0.0.18...v0.0.19) (2022-09-13)
+
+
+### Bug Fixes
+
+* wrap flags with hyphens with quotes ([#118](https://github.com/salesforcecli/plugin-dev/issues/118)) ([0c4b42d](https://github.com/salesforcecli/plugin-dev/commit/0c4b42df14eae4fcfa1c54241710c42710a44dcc))
+
 ### [0.0.18](https://github.com/salesforcecli/plugin-dev/compare/v0.0.17...v0.0.18) (2022-09-13)
 
 
