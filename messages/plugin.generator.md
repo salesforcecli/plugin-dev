@@ -8,11 +8,11 @@ Are you building a plugin for an internal Salesforce team?
 
 # question.internal.name
 
-What's your plugin name?  (Internal plugins must start with "plugin-", such as "plugin-commerce")
+Enter the name of your new plugin: (Internal plugins must start with "plugin-", such as "plugin-commerce")
 
 # question.external.name
 
-What's your plugin name?
+Enter the name of your new plugin:
 
 # error.InvalidName
 
@@ -24,12 +24,12 @@ Enter a robust description for your plugin:
 
 # question.author
 
-Who is the author of the plugin?
+Enter the author of the plugin:
 
 # question.code-coverage
 
-What % code coverage do you want to enforce?
+Select the % code coverage do you want to enforce:
 
 # question.hooks
 
-Which existing "sf" commands do you plan to extend?
+Select the existing "sf" commands you plan to extend:
