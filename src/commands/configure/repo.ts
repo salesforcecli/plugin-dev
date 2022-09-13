@@ -60,8 +60,11 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
     };
 
     // assertion : bot has write+ access to repo
-    const { data: collaborators } = await octokit.rest.repos.listCollaborators({ ...repoBase });
-    if (!collaborators.find((c) => c.login === BOT_LOGIN)?.permissions.admin) {
+    const { data: permission } = await octokit.rest.repos.getCollaboratorPermissionLevel({
+      ...repoBase,
+      username: BOT_LOGIN,
+    });
+    if (permission.permission !== 'admin') {
       this.error(
         `${BOT_LOGIN}  does not have "admin"  access to ${flags.repository}.  No further inspection is possible.`
       );
@@ -75,7 +78,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
     } catch (e) {
       if (e.response.data) {
         if (!flags['dry-run'] && e.response.data.message === 'Branch not protected') {
-          this.log(`setting up basic branch protection`);
+          this.log('setting up basic branch protection');
 
           await octokit.rest.repos.updateBranchProtection({
             ...repoBase,
@@ -182,7 +185,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
       if (flags['dry-run']) {
         this.warn('missing dependencies label');
       } else {
-        this.log(`creating dependencies label`);
+        this.log('creating dependencies label');
         await octokit.rest.issues.createLabel({ ...repoBase, name: 'dependencies' });
         output.labels = true;
       }
