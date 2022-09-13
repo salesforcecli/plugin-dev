@@ -11,6 +11,7 @@
     "@salesforce/sf-plugins-core": "^1.13.0",
     "change-case": "^4.1.2",
     "got": "^11.8.5",
+    "octokit": "^2.0.7",
     "replace-in-file": "^6.3.2",
     "shelljs": "^0.8.5",
     "tslib": "^2",
