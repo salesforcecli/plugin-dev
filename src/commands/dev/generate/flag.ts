@@ -176,6 +176,9 @@ export default class DevGenerateFlag extends SfCommand<void> {
     await this.updateMarkdownFile(answers, standardizedCommandId);
 
     exec(`yarn prettier --write ${commandFilePath}.ts`);
+
+    exec('yarn compile');
+
     this.log(`Added ${answers.name} flag to ${commandFilePath}.ts`);
   }
 
@@ -398,7 +401,9 @@ export default class DevGenerateFlag extends SfCommand<void> {
     if (answers.integerDefault && answers.multiple) flagOptions.push(`default: [${answers.integerDefault}]`);
     if (answers.type === 'enum') flagOptions.push('options: []');
 
-    const newFlag = `    ${answers.name}: Flags.${answers.type}({
+    const flagName = answers.name.includes('-') ? `'${answers.name}'` : answers.name;
+
+    const newFlag = `    ${flagName}: Flags.${answers.type}({
       ${flagOptions.join(',\n      ')},
     }),`.split('\n');
 
