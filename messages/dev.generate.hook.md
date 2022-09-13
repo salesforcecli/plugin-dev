@@ -4,11 +4,11 @@ Generate a new sf hook.
 
 # description
 
-You must run this command from within a plugin directory, such as the directory created with the "sf generate plugin" command.
-
-The command updates the package.json file, so if it detects conflicts with the existing file, you're prompted whether you want to overwrite the file. There are a number of package.json updates required for a new hook, so we recommend you answer "y" so the command takes care of them all. If you answer "n", you must update the package.json file manually.
+You must run this command from within a plugin directory, such as the directory created with the "sf dev generate plugin" command.
 
 The command generates a basic Typescript source file in the "src/hooks" directory to get you started. The source file's name is based on the event you're hooking into, such as envList.ts for the "sf env list" command.
+
+The command updates the package.json file, so if it detects conflicts with the existing file, you're prompted whether you want to overwrite the file. There are a number of package.json updates required for a new hook, so we recommend you answer "y" so the command takes care of them all. If you answer "n", you must update the package.json file manually.
 
 # flags.force.summary
 
