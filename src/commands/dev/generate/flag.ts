@@ -19,14 +19,19 @@ import { fileExists } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.flag', [
+  'default.FlagSummary',
   'description',
   'error.FlagExists',
+  'error.FlagNameRequired',
   'error.FlagShortCharExists',
+  'error.IntegerMaxLessThanMin',
+  'error.InvalidDefaultInteger',
   'error.InvalidDir',
   'error.InvalidFlagShortChar',
   'error.InvalidFlagShortCharLength',
   'error.InvalidInteger',
   'error.InvalidSalesforceIdPrefix',
+  'error.InvalidSummary',
   'error.KebabCase',
   'examples',
   'flags.dry-run.summary',
@@ -38,7 +43,9 @@ const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.flag', [
   'question.FileDir.Exists',
   'question.FlagName',
   'question.FlagShortChar',
+  'question.FlagSummary',
   'question.FlagType',
+  'question.Integer.Default',
   'question.Integer.Maximum',
   'question.Integer.Minimum',
   'question.RequiredFlag',
@@ -52,6 +59,7 @@ type Answers = {
   char: Nullable<string>;
   type: keyof typeof Flags;
   name: string;
+  summary: string;
   required: boolean;
   multiple: boolean;
   durationUnit: Lowercase<keyof typeof Duration.Unit>;
@@ -63,6 +71,7 @@ type Answers = {
   fileOrDirExists: boolean;
   integerMin: number;
   integerMax: number;
+  integerDefault: number;
 };
 
 const toLowerKebabCase = (str: string): string =>
@@ -164,7 +173,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     await fs.writeFile(`${commandFilePath}.ts`, lines.join('\n'));
 
-    await this.updateMarkdownFile(standardizedCommandId, answers.name);
+    await this.updateMarkdownFile(answers, standardizedCommandId);
 
     exec(`yarn prettier --write ${commandFilePath}.ts`);
     this.log(`Added ${answers.name} flag to ${commandFilePath}.ts`);
@@ -193,12 +202,27 @@ export default class DevGenerateFlag extends SfCommand<void> {
         name: 'name',
         message: messages.getMessage('question.FlagName'),
         validate: (input: string): string | boolean => {
+          if (!input) return messages.getMessage('error.FlagNameRequired');
+
           if (toLowerKebabCase(input) !== input) {
             return messages.getMessage('error.KebabCase');
           }
 
           if (Object.keys(existingFlags).includes(input)) {
             return messages.getMessage('error.FlagExists', [input]);
+          }
+
+          return true;
+        },
+      },
+      {
+        type: 'input',
+        name: 'summary',
+        message: messages.getMessage('question.FlagSummary'),
+        default: (ans: Answers) => messages.getMessage('default.FlagSummary', [ans.name]),
+        validate: (input: string): string | boolean => {
+          if (input[0].toLowerCase() === input[0] || input[input.length - 1] !== '.') {
+            return messages.getMessage('error.InvalidSummary');
           }
 
           return true;
@@ -261,9 +285,10 @@ export default class DevGenerateFlag extends SfCommand<void> {
         name: 'durationMax',
         message: messages.getMessage('question.Duration.Maximum'),
         when: (ans: Answers): boolean => ans.type === 'duration',
-        validate: (input: string): string | boolean => {
+        validate: (input: string, ans: Answers): string | boolean => {
           if (!input) return true;
-          return Number.isInteger(Number(input)) ? true : messages.getMessage('error.InvalidInteger');
+          if (!Number.isInteger(Number(input))) return messages.getMessage('error.InvalidInteger');
+          return Number(input) > ans.integerMin ? true : messages.getMessage('error.IntegerMaxLessThanMin');
         },
       },
       {
@@ -305,9 +330,24 @@ export default class DevGenerateFlag extends SfCommand<void> {
         name: 'integerMax',
         message: messages.getMessage('question.Integer.Maximum'),
         when: (ans: Answers): boolean => ans.type === 'integer',
-        validate: (input: string): string | boolean => {
+        validate: (input: string, ans: Answers): string | boolean => {
           if (!input) return true;
-          return Number.isInteger(Number(input)) ? true : messages.getMessage('error.InvalidInteger');
+          if (!Number.isInteger(Number(input))) return messages.getMessage('error.InvalidInteger');
+          return Number(input) > ans.integerMin ? true : messages.getMessage('error.IntegerMaxLessThanMin');
+        },
+      },
+      {
+        type: 'input',
+        name: 'integerDefault',
+        message: messages.getMessage('question.Integer.Default'),
+        when: (ans: Answers): boolean => ans.type === 'integer' && Boolean(ans.integerMin || ans.integerMax),
+        validate: (input: string, ans: Answers): string | boolean => {
+          if (!input) return true;
+          const num = Number(input);
+          if (!Number.isInteger(num)) return messages.getMessage('error.InvalidInteger');
+          return num >= ans.integerMin && num <= ans.integerMax
+            ? true
+            : messages.getMessage('error.InvalidDefaultInteger');
         },
       },
     ]);
@@ -334,9 +374,9 @@ export default class DevGenerateFlag extends SfCommand<void> {
       .map((c) => toConfiguredId(c, this.config));
   }
 
-  private async updateMarkdownFile(commandName: string, flagName: string): Promise<void> {
+  private async updateMarkdownFile(answers: Answers, commandName: string): Promise<void> {
     const filePath = path.join('messages', `${commandName.split(':').join('.')}.md`);
-    await fs.appendFile(filePath, `\n# flags.${flagName}.summary\n\nDescription of ${flagName}.\n`);
+    await fs.appendFile(filePath, `\n# flags.${answers.name}.summary\n\n${answers.summary}\n`);
   }
 
   private constructFlag(answers: Answers): string[] {
@@ -354,6 +394,9 @@ export default class DevGenerateFlag extends SfCommand<void> {
     if (answers.fileOrDirExists) flagOptions.push('exists: true');
     if (answers.integerMin) flagOptions.push(`min: ${answers.integerMin}`);
     if (answers.integerMax) flagOptions.push(`max: ${answers.integerMax}`);
+    if (answers.integerDefault && !answers.multiple) flagOptions.push(`default: ${answers.integerDefault}`);
+    if (answers.integerDefault && answers.multiple) flagOptions.push(`default: [${answers.integerDefault}]`);
+    if (answers.type === 'enum') flagOptions.push('options: []');
 
     const newFlag = `    ${answers.name}: Flags.${answers.type}({
       ${flagOptions.join(',\n      ')},

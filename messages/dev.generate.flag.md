@@ -38,6 +38,22 @@ Flag name must be in kebab case (example: my-flag).
 
 The %s flag already exists.
 
+# error.FlagNameRequired
+
+You must provide a flag name.
+
+# question.FlagSummary
+
+What is the summary of the flag?
+
+# default.FlagSummary
+
+Summary for %s.
+
+# error.InvalidSummary
+
+All summaries must start with a capital and end with a period.
+
 # question.FlagShortChar
 
 Flag short character? (optional)
@@ -57,6 +73,14 @@ Must be a single character.
 # error.InvalidInteger
 
 Must be an integer.
+
+# error.IntegerMaxLessThanMin
+
+Maximum must be greater than minimum.
+
+# error.InvalidDefaultInteger
+
+Default integer must be between the specified minimum and maximum.
 
 # question.RequiredFlag
 
@@ -105,3 +129,7 @@ Minimum required value for integer flag? (optional)
 # question.Integer.Maximum
 
 Maximum required value for integer flag? (optional)
+
+# question.Integer.Default
+
+Default value for integer flag? (required if setting min and/or max)
