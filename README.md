@@ -106,6 +106,7 @@ sf plugins
 
 <!-- commands -->
 * [`sf dev generate command`](#sf-dev-generate-command)
+* [`sf dev generate flag`](#sf-dev-generate-flag)
 * [`sf dev generate hook`](#sf-dev-generate-hook)
 * [`sf dev generate library`](#sf-dev-generate-library)
 * [`sf dev generate plugin`](#sf-dev-generate-plugin)
@@ -117,13 +118,13 @@ Generate a new sf command.
 
 ```
 USAGE
-  $ sf dev generate command --name <value> [--force] [--nuts] [--unit]
+  $ sf dev generate command -n <value> [--force] [--nuts] [--unit]
 
 FLAGS
-  --force         Overwrite existing files.
-  --name=<value>  (required) Name of the new command. Use colons to separate the topic and command names.
-  --[no-]nuts     Generate a NUT test file for the command.
-  --[no-]unit     Generate a unit test file for the command.
+  -n, --name=<value>  (required) Name of the new command. Use colons to separate the topic and command names.
+  --force             Overwrite existing files.
+  --[no-]nuts         Generate a NUT test file for the command.
+  --[no-]unit         Generate a unit test file for the command.
 
 DESCRIPTION
   Generate a new sf command.
@@ -144,6 +145,26 @@ EXAMPLES
   Generate the files for a new "sf my exciting command":
 
     $ sf dev generate command --name my:exciting:command
+```
+
+## `sf dev generate flag`
+
+Summary of a command.
+
+```
+USAGE
+  $ sf dev generate flag [-d]
+
+FLAGS
+  -d, --dry-run  Print new flag instead of adding it to the command file.
+
+DESCRIPTION
+  Summary of a command.
+
+  Description of a command.
+
+EXAMPLES
+  $ sf dev generate flag
 ```
 
 ## `sf dev generate hook`
