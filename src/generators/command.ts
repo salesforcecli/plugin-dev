@@ -90,6 +90,9 @@ export default class Command extends Generator {
     this.writeMessageFile();
     this.writeNutFile();
     this.writeUnitTestFile();
+  }
+
+  public end(): void {
     exec('yarn compile');
   }
 
