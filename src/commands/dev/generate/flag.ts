@@ -13,8 +13,7 @@ import { Messages } from '@salesforce/core';
 import { Nullable } from '@salesforce/ts-types';
 import { Duration } from '@salesforce/kit';
 
-import { Config, toConfiguredId, toStandardizedId } from '@oclif/core';
-import ModuleLoader from '@oclif/core/lib/module-loader';
+import { Config, Interfaces, toConfiguredId, toStandardizedId } from '@oclif/core';
 import * as fg from 'fast-glob';
 import { fileExists } from '../../../util';
 
@@ -80,9 +79,8 @@ export default class DevGenerateFlag extends SfCommand<void> {
     ]);
 
     const standardizedCommandId = toStandardizedId(command, this.config);
-    const commandFilePath = path.join('.', 'src', 'commands', ...standardizedCommandId.split(':'));
 
-    const answers = await this.askQuestions(commandFilePath);
+    const answers = await this.askQuestions(standardizedCommandId);
 
     const newFlag = this.constructFlag(answers);
 
@@ -92,6 +90,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
       return;
     }
 
+    const commandFilePath = path.join('.', 'src', 'commands', ...standardizedCommandId.split(':'));
     const lines = (await fs.readFile(`${commandFilePath}.ts`, 'utf8')).split('\n');
     const flagsStartIndex = lines.findIndex(
       (line) => line.includes('public static flags') || line.includes('public static readonly flags')
@@ -292,18 +291,12 @@ export default class DevGenerateFlag extends SfCommand<void> {
     ]);
   }
 
-  private async loadExistingFlags(
-    commandFilePath: string
-  ): Promise<Record<string, { type: 'boolean' | 'option'; char?: string }>> {
+  private async loadExistingFlags(commandId: string): Promise<Record<string, Interfaces.Command.Flag>> {
     const config = new Config({ root: process.cwd() });
     config.root = config.options.root;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const module = await ModuleLoader.load(config, commandFilePath);
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const existingFlags = module.default.flags as Record<string, { type: 'boolean' | 'option'; char?: string }>;
-
-    return existingFlags;
+    await config.load();
+    const cmd = config.commands.find((c) => c.id === commandId);
+    return cmd.flags ?? {};
   }
 
   private async findExistingCommands(): Promise<string[]> {

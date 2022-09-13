@@ -12,6 +12,7 @@ import got from 'got';
 import { pascalCase } from 'change-case';
 import { set } from '@salesforce/kit';
 import { get } from '@salesforce/ts-types';
+import { exec } from 'shelljs';
 import { PackageJson, Topic } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
@@ -89,6 +90,7 @@ export default class Command extends Generator {
     this.writeMessageFile();
     this.writeNutFile();
     this.writeUnitTestFile();
+    exec('yarn compile');
   }
 
   private getMessageFileName(): string {
