@@ -1,8 +1,9 @@
-//// secret stuff--there's not a good way to ask, "what organizational secrets are shared with this repo?"
-// has secrets for dependabot
-// has secrets for npm publish
-// if sign, has aws secrets
-// if nuts, has nuts auth secrets
+/*
+ * Copyright (c) 2020, salesforce.com, inc.
+ * All rights reserved.
+ * Licensed under the BSD 3-Clause license.
+ * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
 
 /*
  * Copyright (c) 2022, salesforce.com, inc.
@@ -11,13 +12,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import * as fs from 'fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import { Octokit } from 'octokit';
 import { exec } from 'shelljs';
 import * as yaml from 'js-yaml';
-import * as fs from 'fs';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'configure.secrets', [
@@ -87,9 +88,11 @@ export default class ConfigureSecrets extends SfCommand<SecretsResult> {
       owner: flags.repository.split('/')[0],
       repo: flags.repository.split('/')[1],
     };
+    // make sure repo got removed from previous attempt
+    exec(`rm -rf ${repoBase.repo}`);
 
     // clone repo so we can review its yaml
-    exec(`git clone https://github.com/${flags.repository}`);
+    exec(`git clone https://github.com/${flags.repository} --depth 1`);
 
     // part 1: what secrets does this repo need?
     const publish = yaml.load(
