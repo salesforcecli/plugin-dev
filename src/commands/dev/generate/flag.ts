@@ -20,9 +20,31 @@ import { fileExists } from '../../../util';
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.flag', [
   'description',
-  'errors.InvalidDir',
+  'error.FlagExists',
+  'error.FlagShortCharExists',
+  'error.InvalidDir',
+  'error.InvalidFlagShortChar',
+  'error.InvalidFlagShortCharLength',
+  'error.InvalidInteger',
+  'error.InvalidSalesforceIdPrefix',
+  'error.KebabCase',
   'examples',
   'flags.dry-run.summary',
+  'question.AllowMultiple',
+  'question.Duration.DefaultValue',
+  'question.Duration.Maximum',
+  'question.Duration.Minimum',
+  'question.Duration.Unit',
+  'question.FileDir.Exists',
+  'question.FlagName',
+  'question.FlagShortChar',
+  'question.FlagType',
+  'question.Integer.Maximum',
+  'question.Integer.Minimum',
+  'question.RequiredFlag',
+  'question.SalesforceId.Length',
+  'question.SalesforceId.StartsWith',
+  'question.SelectCommand',
   'summary',
 ]);
 
@@ -65,7 +87,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
   public async run(): Promise<void> {
     const { flags } = await this.parse(DevGenerateFlag);
 
-    if (!fileExists('package.json')) throw messages.createError('errors.InvalidDir');
+    if (!fileExists('package.json')) throw messages.createError('error.InvalidDir');
 
     const ids = await this.findExistingCommands();
 
@@ -73,7 +95,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
       {
         type: 'list',
         name: 'command',
-        message: 'Select a command to add a flag to',
+        message: messages.getMessage('question.SelectCommand'),
         choices: ids,
       },
     ]);
@@ -163,20 +185,20 @@ export default class DevGenerateFlag extends SfCommand<void> {
       {
         type: 'list',
         name: 'type',
-        message: 'What type of flag is this',
+        message: messages.getMessage('question.FlagType'),
         choices: Object.keys(Flags).sort(),
       },
       {
         type: 'input',
         name: 'name',
-        message: 'What is the name of the flag',
+        message: messages.getMessage('question.FlagName'),
         validate: (input: string): string | boolean => {
           if (toLowerKebabCase(input) !== input) {
-            return 'Flag name must be in kebab case (example: my-flag)';
+            return messages.getMessage('error.KebabCase');
           }
 
           if (Object.keys(existingFlags).includes(input)) {
-            return `The ${input} flag already exists`;
+            return messages.getMessage('error.FlagExists', [input]);
           }
 
           return true;
@@ -185,107 +207,107 @@ export default class DevGenerateFlag extends SfCommand<void> {
       {
         type: 'input',
         name: 'char',
-        message: 'Flag short character (optional)',
+        message: messages.getMessage('question.FlagShortChar'),
         validate: (input: string): string | boolean => {
           if (!input) return true;
-          if (charToFlag[input]) return `The ${input} character is already used by the ${charToFlag[input]} flag`;
-          if (!/[A-Z]|[a-z]/g.test(input)) return 'Flag short character must be a letter';
-          if (input.length > 1) return 'Must be a single character';
+          if (charToFlag[input]) return messages.getMessage('error.FlagShortCharExists', [input, charToFlag[input]]);
+          if (!/[A-Z]|[a-z]/g.test(input)) return messages.getMessage('error.InvalidFlagShortChar');
+          if (input.length > 1) return messages.getMessage('error.InvalidFlagShortCharLength');
           return true;
         },
       },
       {
         type: 'confirm',
         name: 'required',
-        message: 'Is this flag required',
+        message: messages.getMessage('question.RequiredFlag'),
         default: false,
       },
       {
         type: 'confirm',
         name: 'multiple',
-        message: 'Can this flag be specified multiple times',
+        message: messages.getMessage('question.AllowMultiple'),
         default: false,
         when: (ans: Answers): boolean => ans.type !== 'boolean',
       },
       {
         type: 'list',
         name: 'durationUnit',
-        message: 'What unit should be used for duration',
+        message: messages.getMessage('question.Duration.Unit'),
         choices: durationUnits,
         when: (ans: Answers): boolean => ans.type === 'duration',
       },
       {
         type: 'input',
         name: 'durationDefaultValue',
-        message: 'Default value for this duration (optional)',
+        message: messages.getMessage('question.Duration.DefaultValue'),
         validate: (input: string): string | boolean => {
           if (!input) return true;
-          return Number.isInteger(Number(input)) ? true : 'Must be an integer';
+          return Number.isInteger(Number(input)) ? true : messages.getMessage('error.InvalidInteger');
         },
         when: (ans: Answers): boolean => ans.type === 'duration',
       },
       {
         type: 'input',
         name: 'durationMin',
-        message: 'Minimum required value for duration flag (optional)',
+        message: messages.getMessage('question.Duration.Minimum'),
         when: (ans: Answers): boolean => ans.type === 'duration',
         validate: (input: string): string | boolean => {
           if (!input) return true;
-          return Number.isInteger(Number(input)) ? true : 'Must be an integer';
+          return Number.isInteger(Number(input)) ? true : messages.getMessage('error.InvalidInteger');
         },
       },
       {
         type: 'input',
         name: 'durationMax',
-        message: 'Maximum required value for duration flag (optional)',
+        message: messages.getMessage('question.Duration.Maximum'),
         when: (ans: Answers): boolean => ans.type === 'duration',
         validate: (input: string): string | boolean => {
           if (!input) return true;
-          return Number.isInteger(Number(input)) ? true : 'Must be an integer';
+          return Number.isInteger(Number(input)) ? true : messages.getMessage('error.InvalidInteger');
         },
       },
       {
         type: 'list',
         name: 'salesforceIdLength',
-        message: 'Required length for salesforceId',
+        message: messages.getMessage('question.SalesforceId.Length'),
         choices: ['15', '18', 'None'],
         when: (ans: Answers): boolean => ans.type === 'salesforceId',
       },
       {
         type: 'input',
         name: 'salesforceIdStartsWith',
-        message: 'Required 3 character prefix for salesforceId (optional)',
+        message: messages.getMessage('question.SalesforceId.StartsWith'),
         when: (ans: Answers): boolean => ans.type === 'salesforceId',
         validate: (input: string): string | boolean => {
           if (!input) return true;
-          return input.length === 3 ? true : 'Must be 3 characters';
+          return input.length === 3 ? true : messages.getMessage('error.InvalidSalesforceIdPrefix');
         },
       },
       {
         type: 'confirm',
         name: 'fileOrDirExists',
-        message: 'Does this flag require the file or directory to exist',
+        message: messages.getMessage('question.FileDir.Exists'),
         default: false,
         when: (ans: Answers): boolean => ['file', 'directory'].includes(ans.type),
       },
       {
         type: 'input',
         name: 'integerMin',
-        message: 'Minimum required value for integer flag (optional)',
+        message: messages.getMessage('question.Integer.Minimum'),
         when: (ans: Answers): boolean => ans.type === 'integer',
         validate: (input: string): string | boolean => {
           if (!input) return true;
-          return Number.isInteger(Number(input)) ? true : 'Must be an integer';
+          return Number.isInteger(Number(input)) ? true : messages.getMessage('error.InvalidInteger');
         },
       },
       {
         type: 'input',
         name: 'integerMax',
-        message: 'Maximum required value for integer flag (optional)',
+        message: messages.getMessage('question.Integer.Maximum'),
         when: (ans: Answers): boolean => ans.type === 'integer',
         validate: (input: string): string | boolean => {
           if (!input) return true;
-          return Number.isInteger(Number(input)) ? true : 'Must be an integer';
+          return Number.isInteger(Number(input)) ? true : messages.getMessage('error.InvalidInteger');
         },
       },
     ]);
