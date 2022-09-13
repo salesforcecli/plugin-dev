@@ -1,34 +1,44 @@
 # summary
 
-Summary of a command.
+Generate a flag for an existing command.
 
 # description
 
-Description of a command.
+You must run this command from within a plugin directory, such as the directory created with the "sf dev generate plugin" command.
+
+This command is interactive. It first discovers all the commands currently implemented in the plugin, and asks you which you want to create a new flag for. It then prompts for other flag properties, such as its long name, optional short name, type, whether it's required, and so on. Long flag names must be kebab-case and not camelCase. The command doesn't let you use an existing long or short flag name. When the command completes, the Typescript file for the command is updated with the code for the new flag.
+
+Use the --dry-run flag to review new code for the command file without actually udpating it.
 
 # flags.dry-run.summary
 
-Print new flag instead of adding it to the command file.
+Print new flag code instead of adding it to the command file.
 
 # examples
 
-- <%= config.bin %> <%= command.id %>
+- Generate a new flag and update the command file:
+
+  <%= config.bin %> <%= command.id %>
+
+- Don't actually update the command file, just view the generated code:
+
+  <%= config.bin %> <%= command.id %> --dry-run
 
 # error.InvalidDir
 
-This command can only be run inside a plugin directory.
+This command must be run inside a plugin directory.
 
 # question.SelectCommand
 
-Select a command to add a flag to
+Select the command you want to add a flag to:
 
 # question.FlagType
 
-What type of flag is this?
+Select the type of the new flag:
 
 # question.FlagName
 
-What is the name of the flag?
+Enter the new flag's name:
 
 # error.KebabCase
 
@@ -44,7 +54,7 @@ You must provide a flag name.
 
 # question.FlagSummary
 
-What is the summary of the flag?
+Enter a short description (summary) of the flag:
 
 # default.FlagSummary
 
@@ -52,11 +62,11 @@ Summary for %s.
 
 # error.InvalidSummary
 
-All summaries must start with a capital and end with a period.
+All summaries must start with a capital letter and end with a period.
 
 # question.FlagShortChar
 
-Flag short character? (optional)
+Enter the flag's single-character short name (optional):
 
 # error.FlagShortCharExists
 
@@ -64,7 +74,7 @@ The %s character is already used by the %s flag.
 
 # error.InvalidFlagShortChar
 
-Flag short character must be a letter.
+Flag single-character short name must be a letter.
 
 # error.InvalidFlagShortCharLength
 
@@ -92,27 +102,27 @@ Can this flag be specified multiple times?
 
 # question.Duration.Unit
 
-What unit should be used for duration?
+Select the duration unit:
 
 # question.Duration.DefaultValue
 
-Default value for this duration? (optional)
+Enter the duration default value (optional):
 
 # question.Duration.Minimum
 
-Minimum required value for duration flag? (optional)
+Enter the duration minimum value (optional):
 
 # question.Duration.Maximum
 
-Maximum required value for duration flag? (optional)
+Enter the duration maximum value (optional):
 
 # question.SalesforceId.Length
 
-Required length for salesforceId?
+Select the salesforceId length:
 
 # question.SalesforceId.StartsWith
 
-Required 3 character prefix for salesforceId? (optional)
+Enter the 3-character salesforceId prefix (optional):
 
 # error.InvalidSalesforceIdPrefix
 
@@ -124,12 +134,12 @@ Does this flag require the file or directory to exist?
 
 # question.Integer.Minimum
 
-Minimum required value for integer flag? (optional)
+Enter the minimum integer value (optional):
 
 # question.Integer.Maximum
 
-Maximum required value for integer flag? (optional)
+Enter the maximum integer value (optional):
 
 # question.Integer.Default
 
-Default value for integer flag? (required if setting min and/or max)
+Enter the default integer value (required if setting a minimum or maximum):
