@@ -93,7 +93,17 @@ export default class Command extends Generator {
   }
 
   public end(): void {
+    exec('yarn format');
+    exec('yarn lint --fix');
     exec('yarn compile');
+
+    if (this.pjson.scripts['test:deprecation-policy']) {
+      exec('bin/dev snapshot:generate');
+    }
+
+    if (this.pjson.scripts['test:json-schema']) {
+      exec('bin/dev schema:generate');
+    }
   }
 
   private getMessageFileName(): string {
@@ -130,7 +140,7 @@ export default class Command extends Generator {
     const cmdPath = this.options.name.split(':').join('/');
     const nutPah = this.destinationPath(`test/commands/${cmdPath}.nut.ts`);
     const opts = {
-      cmd: this.options.name.split(':').join(' '),
+      cmd: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
@@ -145,6 +155,7 @@ export default class Command extends Generator {
     const unitPath = this.destinationPath(`test/commands/${cmdPath}.test.ts`);
     this.fs.copyTpl(this.templatePath('test/command.test.ts.ejs'), unitPath, {
       ...this.options,
+      name: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
     });
   }
