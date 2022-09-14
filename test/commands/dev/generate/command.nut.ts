@@ -69,7 +69,7 @@ describe('dev generate command NUTs', () => {
       const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
       expect(fileExists(unitTestFile)).to.be.true;
 
-      const result = exec('yarn test', { cwd: session.project.dir, silent: true });
+      const result = exec('yarn test', { cwd: session.project.dir, silent: false });
       expect(result.code).to.equal(0);
       expect(result.stdout).include(name.replace(/:/g, ' '));
     });
