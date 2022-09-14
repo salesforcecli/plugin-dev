@@ -265,16 +265,6 @@ export default class DevGenerateFlag extends SfCommand<void> {
       },
       {
         type: 'input',
-        name: 'durationDefaultValue',
-        message: messages.getMessage('question.Duration.DefaultValue'),
-        validate: (input: string): string | boolean => {
-          if (!input) return true;
-          return Number.isInteger(Number(input)) ? true : messages.getMessage('error.InvalidInteger');
-        },
-        when: (ans: Answers): boolean => ans.type === 'duration',
-      },
-      {
-        type: 'input',
         name: 'durationMin',
         message: messages.getMessage('question.Duration.Minimum'),
         when: (ans: Answers): boolean => ans.type === 'duration',
@@ -291,8 +281,22 @@ export default class DevGenerateFlag extends SfCommand<void> {
         validate: (input: string, ans: Answers): string | boolean => {
           if (!input) return true;
           if (!Number.isInteger(Number(input))) return messages.getMessage('error.InvalidInteger');
-          return Number(input) > ans.integerMin ? true : messages.getMessage('error.IntegerMaxLessThanMin');
+          return Number(input) > ans.durationMin ? true : messages.getMessage('error.IntegerMaxLessThanMin');
         },
+      },
+      {
+        type: 'input',
+        name: 'durationDefaultValue',
+        message: messages.getMessage('question.Duration.DefaultValue'),
+        validate: (input: string, ans: Answers): string | boolean => {
+          if (!input) return true;
+          const num = Number(input);
+          if (!Number.isInteger(num)) return messages.getMessage('error.InvalidInteger');
+          return num >= ans.durationMin && num <= ans.durationMax
+            ? true
+            : messages.getMessage('error.InvalidDefaultInteger');
+        },
+        when: (ans: Answers): boolean => ans.type === 'duration',
       },
       {
         type: 'list',
