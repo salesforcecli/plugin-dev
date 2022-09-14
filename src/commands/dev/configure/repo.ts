@@ -10,7 +10,7 @@
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Octokit } from '@octokit/rest';
-import { OctokitError } from '../../types';
+import { OctokitError } from '../../../types';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'configure.repo', [

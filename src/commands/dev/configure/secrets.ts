@@ -17,7 +17,7 @@ import { Messages } from '@salesforce/core';
 import { Octokit } from '@octokit/rest';
 import { exec } from 'shelljs';
 import * as yaml from 'js-yaml';
-import { OctokitError } from '../../types';
+import { OctokitError } from '../../../types';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'configure.secrets', [
