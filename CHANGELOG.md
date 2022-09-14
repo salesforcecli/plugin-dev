@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.19](https://github.com/salesforcecli/plugin-dev/compare/v0.0.18...v0.0.19) (2022-09-13)
+
+
+### Bug Fixes
+
+* wrap flags with hyphens with quotes ([#118](https://github.com/salesforcecli/plugin-dev/issues/118)) ([0c4b42d](https://github.com/salesforcecli/plugin-dev/commit/0c4b42df14eae4fcfa1c54241710c42710a44dcc))
+
+### [0.0.18](https://github.com/salesforcecli/plugin-dev/compare/v0.0.17...v0.0.18) (2022-09-13)
+
+
+### Features
+
+* add prompts to flag generator ([8bef368](https://github.com/salesforcecli/plugin-dev/commit/8bef368e9b01fffc29cf9a5fea574eb5b927a77f))
+* flag generator proof of concept ([1c42c95](https://github.com/salesforcecli/plugin-dev/commit/1c42c9573188b76f924833c504431717a77b24a5))
+* insert message to Message.load ([288ca35](https://github.com/salesforcecli/plugin-dev/commit/288ca359a5644a40e38747dd6f1e237bb2f573e8))
+
+
+### Bug Fixes
+
+* compile command after generating it ([f2df547](https://github.com/salesforcecli/plugin-dev/commit/f2df5477aa212efa82dec66ad0ae385ae7868eb4))
+* correct spacing in markdown file ([87f18ec](https://github.com/salesforcecli/plugin-dev/commit/87f18ec798536e52ce12f1b0ba57a6ac7ba61ac0))
+* load commands while linked ([be6aae9](https://github.com/salesforcecli/plugin-dev/commit/be6aae98f45d075552b51bf98ed668a16a94abdc))
+
 ### [0.0.17](https://github.com/salesforcecli/plugin-dev/compare/v0.0.16...v0.0.17) (2022-09-07)
 
 

@@ -1,15 +1,16 @@
 {
   "name": "@salesforce/plugin-dev",
   "description": "commands for sf plugin development",
-  "version": "0.0.17",
+  "version": "0.0.20",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
     "@oclif/core": "^1.16.1",
     "@salesforce/core": "^3.26.3",
     "@salesforce/kit": "^1.6.0",
-    "@salesforce/sf-plugins-core": "^1.13.0",
+    "@salesforce/sf-plugins-core": "^1.14.1",
     "change-case": "^4.1.2",
+    "fast-glob": "^3.2.12",
     "got": "^11.8.5",
     "js-yaml": "^4.1.0",
     "octokit": "^2.0.7",

@@ -12,6 +12,7 @@ import got from 'got';
 import { pascalCase } from 'change-case';
 import { set } from '@salesforce/kit';
 import { get } from '@salesforce/ts-types';
+import { exec } from 'shelljs';
 import { PackageJson, Topic } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
@@ -91,6 +92,22 @@ export default class Command extends Generator {
     this.writeUnitTestFile();
   }
 
+  public end(): void {
+    exec('yarn format');
+    exec('yarn lint --fix');
+    exec('yarn compile');
+
+    const localExecutable = process.platform === 'win32' ? path.join('bin', 'dev.cmd') : path.join('bin', 'dev');
+
+    if (this.pjson.scripts['test:deprecation-policy']) {
+      exec(`${localExecutable} snapshot:generate`);
+    }
+
+    if (this.pjson.scripts['test:json-schema']) {
+      exec(`${localExecutable} schema:generate`);
+    }
+  }
+
   private getMessageFileName(): string {
     return this.options.name.replace(/:/g, '.');
   }
@@ -125,7 +142,7 @@ export default class Command extends Generator {
     const cmdPath = this.options.name.split(':').join('/');
     const nutPah = this.destinationPath(`test/commands/${cmdPath}.nut.ts`);
     const opts = {
-      cmd: this.options.name.split(':').join(' '),
+      cmd: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
@@ -140,6 +157,7 @@ export default class Command extends Generator {
     const unitPath = this.destinationPath(`test/commands/${cmdPath}.test.ts`);
     this.fs.copyTpl(this.templatePath('test/command.test.ts.ejs'), unitPath, {
       ...this.options,
+      name: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
     });
   }

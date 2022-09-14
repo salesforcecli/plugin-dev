@@ -7,7 +7,7 @@
 import * as fs from 'fs';
 import { createEnv } from 'yeoman-environment';
 import { ensureArray } from '@salesforce/kit';
-import { Hook, PackageJson } from './types';
+import { FlagAnswers, Hook, PackageJson } from './types';
 
 export function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
   const env = createEnv();
@@ -37,5 +37,98 @@ export function fileExists(file: string): boolean {
     return true;
   } catch {
     return false;
+  }
+}
+
+export class FlagBuilder {
+  public constructor(private answers: FlagAnswers, private commandFilePath: string) {}
+
+  public build(): string[] {
+    const flagOptions = [`summary: messages.getMessage('flags.${this.answers.name}.summary')`];
+
+    if (this.answers.char) flagOptions.push(`char: '${this.answers.char}'`);
+    if (this.answers.required) flagOptions.push('required: true');
+    if (this.answers.multiple) flagOptions.push('multiple: true');
+    if (this.answers.durationUnit) flagOptions.push(`unit: '${this.answers.durationUnit}'`);
+    if (this.answers.durationDefaultValue) flagOptions.push(`defaultValue: ${this.answers.durationDefaultValue}`);
+    if (this.answers.durationMin) flagOptions.push(`min: ${this.answers.durationMin}`);
+    if (this.answers.durationMax) flagOptions.push(`max: ${this.answers.durationMax}`);
+    if (['15', '18'].includes(this.answers.salesforceIdLength))
+      flagOptions.push(`length: ${this.answers.salesforceIdLength}`);
+    if (this.answers.salesforceIdStartsWith) flagOptions.push(`startsWith: '${this.answers.salesforceIdStartsWith}'`);
+    if (this.answers.fileOrDirExists) flagOptions.push('exists: true');
+    if (this.answers.integerMin) flagOptions.push(`min: ${this.answers.integerMin}`);
+    if (this.answers.integerMax) flagOptions.push(`max: ${this.answers.integerMax}`);
+    if (this.answers.integerDefault && !this.answers.multiple)
+      flagOptions.push(`default: ${this.answers.integerDefault}`);
+    if (this.answers.integerDefault && this.answers.multiple)
+      flagOptions.push(`default: [${this.answers.integerDefault}]`);
+    if (this.answers.type === 'enum') flagOptions.push('options: []');
+
+    const flagName = this.answers.name.includes('-') ? `'${this.answers.name}'` : this.answers.name;
+
+    const newFlag = `    ${flagName}: Flags.${this.answers.type}({
+      ${flagOptions.join(',\n      ')},
+    }),`.split('\n');
+
+    return newFlag;
+  }
+
+  public async apply(flagParts: string[]): Promise<string> {
+    const lines = (await this.readFile()).split('\n');
+    const flagsStartIndex = lines.findIndex(
+      (line) => line.includes('public static flags') || line.includes('public static readonly flags')
+    );
+
+    // If index isn't found, that means that no flags are defined yet
+    if (flagsStartIndex === -1) {
+      const altFlagsStartIndex = lines.findIndex((line) => line.includes('public async run')) - 1;
+      lines.splice(altFlagsStartIndex, 0, `public static flags = {${flagParts.join('\n')}};\n`);
+    } else {
+      const flagsEndIndex = lines.slice(flagsStartIndex).findIndex((line) => line.endsWith('};')) + flagsStartIndex;
+      lines.splice(flagsEndIndex, 0, ...flagParts);
+    }
+
+    const messagesStartIndex = lines.findIndex((line) => line.includes('Messages.load('));
+    if (messagesStartIndex) {
+      const messagesEndIndex =
+        lines.slice(messagesStartIndex).findIndex((line) => line.endsWith(';')) + messagesStartIndex;
+
+      // if the indices are equal that means that the messages are on the same line
+      if (messagesEndIndex === messagesStartIndex) {
+        const line = lines[messagesStartIndex];
+        const endIndex = line.indexOf(']');
+        const updated =
+          line.substring(0, endIndex) + `, 'flags.${this.answers.name}.summary'` + line.substring(endIndex);
+        lines[messagesStartIndex] = updated;
+      } else {
+        lines.splice(messagesEndIndex, 0, `'flags.${this.answers.name}.summary',`);
+      }
+    }
+
+    const sfPluginsCoreImport = lines.findIndex((line) => line.includes("from '@salesforce/sf-plugins-core'"));
+
+    const oclifCoreImport = lines.findIndex((line) => line.includes("from '@oclif/core'"));
+
+    // add the Flags import from @salesforce/sf-plugins-core if it doesn't exist already
+    if (!lines[sfPluginsCoreImport].includes('Flags')) {
+      const line = lines[sfPluginsCoreImport];
+      const endIndex = line.indexOf('}');
+      lines[sfPluginsCoreImport] = line.substring(0, endIndex) + ', Flags' + line.substring(endIndex);
+    }
+
+    // ensure the Flags import is from @salesforce/sf-plugins-core
+    if (oclifCoreImport !== -1 && lines[oclifCoreImport].includes('Flags')) {
+      if (lines[oclifCoreImport] === "import { Flags } from '@oclif/core';") lines.splice(oclifCoreImport, 1);
+      else {
+        lines[oclifCoreImport] = lines[oclifCoreImport].replace('Flags,', '').replace(', Flags', '');
+      }
+    }
+
+    return lines.join('\n');
+  }
+
+  public async readFile(): Promise<string> {
+    return fs.promises.readFile(this.commandFilePath, 'utf8');
   }
 }
