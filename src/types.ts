@@ -5,6 +5,9 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { Duration } from '@salesforce/kit';
+import { Flags } from '@salesforce/sf-plugins-core';
+
 export type Topic = {
   description?: string;
   external?: boolean;
@@ -49,3 +52,22 @@ export enum Hook {
   'sf:deploy' = 'sf deploy',
   'sf:logout' = 'sf logout',
 }
+
+export type FlagAnswers = {
+  char?: string;
+  type: keyof typeof Flags;
+  name: string;
+  summary: string;
+  required?: boolean;
+  multiple?: boolean;
+  durationUnit?: Lowercase<keyof typeof Duration.Unit>;
+  durationDefaultValue?: number;
+  durationMin?: number;
+  durationMax?: number;
+  salesforceIdLength?: '15' | '18' | 'None';
+  salesforceIdStartsWith?: string;
+  fileOrDirExists?: boolean;
+  integerMin?: number;
+  integerMax?: number;
+  integerDefault?: number;
+};

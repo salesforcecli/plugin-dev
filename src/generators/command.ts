@@ -97,12 +97,14 @@ export default class Command extends Generator {
     exec('yarn lint --fix');
     exec('yarn compile');
 
+    const localExecutable = process.platform === 'win32' ? path.join('bin', 'dev.cmd') : path.join('bin', 'dev');
+
     if (this.pjson.scripts['test:deprecation-policy']) {
-      exec('bin/dev snapshot:generate');
+      exec(`${localExecutable} snapshot:generate`);
     }
 
     if (this.pjson.scripts['test:json-schema']) {
-      exec('bin/dev schema:generate');
+      exec(`${localExecutable} schema:generate`);
     }
   }
 

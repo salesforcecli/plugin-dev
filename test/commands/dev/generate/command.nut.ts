@@ -5,22 +5,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as fs from 'fs/promises';
 import * as path from 'path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
 import { env } from '@salesforce/kit';
 import { expect } from 'chai';
 import { exec } from 'shelljs';
 import { PackageJson } from '../../../../src/types';
-
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { readJson, fileExists } from '../../../../src/util';
 
 describe('dev generate command NUTs', () => {
   let session: TestSession;
@@ -58,14 +49,14 @@ describe('dev generate command NUTs', () => {
 
     it('should generate a markdown message file', async () => {
       const messagesFile = path.join(session.project.dir, 'messages', `${name.replace(/:/g, '.')}.md`);
-      expect(await fileExists(messagesFile)).to.be.true;
+      expect(fileExists(messagesFile)).to.be.true;
     });
 
     it('should generate a passing NUT', async () => {
       const parts = name.split(':');
       const cmd = parts.pop();
       const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
-      expect(await fileExists(nutFile)).to.be.true;
+      expect(fileExists(nutFile)).to.be.true;
 
       const result = exec('yarn test:nuts', { cwd: session.project.dir, silent: true });
       expect(result.code).to.equal(0);
@@ -76,7 +67,7 @@ describe('dev generate command NUTs', () => {
       const parts = name.split(':');
       const cmd = parts.pop();
       const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
-      expect(await fileExists(unitTestFile)).to.be.true;
+      expect(fileExists(unitTestFile)).to.be.true;
 
       const result = exec('yarn test', { cwd: session.project.dir, silent: true });
       expect(result.code).to.equal(0);
@@ -84,9 +75,7 @@ describe('dev generate command NUTs', () => {
     });
 
     it('should update topics in package.json', async () => {
-      const packageJson = JSON.parse(
-        await fs.readFile(path.join(session.project.dir, 'package.json'), 'utf8')
-      ) as unknown as PackageJson;
+      const packageJson = readJson<PackageJson>(path.join(session.project.dir, 'package.json'));
       expect(packageJson.oclif.topics.do).to.deep.equal({
         description: 'description for do',
         subtopics: {
