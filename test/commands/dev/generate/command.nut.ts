@@ -38,7 +38,7 @@ describe('dev generate command NUTs', () => {
     const command = `dev generate command --name ${name} --force --nuts --unit`;
 
     before(async () => {
-      execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+      execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir, silent: false });
     });
 
     it('should generate a command that can be executed', () => {
