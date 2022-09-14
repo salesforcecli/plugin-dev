@@ -5,9 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+// because github api isn't camelcased
+/* eslint-disable camelcase */
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-import { Octokit } from 'octokit';
+import { Octokit } from '@octokit/rest';
+import { OctokitError } from '../../types';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'configure.repo', [
@@ -16,6 +19,7 @@ const messages = Messages.load('@salesforce/plugin-dev', 'configure.repo', [
   'examples',
   'flags.repository.summary',
   'flags.dryRun.summary',
+  'flags.bot.summary',
 ]);
 
 export type ConfigureRepoResult = {
@@ -24,8 +28,6 @@ export type ConfigureRepoResult = {
   prRestrictions: boolean;
   prBypass: boolean;
 };
-
-const BOT_LOGIN = 'SF-CLI-BOT';
 
 export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
   public static summary = messages.getMessage('summary');
@@ -41,6 +43,11 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
     'dry-run': Flags.boolean({
       summary: messages.getMessage('flags.dryRun.summary'),
       char: 'c',
+    }),
+    bot: Flags.string({
+      summary: messages.getMessage('flags.bot.summary'),
+      char: 'b',
+      default: 'SF-CLI-BOT',
     }),
   };
 
@@ -62,22 +69,23 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
     // assertion : bot has write+ access to repo
     const { data: permission } = await octokit.rest.repos.getCollaboratorPermissionLevel({
       ...repoBase,
-      username: BOT_LOGIN,
+      username: flags.bot,
     });
     if (permission.permission !== 'admin') {
       this.error(
-        `${BOT_LOGIN}  does not have "admin"  access to ${flags.repository}.  No further inspection is possible.`
+        `${flags.bot}  does not have "admin"  access to ${flags.repository}.  No further inspection is possible.`
       );
     } else {
-      this.logSuccess(`✓ ${BOT_LOGIN} has necessary access to ${flags.repository}`);
+      this.logSuccess(`✓ ${flags.bot} has necessary access to ${flags.repository}`);
       output.botAccess = true;
     }
 
     try {
       await octokit.rest.repos.getBranchProtection({ ...repoBase, branch: 'main' });
     } catch (e) {
-      if (e.response.data) {
-        if (!flags['dry-run'] && e.response.data.message === 'Branch not protected') {
+      const typedError = e as OctokitError;
+      if (typedError) {
+        if (!flags['dry-run'] && typedError.response.data.message === 'Branch not protected') {
           this.log('setting up basic branch protection');
 
           await octokit.rest.repos.updateBranchProtection({
@@ -85,22 +93,22 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
             branch: 'main',
             required_pull_request_reviews: {
               bypass_pull_request_allowances: {
-                users: [BOT_LOGIN],
+                users: [flags.bot],
               },
             },
             enforce_admins: false,
             required_status_checks: null,
             restrictions: {
-              users: [BOT_LOGIN],
+              users: [flags.bot],
               teams: [],
             },
           });
         } else {
-          this.warn(e.response.data.message);
-          this.log(`see ${e.response.data.documentation_url}`);
+          this.warn(typedError.response.data.message);
+          this.log(`see ${typedError.response.data.documentation_url}`);
         }
       } else {
-        console.log(e);
+        // console.log(e);
       }
     }
 
@@ -113,13 +121,13 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
       // repo requires PR reviews but doesn't allow the bot to bypass them
       protectedBranch.required_pull_request_reviews &&
       !protectedBranch.required_pull_request_reviews.bypass_pull_request_allowances?.users?.some(
-        (user) => user.login === BOT_LOGIN
+        (user) => user.login === flags.bot
       )
     ) {
       if (flags['dry-run']) {
-        this.warn(`${BOT_LOGIN} needs permissions to bypass pull request requirements`);
+        this.warn(`${flags.bot} needs permissions to bypass pull request requirements`);
       } else {
-        this.log(`giving ${BOT_LOGIN} pull request bypass permissions`);
+        this.log(`giving ${flags.bot} pull request bypass permissions`);
         const updatePayload = protectedBranch.required_pull_request_reviews.bypass_pull_request_allowances
           ? // maintain original, but append bot to users object
             {
@@ -131,7 +139,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
                 ...(protectedBranch.required_pull_request_reviews.bypass_pull_request_allowances.users?.map(
                   (u) => u.login
                 ) ?? []),
-                BOT_LOGIN,
+                flags.bot,
               ],
               teams:
                 protectedBranch.required_pull_request_reviews.bypass_pull_request_allowances.teams?.map(
@@ -140,7 +148,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
             }
           : // there was not an object, so create one
             {
-              users: [BOT_LOGIN],
+              users: [flags.bot],
             };
         await octokit.rest.repos.updatePullRequestReviewProtection({
           ...repoBase,
@@ -150,7 +158,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
         output.prBypass = true;
       }
     } else {
-      this.logSuccess(`✓ ${BOT_LOGIN} can bypass pull request requirements`);
+      this.logSuccess(`✓ ${flags.bot} can bypass pull request requirements`);
       output.prBypass = true;
     }
 
@@ -161,20 +169,20 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
       })
     ).data;
 
-    if (protectedBranch.restrictions && !protectedBranch.restrictions?.users.some((user) => user.login === BOT_LOGIN)) {
+    if (protectedBranch.restrictions && !protectedBranch.restrictions?.users.some((user) => user.login === flags.bot)) {
       if (flags['dry-run']) {
         this.warn('SF-CLI-BOT needs permissions to push directly to main');
       } else {
-        this.log(`giving ${BOT_LOGIN} permission to push directly to main`);
+        this.log(`giving ${flags.bot} permission to push directly to main`);
         await octokit.rest.repos.addUserAccessRestrictions({
           ...repoBase,
           branch: 'main',
-          users: [BOT_LOGIN],
+          users: [flags.bot],
         });
       }
       output.prRestrictions = true;
     } else {
-      this.logSuccess(`✓ ${BOT_LOGIN} can push directly to main`);
+      this.logSuccess(`✓ ${flags.bot} can push directly to main`);
       output.prRestrictions = true;
     }
 

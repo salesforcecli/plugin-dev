@@ -1,24 +1,23 @@
 /*
- * Copyright (c) 2020, salesforce.com, inc.
- * All rights reserved.
- * Licensed under the BSD 3-Clause license.
- * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- */
-
-/*
  * Copyright (c) 2022, salesforce.com, inc.
  * All rights reserved.
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+// because github api isn't camelcased
+/* eslint-disable camelcase */
+
 import * as fs from 'fs';
+import { CliUx } from '@oclif/core';
+
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
-import { Octokit } from 'octokit';
+import { Octokit } from '@octokit/rest';
 import { exec } from 'shelljs';
 import * as yaml from 'js-yaml';
+import { OctokitError } from '../../types';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'configure.secrets', [
@@ -177,9 +176,10 @@ const secretCheck = async (
       return 'overridden by repo';
     }
   } catch (e) {
-    // if (e.response.data) {
-    //   console.log(`check repo secrets for ${secretName}: ${e.response.data.message}`);
-    // }
+    const typedError = e as OctokitError;
+    if (typedError.response.data) {
+      CliUx.ux.log(`check repo secrets for ${secretName}: ${typedError.response.data.message}`);
+    }
     // secret doesn't exist locally, keep looking.
   }
 
@@ -208,8 +208,10 @@ const secretCheck = async (
       }
     }
   } catch (e) {
-    if (e.response.data) {
-      console.log(`check org secrets for ${secretName}: ${e.response.data.message}`);
+    const typedError = e as OctokitError;
+
+    if (typedError.response.data) {
+      CliUx.ux.log(`check org secrets for ${secretName}: ${typedError.response.data.message}`);
     }
     return 'does not exist in org';
   }

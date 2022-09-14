@@ -17,3 +17,7 @@ Make no changes
 # examples
 
 - <%= config.bin %> <%= command.id %> -r salesforcecli/testPackageRelease
+
+# flags.bot.summary
+
+The github login/username for the bot.
