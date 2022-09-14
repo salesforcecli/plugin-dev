@@ -38,7 +38,7 @@ describe('dev generate command NUTs', () => {
     const command = `dev generate command --name ${name} --force --nuts --unit`;
 
     before(async () => {
-      execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir, silent: false });
+      execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
     });
 
     it('should generate a command that can be executed', () => {
@@ -69,7 +69,7 @@ describe('dev generate command NUTs', () => {
       const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
       expect(fileExists(unitTestFile)).to.be.true;
 
-      const result = exec('yarn test', { cwd: session.project.dir, silent: false });
+      const result = exec('yarn test', { cwd: session.project.dir, silent: true });
       expect(result.code).to.equal(0);
       expect(result.stdout).include(name.replace(/:/g, ' '));
     });
