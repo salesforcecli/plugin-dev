@@ -194,7 +194,7 @@ export default class Plugin extends Generator {
 
       this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
 
-      // Remove the copyright header from the generated files.
+      // Remove the eslint-config-salesforce-internal from eslint config.
       replace.sync({
         files: `${this.env.cwd}/.eslintrc.js`,
         from: /'eslint-config-salesforce-license',\s/g,
