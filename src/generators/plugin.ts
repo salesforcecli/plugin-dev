@@ -193,6 +193,20 @@ export default class Plugin extends Generator {
       delete nycConfig.extends;
 
       this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
+
+      // Remove the copyright header from the generated files.
+      replace.sync({
+        files: `${this.env.cwd}/.eslintrc.js`,
+        from: /'eslint-config-salesforce-license',\s/g,
+        to: '',
+      });
+
+      // Remove the copyright header from the generated files.
+      replace.sync({
+        files: `${this.env.cwd}/**/*`,
+        from: /\/\*\n\s\*\sCopyright([\S\s]*?)\s\*\/\n\n/g,
+        to: '',
+      });
     }
 
     this.fs.delete(this.destinationPath('./.circleci/external.config.yml'));
