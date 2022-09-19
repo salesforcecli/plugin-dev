@@ -174,6 +174,7 @@ export default class Plugin extends Generator {
       fs.rmSync(this.destinationPath('./.github'), { recursive: true });
       fs.rmSync(this.destinationPath('./command-snapshot.json'));
       fs.rmSync(this.destinationPath('./CODE_OF_CONDUCT.md'));
+      fs.rmSync(this.destinationPath('./SECURITY.md'));
 
       // Remove /schemas from the published files.
       final.files = final.files.filter((f) => f !== '/schemas');
@@ -199,14 +200,14 @@ export default class Plugin extends Generator {
       replace.sync({
         files: `${this.env.cwd}/.eslintrc.js`,
         from: /'eslint-config-salesforce-license',\s/g,
-        to: '',
+        to: '\n',
       });
 
       // Remove the copyright header from the generated files.
       replace.sync({
         files: `${this.env.cwd}/**/*`,
         from: /\/\*\n\s\*\sCopyright([\S\s]*?)\s\*\/\n\n/g,
-        to: '',
+        to: '\n',
       });
     }
 
