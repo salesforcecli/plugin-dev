@@ -166,17 +166,20 @@ export default class Plugin extends Generator {
       // Can't use the class's this.fs since it doesn't delete the directory, just the files in it.
       fs.rmSync(this.destinationPath('./schemas'), { recursive: true });
       fs.rmSync(this.destinationPath('./.git2gus'), { recursive: true });
-      fs.rmSync(this.destinationPath('./.github'), { recursive: true });
       fs.rmSync(this.destinationPath('./command-snapshot.json'));
 
       // Remove /schemas from the published files.
       final.files = final.files.filter((f) => f !== '/schemas');
 
-      this.fs.delete(this.destinationPath('./.circleci/config.yml'));
-      this.fs.copy(
-        this.destinationPath('./.circleci/external.config.yml'),
-        this.destinationPath('./.circleci/config.yml')
-      );
+      fs.rmSync(this.destinationPath('./.github/ISSUE_TEMPLATE'), { recursive: true });
+      this.fs.delete(this.destinationPath('./.github/CODEOWNERS'));
+      this.fs.delete(this.destinationPath('./.github/PULL_REQUEST_TEMPLATE.md'));
+      this.fs.delete(this.destinationPath('./.github/no-response.yml'));
+      this.fs.delete(this.destinationPath('./.github/dependabot.yml'));
+      this.fs.delete(this.destinationPath('./.github/workflows/automerge.yml'));
+      this.fs.delete(this.destinationPath('./.github/workflows/failureNotifications.yml'));
+      this.fs.delete(this.destinationPath('./.github/workflows/slackprnotification.yml'));
+      this.fs.delete(this.destinationPath('./.github/workflows/validate-pr.yml'));
 
       const nycConfig = readJson<NYC>(path.join(this.env.cwd, '.nycrc'));
       const codeCoverage = Number.parseInt(this.answers.codeCoverage.replace('%', ''), 10);
@@ -189,8 +192,6 @@ export default class Plugin extends Generator {
 
       this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
     }
-
-    this.fs.delete(this.destinationPath('./.circleci/external.config.yml'));
 
     this.fs.writeJSON(this.destinationPath('./package.json'), final);
 
