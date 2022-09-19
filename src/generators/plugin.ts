@@ -200,14 +200,14 @@ export default class Plugin extends Generator {
       replace.sync({
         files: `${this.env.cwd}/.eslintrc.js`,
         from: /'eslint-config-salesforce-license',\s/g,
-        to: '\n',
+        to: '',
       });
 
       // Remove the copyright header from the generated files.
       replace.sync({
         files: `${this.env.cwd}/**/*`,
         from: /\/\*\n\s\*\sCopyright([\S\s]*?)\s\*\/\n\n/g,
-        to: '\n',
+        to: '',
       });
     }
 
