@@ -26,7 +26,8 @@ const messages = Messages.load('@salesforce/plugin-dev', 'plugin.generator', [
   'question.author',
   'question.code-coverage',
   'question.hooks',
-  'error.InvalidName',
+  'error.Invalid2ppName',
+  'error.Invalid3ppName',
 ]);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
@@ -66,10 +67,10 @@ export default class Plugin extends Generator {
         name: 'name',
         message: messages.getMessage('question.internal.name'),
         validate: (input: string): boolean | string => {
-          const result = /plugin-[a-z]+$/.test(input);
+          const result = /plugin-([a-z][a-z]*)(-[a-z]+)*$/.test(input);
           if (result) return true;
 
-          return messages.getMessage('error.InvalidName');
+          return messages.getMessage('error.Invalid2ppName');
         },
         when: (answers: { internal: boolean }): boolean => answers.internal,
       },
@@ -77,7 +78,13 @@ export default class Plugin extends Generator {
         type: 'input',
         name: 'name',
         message: messages.getMessage('question.external.name'),
-        validate: (input: string): boolean => Boolean(input),
+        validate: (input: string): string | boolean => {
+          // This regex for valid npm package name is taken from https://github.com/dword-design/package-name-regex/blob/master/src/index.js
+          const result = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(input);
+          if (result) return true;
+
+          return messages.getMessage('error.Invalid3ppName');
+        },
         when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
       {
