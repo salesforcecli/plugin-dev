@@ -72,6 +72,9 @@ describe('dev generate plugin', () => {
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'CODE_OF_CONDUCT.md'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'command-snapshot.json'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hello-world.json'));
+    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-env-list.json'));
+    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-env-display.json'));
+    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-deploy.json'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', '.git2gus', 'config.json'));
 
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'src', 'hooks', 'envList.ts'));
