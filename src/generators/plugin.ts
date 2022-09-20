@@ -13,7 +13,7 @@ import { exec } from 'shelljs';
 import replace = require('replace-in-file');
 import { camelCase } from 'change-case';
 import { Messages } from '@salesforce/core';
-import { Hook, PackageJson } from '../types';
+import { Hook, NYC, PackageJson } from '../types';
 import { addHookToPackageJson, readJson } from '../util';
 
 Messages.importMessagesDirectory(__dirname);
@@ -156,6 +156,17 @@ export default class Plugin extends Generator {
     if (this.answers.author) updated.author = this.answers.author;
 
     const final = Object.assign({}, pjson, updated);
+
+    if (!this.answers.internal && this.answers.codeCoverage) {
+      const nycConfig = readJson<NYC>(path.join(this.env.cwd, '.nycrc'));
+      const codeCoverage = Number.parseInt(this.answers.codeCoverage.replace('%', ''), 10);
+      nycConfig['check-coverage'] = true;
+      nycConfig.lines = codeCoverage;
+      nycConfig.statements = codeCoverage;
+      nycConfig.functions = codeCoverage;
+      nycConfig.branches = codeCoverage;
+      this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
+    }
 
     this.fs.delete(this.destinationPath('./.circleci/external.config.yml'));
 

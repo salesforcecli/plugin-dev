@@ -14,6 +14,14 @@ export type Topic = {
   subtopics: Topic;
 };
 
+export type NYC = {
+  extends: string;
+  lines: number;
+  statements: number;
+  branches: number;
+  functions: number;
+};
+
 export type PackageJson = {
   name: string;
   devDependencies: Record<string, string>;
