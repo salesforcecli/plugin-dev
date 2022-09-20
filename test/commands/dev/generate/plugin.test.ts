@@ -12,9 +12,7 @@ import { readJson } from '../../../../src/util';
 import { PackageJson } from '../../../../src/types';
 
 describe('dev generate plugin', () => {
-  // This test fails because the generator fails to remove the copyright headers on windows.
-  // Once we move to a separate 3PP template, this will no longer be a problem.
-  (process.platform !== 'win32' ? it : it.skip)('should generate a 3PP plugin', async () => {
+  it('should generate a 3PP plugin', async () => {
     const runResult = await helpers
       .run(path.join(__dirname, '..', '..', '..', '..', 'src', 'generators', 'plugin.ts'))
       .withPrompts({
@@ -28,6 +26,7 @@ describe('dev generate plugin', () => {
     runResult.assertFile(path.join(runResult.cwd, 'my-plugin', 'package.json'));
     runResult.assertFile(path.join(runResult.cwd, 'my-plugin', 'src', 'commands', 'hello', 'world.ts'));
     runResult.assertNoFile(path.join(runResult.cwd, 'my-plugin', 'CODE_OF_CONDUCT.md'));
+    runResult.assertNoFile(path.join(runResult.cwd, 'my-plugin', 'LICENSE.txt'));
     runResult.assertNoFile(path.join(runResult.cwd, 'my-plugin', 'command-snapshot.json'));
     runResult.assertNoFile(path.join(runResult.cwd, 'my-plugin', 'schemas', 'hello-world.json'));
     runResult.assertNoFile(path.join(runResult.cwd, 'my-plugin', '.git2gus', 'config.json'));
@@ -38,12 +37,11 @@ describe('dev generate plugin', () => {
     expect(packageJson.description).to.equal('my plugin description');
 
     const scripts = Object.keys(packageJson.scripts);
-    const keys = Object.keys(packageJson);
-
     expect(scripts).to.not.include('test:json-schema');
     expect(scripts).to.not.include('test:deprecation-policy');
     expect(scripts).to.not.include('test:command-reference');
-    expect(packageJson.scripts.posttest).to.equal('yarn lint');
+
+    const keys = Object.keys(packageJson);
     expect(keys).to.not.include('homepage');
     expect(keys).to.not.include('repository');
     expect(keys).to.not.include('bugs');
@@ -74,6 +72,9 @@ describe('dev generate plugin', () => {
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'CODE_OF_CONDUCT.md'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'command-snapshot.json'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hello-world.json'));
+    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-env-list.json'));
+    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-env-display.json'));
+    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-deploy.json'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', '.git2gus', 'config.json'));
 
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'src', 'hooks', 'envList.ts'));
@@ -85,6 +86,10 @@ describe('dev generate plugin', () => {
     expect(packageJson.name).to.equal('@salesforce/plugin-test');
     expect(packageJson.author).to.equal('Salesforce');
     expect(packageJson.description).to.equal('my plugin description');
+    expect(packageJson.bugs).to.equal('https://github.com/forcedotcom/cli/issues');
+    expect(packageJson.repository).to.equal('salesforcecli/plugin-test');
+    expect(packageJson.homepage).to.equal('https://github.com/salesforcecli/plugin-test');
+
     expect(packageJson.oclif.hooks).to.deep.equal({
       'sf:env:list': './lib/hooks/envList',
       'sf:env:display': './lib/hooks/envDisplay',
@@ -93,14 +98,9 @@ describe('dev generate plugin', () => {
     });
 
     const scripts = Object.keys(packageJson.scripts);
-    const keys = Object.keys(packageJson);
-
     expect(scripts).to.include('test:json-schema');
     expect(scripts).to.include('test:deprecation-policy');
     expect(scripts).to.include('test:command-reference');
-    expect(keys).to.include('homepage');
-    expect(keys).to.include('repository');
-    expect(keys).to.include('bugs');
 
     runResult.assertFileContent(
       path.join(runResult.cwd, 'plugin-test', 'src', 'commands', 'hello', 'world.ts'),
