@@ -13,76 +13,169 @@ import { exec } from 'shelljs';
 import { PackageJson } from '../../../../src/types';
 import { readJson, fileExists } from '../../../../src/util';
 
+async function setup(repo: string): Promise<TestSession> {
+  env.setString('TESTKIT_EXECUTABLE_PATH', path.join(process.cwd(), 'bin', 'dev'));
+  const session = await TestSession.create({
+    project: {
+      gitClone: repo,
+    },
+  });
+  exec('yarn', { cwd: session.project.dir, silent: true });
+  exec('yarn build', { cwd: session.project.dir, silent: true });
+  return session;
+}
+
 describe('dev generate command NUTs', () => {
   let session: TestSession;
   let pluginExecutable: string;
 
-  before(async () => {
-    env.setString('TESTKIT_EXECUTABLE_PATH', path.join(process.cwd(), 'bin', 'dev'));
-    session = await TestSession.create({
-      project: {
-        gitClone: 'https://github.com/salesforcecli/plugin-template-sf.git',
-      },
-    });
-    pluginExecutable = path.join(session.project.dir, 'bin', 'dev');
-    execCmd('yarn', { cwd: session.project.dir });
-    execCmd('yarn build', { cwd: session.project.dir });
-  });
-
-  after(async () => {
-    await session?.clean();
-  });
-
-  describe('generated command', () => {
-    const name = 'do:awesome:stuff';
-    const command = `dev generate command --name ${name} --force --nuts --unit`;
-
+  describe('2PP', () => {
     before(async () => {
-      execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+      session = await setup('https://github.com/salesforcecli/plugin-template-sf.git');
+      pluginExecutable = path.join(session.project.dir, 'bin', 'dev');
     });
 
-    it('should generate a command that can be executed', () => {
-      const result = exec(`${pluginExecutable} do awesome stuff --name Astro`, { silent: true });
-      expect(result.code).to.equal(0);
-      expect(result.stdout).to.contain('hello Astro');
+    after(async () => {
+      await session?.clean();
     });
 
-    it('should generate a markdown message file', async () => {
-      const messagesFile = path.join(session.project.dir, 'messages', `${name.replace(/:/g, '.')}.md`);
-      expect(fileExists(messagesFile)).to.be.true;
-    });
+    describe('generated command', () => {
+      const name = 'do:awesome:stuff';
+      const command = `dev generate command --name ${name} --force --nuts --unit`;
 
-    it('should generate a passing NUT', async () => {
-      const parts = name.split(':');
-      const cmd = parts.pop();
-      const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
-      expect(fileExists(nutFile)).to.be.true;
+      before(async () => {
+        execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+      });
 
-      const result = exec('yarn test:nuts', { cwd: session.project.dir, silent: true });
-      expect(result.code).to.equal(0);
-      expect(result.stdout).include(`${name.replace(/:/g, ' ')} NUTs`);
-    });
+      it('should generate a command that can be executed', () => {
+        const result = exec(`${pluginExecutable} do awesome stuff --name Astro`, { silent: true });
+        expect(result.code).to.equal(0);
+        expect(result.stdout).to.contain('hello Astro');
+      });
 
-    it('should generate a passing unit test', async () => {
-      const parts = name.split(':');
-      const cmd = parts.pop();
-      const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
-      expect(fileExists(unitTestFile)).to.be.true;
+      it('should generate a markdown message file', async () => {
+        const messagesFile = path.join(session.project.dir, 'messages', `${name.replace(/:/g, '.')}.md`);
+        expect(fileExists(messagesFile)).to.be.true;
+      });
 
-      const result = exec('yarn test', { cwd: session.project.dir, silent: true });
-      expect(result.code).to.equal(0);
-      expect(result.stdout).include(name.replace(/:/g, ' '));
-    });
+      it('should generate a passing NUT', async () => {
+        const parts = name.split(':');
+        const cmd = parts.pop();
+        const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
+        expect(fileExists(nutFile)).to.be.true;
 
-    it('should update topics in package.json', async () => {
-      const packageJson = readJson<PackageJson>(path.join(session.project.dir, 'package.json'));
-      expect(packageJson.oclif.topics.do).to.deep.equal({
-        description: 'description for do',
-        subtopics: {
-          awesome: {
-            description: 'description for do.awesome',
+        const result = exec('yarn test:nuts', { cwd: session.project.dir, silent: true });
+        expect(result.code).to.equal(0);
+        expect(result.stdout).include(`${name.replace(/:/g, ' ')} NUTs`);
+      });
+
+      it('should generate a passing unit test', async () => {
+        const parts = name.split(':');
+        const cmd = parts.pop();
+        const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
+        expect(fileExists(unitTestFile)).to.be.true;
+
+        const result = exec('yarn test', { cwd: session.project.dir, silent: true });
+        expect(result.code).to.equal(0);
+        expect(result.stdout).include(name.replace(/:/g, ' '));
+      });
+
+      it('should add new topics in package.json', async () => {
+        const packageJson = readJson<PackageJson>(path.join(session.project.dir, 'package.json'));
+        expect(packageJson.oclif.topics.do).to.deep.equal({
+          description: 'description for do',
+          subtopics: {
+            awesome: {
+              description: 'description for do.awesome',
+            },
           },
-        },
+        });
+      });
+    });
+
+    describe('generated command under existing topic', () => {
+      const name = 'deploy:awesome:stuff';
+      const command = `dev generate command --name ${name} --force --nuts --unit`;
+
+      before(async () => {
+        execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+      });
+
+      it('should add new topics in package.json', async () => {
+        const packageJson = readJson<PackageJson>(path.join(session.project.dir, 'package.json'));
+        expect(packageJson.oclif.topics.deploy).to.deep.equal({
+          external: true,
+          subtopics: {
+            awesome: {
+              description: 'description for deploy.awesome',
+            },
+          },
+        });
+      });
+    });
+  });
+
+  describe('3PP', () => {
+    before(async () => {
+      session = await setup('https://github.com/salesforcecli/plugin-template-sf-external.git');
+      pluginExecutable = path.join(session.project.dir, 'bin', 'dev');
+    });
+
+    after(async () => {
+      await session?.clean();
+    });
+
+    describe('generated command', () => {
+      const name = 'do:awesome:stuff';
+      const command = `dev generate command --name ${name} --force --nuts --unit`;
+
+      before(async () => {
+        execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+      });
+
+      it('should generate a command that can be executed', () => {
+        const result = exec(`${pluginExecutable} do awesome stuff --name Astro`, { silent: true });
+        expect(result.code).to.equal(0);
+        expect(result.stdout).to.contain('hello Astro');
+      });
+
+      it('should generate a markdown message file', async () => {
+        const messagesFile = path.join(session.project.dir, 'messages', `${name.replace(/:/g, '.')}.md`);
+        expect(fileExists(messagesFile)).to.be.true;
+      });
+
+      it('should generate a passing NUT', async () => {
+        const parts = name.split(':');
+        const cmd = parts.pop();
+        const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
+        expect(fileExists(nutFile)).to.be.true;
+
+        const result = exec('yarn test:nuts', { cwd: session.project.dir, silent: true });
+        expect(result.code).to.equal(0);
+        expect(result.stdout).include(`${name.replace(/:/g, ' ')} NUTs`);
+      });
+
+      it('should generate a passing unit test', async () => {
+        const parts = name.split(':');
+        const cmd = parts.pop();
+        const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
+        expect(fileExists(unitTestFile)).to.be.true;
+
+        const result = exec('yarn test', { cwd: session.project.dir, silent: true });
+        expect(result.code).to.equal(0);
+        expect(result.stdout).include(name.replace(/:/g, ' '));
+      });
+
+      it('should add new topics in package.json', async () => {
+        const packageJson = readJson<PackageJson>(path.join(session.project.dir, 'package.json'));
+        expect(packageJson.oclif.topics.do).to.deep.equal({
+          description: 'description for do',
+          subtopics: {
+            awesome: {
+              description: 'description for do.awesome',
+            },
+          },
+        });
       });
     });
   });
