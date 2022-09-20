@@ -14,7 +14,7 @@ import replace = require('replace-in-file');
 import { camelCase } from 'change-case';
 import { Messages } from '@salesforce/core';
 import { Hook, NYC, PackageJson } from '../types';
-import { addHookToPackageJson, readJson } from '../util';
+import { addHookToPackageJson, readJson, validatePluginName } from '../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'plugin.generator', [
@@ -67,7 +67,7 @@ export default class Plugin extends Generator {
         name: 'name',
         message: messages.getMessage('question.internal.name'),
         validate: (input: string): boolean | string => {
-          const result = /plugin-([a-z][a-z]*)(-[a-z]+)*$/.test(input);
+          const result = validatePluginName(input, '2PP');
           if (result) return true;
 
           return messages.getMessage('error.Invalid2ppName');
@@ -79,8 +79,7 @@ export default class Plugin extends Generator {
         name: 'name',
         message: messages.getMessage('question.external.name'),
         validate: (input: string): string | boolean => {
-          // This regex for valid npm package name is taken from https://github.com/dword-design/package-name-regex/blob/master/src/index.js
-          const result = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(input);
+          const result = validatePluginName(input, '3PP');
           if (result) return true;
 
           return messages.getMessage('error.Invalid3ppName');
