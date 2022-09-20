@@ -23,7 +23,7 @@ async function setup(repo: string): Promise<TestSession> {
   return session;
 }
 
-describe('dev generate command NUTs', () => {
+describe.skip('dev generate command NUTs', () => {
   let session: TestSession;
   let pluginExecutable: string;
 
