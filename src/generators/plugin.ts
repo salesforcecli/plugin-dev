@@ -14,7 +14,7 @@ import replace = require('replace-in-file');
 import { camelCase } from 'change-case';
 import { Messages } from '@salesforce/core';
 import { Hook, NYC, PackageJson } from '../types';
-import { addHookToPackageJson, readJson } from '../util';
+import { addHookToPackageJson, readJson, validatePluginName } from '../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'plugin.generator', [
@@ -26,7 +26,8 @@ const messages = Messages.load('@salesforce/plugin-dev', 'plugin.generator', [
   'question.author',
   'question.code-coverage',
   'question.hooks',
-  'error.InvalidName',
+  'error.Invalid2ppName',
+  'error.Invalid3ppName',
 ]);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
@@ -66,10 +67,10 @@ export default class Plugin extends Generator {
         name: 'name',
         message: messages.getMessage('question.internal.name'),
         validate: (input: string): boolean | string => {
-          const result = /plugin-[a-z]+$/.test(input);
+          const result = validatePluginName(input, '2PP');
           if (result) return true;
 
-          return messages.getMessage('error.InvalidName');
+          return messages.getMessage('error.Invalid2ppName');
         },
         when: (answers: { internal: boolean }): boolean => answers.internal,
       },
@@ -77,7 +78,12 @@ export default class Plugin extends Generator {
         type: 'input',
         name: 'name',
         message: messages.getMessage('question.external.name'),
-        validate: (input: string): boolean => Boolean(input),
+        validate: (input: string): string | boolean => {
+          const result = validatePluginName(input, '3PP');
+          if (result) return true;
+
+          return messages.getMessage('error.Invalid3ppName');
+        },
         when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
       {
