@@ -13,7 +13,7 @@ import { exec } from 'shelljs';
 import replace = require('replace-in-file');
 import { camelCase } from 'change-case';
 import { Messages } from '@salesforce/core';
-import { Hook, NYC, PackageJson } from '../types';
+import { Hook, PackageJson } from '../types';
 import { addHookToPackageJson, readJson } from '../util';
 
 Messages.importMessagesDirectory(__dirname);
@@ -110,7 +110,11 @@ export default class Plugin extends Generator {
     ]);
 
     const directory = path.resolve(this.answers.name);
-    exec(`git clone https://github.com/salesforcecli/plugin-template-sf.git ${directory}`);
+
+    const templateRepo = this.answers.internal
+      ? 'git clone https://github.com/salesforcecli/plugin-template-sf.git'
+      : 'git clone https://github.com/salesforcecli/plugin-template-sf-external.git';
+    exec(`${templateRepo} ${directory}`);
     try {
       fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
     } catch {
@@ -153,71 +157,13 @@ export default class Plugin extends Generator {
 
     const final = Object.assign({}, pjson, updated);
 
-    if (!this.answers.internal) {
-      // If we are building a 3PP plugin, we don't want to set defaults for these properties.
-      // We could ask these questions in the prompt, but that would be too many questions for a good UX.
-      // We want developers to be able to quickly get up and running with their plugin.
-      delete final.homepage;
-      delete final.repository;
-      delete final.bugs;
-
-      // 3PP plugins don't need these tests.
-      delete final.scripts['test:json-schema'];
-      delete final.scripts['test:deprecation-policy'];
-      delete final.scripts['test:command-reference'];
-      final.scripts.posttest = 'yarn lint';
-
-      // 3PP plugins don't need these either.
-      // Can't use the class's this.fs since it doesn't delete the directory, just the files in it.
-      fs.rmSync(this.destinationPath('./schemas'), { recursive: true });
-      fs.rmSync(this.destinationPath('./.git2gus'), { recursive: true });
-      fs.rmSync(this.destinationPath('./.github'), { recursive: true });
-      fs.rmSync(this.destinationPath('./command-snapshot.json'));
-      fs.rmSync(this.destinationPath('./CODE_OF_CONDUCT.md'));
-      fs.rmSync(this.destinationPath('./SECURITY.md'));
-
-      // Remove /schemas from the published files.
-      final.files = final.files.filter((f) => f !== '/schemas');
-
-      this.fs.delete(this.destinationPath('./.circleci/config.yml'));
-      this.fs.copy(
-        this.destinationPath('./.circleci/external.config.yml'),
-        this.destinationPath('./.circleci/config.yml')
-      );
-
-      const nycConfig = readJson<NYC>(path.join(this.env.cwd, '.nycrc'));
-      const codeCoverage = Number.parseInt(this.answers.codeCoverage.replace('%', ''), 10);
-      nycConfig['check-coverage'] = true;
-      nycConfig.lines = codeCoverage;
-      nycConfig.statements = codeCoverage;
-      nycConfig.functions = codeCoverage;
-      nycConfig.branches = codeCoverage;
-      delete nycConfig.extends;
-
-      this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
-
-      // Remove the eslint-config-salesforce-internal from eslint config.
-      replace.sync({
-        files: `${this.env.cwd}/.eslintrc.js`,
-        from: /'eslint-config-salesforce-license',\s/g,
-        to: '',
-      });
-
-      // Remove the copyright header from the generated files.
-      replace.sync({
-        files: `${this.env.cwd}/**/*`,
-        from: /\/\*\n\s\*\sCopyright([\S\s]*?)\s\*\/\n\n/g,
-        to: '',
-      });
-    }
-
     this.fs.delete(this.destinationPath('./.circleci/external.config.yml'));
 
     this.fs.writeJSON(this.destinationPath('./package.json'), final);
 
     replace.sync({
       files: `${this.env.cwd}/**/*`,
-      from: this.answers.internal ? /plugin-template-sf/g : /@salesforce\/plugin-template-sf/g,
+      from: this.answers.internal ? /plugin-template-sf/g : /plugin-template-sf-external/g,
       to: this.answers.name,
     });
   }
@@ -226,9 +172,10 @@ export default class Plugin extends Generator {
     exec('git init', { cwd: this.env.cwd });
     exec('yarn', { cwd: this.env.cwd });
     exec('yarn build', { cwd: this.env.cwd });
-    // Run yarn install in case dev-scripts detected changes during yarn build.
-    exec('yarn install', { cwd: this.env.cwd });
+
     if (this.answers.internal) {
+      // Run yarn install in case dev-scripts detected changes during yarn build.
+      exec('yarn install', { cwd: this.env.cwd });
       exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
     }
   }
