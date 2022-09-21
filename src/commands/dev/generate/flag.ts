@@ -77,7 +77,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
   public async run(): Promise<void> {
     const { flags } = await this.parse(DevGenerateFlag);
 
-    if (!fileExists('package.json')) throw messages.createError('error.InvalidDir');
+    if (!(await fileExists('package.json'))) throw messages.createError('error.InvalidDir');
 
     const ids = await this.findExistingCommands();
 

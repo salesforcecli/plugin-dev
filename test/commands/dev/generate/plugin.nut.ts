@@ -7,6 +7,9 @@
 import * as path from 'path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
 import { env } from '@salesforce/kit';
+import { expect } from 'chai';
+import { fileExists, readJson } from '../../../../src/util';
+import { NYC, PackageJson } from '../../../../src/types';
 
 describe('dev generate plugin NUTs', () => {
   let session: TestSession;
@@ -20,8 +23,8 @@ describe('dev generate plugin NUTs', () => {
     await session?.clean();
   });
 
-  it('should do interactive things', async () => {
-    const result = await execInteractiveCmd(
+  it('should generate a 2PP plugin', async () => {
+    await execInteractiveCmd(
       'dev generate plugin',
       {
         'internal Salesforce team': Interaction.Yes,
@@ -37,7 +40,48 @@ describe('dev generate plugin NUTs', () => {
       { cwd: session.dir, ensureExitCode: 0 }
     );
 
-    // eslint-disable-next-line no-console
-    console.log('result', result);
+    const packageJsonPath = path.join(session.dir, 'plugin-awesome', 'package.json');
+    expect(await fileExists(packageJsonPath)).to.be.true;
+
+    const packageJson = readJson<PackageJson>(packageJsonPath);
+
+    expect(packageJson.name).to.equal('@salesforce/plugin-awesome');
+    expect(packageJson.author).to.equal('Salesforce');
+    expect(packageJson.description).to.equal('a description');
+    expect(packageJson.bugs).to.equal('https://github.com/forcedotcom/cli/issues');
+    expect(packageJson.repository).to.equal('salesforcecli/plugin-awesome');
+    expect(packageJson.homepage).to.equal('https://github.com/salesforcecli/plugin-awesome');
+  });
+
+  it('should generate a 3PP plugin', async () => {
+    await execInteractiveCmd(
+      'dev generate plugin',
+      {
+        'internal Salesforce team': Interaction.No,
+        'name of your new plugin': ['my-plugin', Interaction.ENTER],
+        'description for your plugin': ['a description', Interaction.ENTER],
+        'author of the plugin': ['me', Interaction.ENTER],
+        'Select the % code coverage': [Interaction.DOWN, Interaction.ENTER],
+      },
+      { cwd: session.dir, ensureExitCode: 0 }
+    );
+
+    const packageJsonPath = path.join(session.dir, 'my-plugin', 'package.json');
+    expect(await fileExists(packageJsonPath)).to.be.true;
+
+    const packageJson = readJson<PackageJson>(packageJsonPath);
+
+    expect(packageJson.name).to.equal('my-plugin');
+    expect(packageJson.author).to.equal('me');
+    expect(packageJson.description).to.equal('a description');
+
+    const nycConfig = readJson<NYC>(path.join(session.dir, 'my-plugin', '.nycrc'));
+    expect(nycConfig).to.deep.equal({
+      'check-coverage': true,
+      lines: 75,
+      statements: 75,
+      functions: 75,
+      branches: 75,
+    });
   });
 });

@@ -31,9 +31,9 @@ export function addHookToPackageJson(hook: Hook, filename: string, pjson: Packag
   return pjson;
 }
 
-export function fileExists(file: string): boolean {
+export async function fileExists(file: string): Promise<boolean> {
   try {
-    fs.accessSync(file);
+    await fs.promises.access(file);
     return true;
   } catch {
     return false;
