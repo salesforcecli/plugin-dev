@@ -7,14 +7,12 @@
 import * as path from 'path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
 import { exec } from 'shelljs';
-import { env } from '@salesforce/kit';
 import { expect } from 'chai';
 
 describe('dev generate flag NUTs', () => {
   let session: TestSession;
 
   before(async () => {
-    env.setString('TESTKIT_EXECUTABLE_PATH', path.join(process.cwd(), 'bin', 'dev'));
     session = await TestSession.create();
 
     await execInteractiveCmd(
@@ -33,22 +31,45 @@ describe('dev generate flag NUTs', () => {
     await session?.clean();
   });
 
-  it('should generate a new flag', async () => {
+  it('should generate a new boolean flag', async () => {
     await execInteractiveCmd(
       'dev generate flag',
       {
         'Select the command': ['hello world', Interaction.ENTER],
         'Select the type': ['boolean', Interaction.ENTER],
-        "flag's name": ['my-flag', Interaction.ENTER],
+        "flag's name": ['my-boolean-flag', Interaction.ENTER],
         'short description': Interaction.ENTER,
         'single-character short name': ['m', Interaction.ENTER],
         'flag required': Interaction.Yes,
       },
-      { cwd: path.join(session.dir, 'plugin-template-sf-external'), ensureExitCode: 0 }
+      { cwd: path.join(session.dir, 'plugin-awesome'), ensureExitCode: 0 }
     );
 
-    const localBin = path.join(session.dir, 'plugin-template-sf-external', 'bin', 'dev');
+    const localBin = path.join(session.dir, 'plugin-awesome', 'bin', 'dev');
     const helpOutput = exec(`${localBin} hello world --help`, { silent: true });
-    expect(helpOutput.stdout).to.contain('-m, --my-flag       (required) Summary for my-flag.');
+    expect(helpOutput.stdout).to.contain('-m, --my-boolean-flag');
+  });
+
+  it('should generate a new integer flag', async () => {
+    await execInteractiveCmd(
+      'dev generate flag',
+      {
+        'Select the command': ['hello world', Interaction.ENTER],
+        'Select the type': ['integer', Interaction.ENTER],
+        "flag's name": ['my-integer-flag', Interaction.ENTER],
+        'short description': Interaction.ENTER,
+        'single-character short name': ['i', Interaction.ENTER],
+        'flag required': Interaction.No,
+        'specified multiple times': Interaction.Yes,
+        'minimum integer value': ['0', Interaction.ENTER],
+        'maximum integer value': ['10', Interaction.ENTER],
+        'default integer value': ['5', Interaction.ENTER],
+      },
+      { cwd: path.join(session.dir, 'plugin-awesome'), ensureExitCode: 0 }
+    );
+
+    const localBin = path.join(session.dir, 'plugin-awesome', 'bin', 'dev');
+    const helpOutput = exec(`${localBin} hello world --help`, { silent: true });
+    expect(helpOutput.stdout).to.contain('-i, --my-integer-flag=<value>...');
   });
 });

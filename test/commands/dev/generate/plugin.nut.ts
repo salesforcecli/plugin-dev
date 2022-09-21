@@ -6,7 +6,6 @@
  */
 import * as path from 'path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
-import { env } from '@salesforce/kit';
 import { expect } from 'chai';
 import { fileExists, readJson } from '../../../../src/util';
 import { NYC, PackageJson } from '../../../../src/types';
@@ -15,15 +14,14 @@ describe('dev generate plugin NUTs', () => {
   let session: TestSession;
 
   before(async () => {
-    env.setString('TESTKIT_EXECUTABLE_PATH', path.join(process.cwd(), 'bin', 'dev'));
-    session = await TestSession.create({});
+    session = await TestSession.create();
   });
 
   after(async () => {
     await session?.clean();
   });
 
-  it.skip('should generate a 2PP plugin', async () => {
+  it('should generate a 2PP plugin', async () => {
     await execInteractiveCmd(
       'dev generate plugin',
       {
@@ -53,7 +51,7 @@ describe('dev generate plugin NUTs', () => {
     expect(packageJson.homepage).to.equal('https://github.com/salesforcecli/plugin-awesome');
   });
 
-  it.skip('should generate a 3PP plugin', async () => {
+  it('should generate a 3PP plugin', async () => {
     await execInteractiveCmd(
       'dev generate plugin',
       {
@@ -85,7 +83,7 @@ describe('dev generate plugin NUTs', () => {
     });
   });
 
-  it.skip('should show validation message if invalid plugin name', async () => {
+  it('should show validation message if invalid plugin name', async () => {
     await execInteractiveCmd(
       'dev generate plugin',
       {
