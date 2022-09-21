@@ -23,7 +23,7 @@ describe('dev generate plugin NUTs', () => {
     await session?.clean();
   });
 
-  it('should generate a 2PP plugin', async () => {
+  it.skip('should generate a 2PP plugin', async () => {
     await execInteractiveCmd(
       'dev generate plugin',
       {
@@ -53,7 +53,7 @@ describe('dev generate plugin NUTs', () => {
     expect(packageJson.homepage).to.equal('https://github.com/salesforcecli/plugin-awesome');
   });
 
-  it('should generate a 3PP plugin', async () => {
+  it.skip('should generate a 3PP plugin', async () => {
     await execInteractiveCmd(
       'dev generate plugin',
       {
@@ -82,6 +82,39 @@ describe('dev generate plugin NUTs', () => {
       statements: 75,
       functions: 75,
       branches: 75,
+    });
+  });
+
+  it.skip('should show validation message if invalid plugin name', async () => {
+    await execInteractiveCmd(
+      'dev generate plugin',
+      {
+        'internal Salesforce team': Interaction.No,
+        'name of your new plugin': ['my-plugin!', Interaction.ENTER],
+        'name must be a valid npm package name': [Interaction.BACKSPACE, Interaction.ENTER],
+        'description for your plugin': ['a description', Interaction.ENTER],
+        'author of the plugin': ['me', Interaction.ENTER],
+        'Select the % code coverage': Interaction.ENTER,
+      },
+      { cwd: session.dir, ensureExitCode: 0 }
+    );
+
+    const packageJsonPath = path.join(session.dir, 'my-plugin', 'package.json');
+    expect(await fileExists(packageJsonPath)).to.be.true;
+
+    const packageJson = readJson<PackageJson>(packageJsonPath);
+
+    expect(packageJson.name).to.equal('my-plugin');
+    expect(packageJson.author).to.equal('me');
+    expect(packageJson.description).to.equal('a description');
+
+    const nycConfig = readJson<NYC>(path.join(session.dir, 'my-plugin', '.nycrc'));
+    expect(nycConfig).to.deep.equal({
+      'check-coverage': true,
+      lines: 50,
+      statements: 50,
+      functions: 50,
+      branches: 50,
     });
   });
 });
