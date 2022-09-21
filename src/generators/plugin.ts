@@ -129,6 +129,8 @@ export default class Plugin extends Generator {
 
     this.destinationRoot(directory);
     this.env.cwd = this.destinationPath();
+
+    exec('git init', { cwd: this.env.cwd });
   }
 
   public writing(): void {
@@ -186,7 +188,6 @@ export default class Plugin extends Generator {
   }
 
   public end(): void {
-    exec('git init', { cwd: this.env.cwd });
     exec('yarn', { cwd: this.env.cwd });
     exec('yarn build', { cwd: this.env.cwd });
 
