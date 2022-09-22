@@ -7,14 +7,12 @@
 
 import * as path from 'path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
-import { env } from '@salesforce/kit';
 import { expect } from 'chai';
 import { exec } from 'shelljs';
 import { PackageJson } from '../../../../src/types';
 import { readJson, fileExists } from '../../../../src/util';
 
 async function setup(repo: string): Promise<TestSession> {
-  env.setString('TESTKIT_EXECUTABLE_PATH', path.join(process.cwd(), 'bin', 'dev'));
   const session = await TestSession.create({
     project: {
       gitClone: repo,
@@ -44,7 +42,7 @@ describe('dev generate command NUTs', () => {
       const command = `dev generate command --name ${name} --force --nuts --unit`;
 
       before(async () => {
-        execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+        execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir, silent: true });
       });
 
       it('should generate a command that can be executed', () => {
@@ -64,7 +62,15 @@ describe('dev generate command NUTs', () => {
         const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
         expect(fileExists(nutFile)).to.be.true;
 
-        const result = exec('yarn test:nuts', { cwd: session.project.dir, silent: true });
+        const result = exec('yarn test:nuts', {
+          cwd: session.project.dir,
+          silent: true,
+          env: {
+            ...process.env,
+            TESTKIT_EXECUTABLE_PATH: pluginExecutable,
+          },
+        });
+
         expect(result.code).to.equal(0);
         expect(result.stdout).include(`${name.replace(/:/g, ' ')} NUTs`);
       });
@@ -150,7 +156,14 @@ describe('dev generate command NUTs', () => {
         const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
         expect(fileExists(nutFile)).to.be.true;
 
-        const result = exec('yarn test:nuts', { cwd: session.project.dir, silent: true });
+        const result = exec('yarn test:nuts', {
+          cwd: session.project.dir,
+          silent: true,
+          env: {
+            ...process.env,
+            TESTKIT_EXECUTABLE_PATH: pluginExecutable,
+          },
+        });
         expect(result.code).to.equal(0);
         expect(result.stdout).include(`${name.replace(/:/g, ' ')} NUTs`);
       });

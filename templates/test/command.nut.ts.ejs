@@ -7,17 +7,14 @@
    */
 
 <% } %>
-import * as path from 'path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
-import { env } from '@salesforce/kit';
 import { expect } from 'chai';
 
 describe('<%- cmd %> NUTs', () => {
   let session: TestSession;
 
   before(async () => {
-    env.setString('TESTKIT_EXECUTABLE_PATH', path.join(process.cwd(), 'bin', 'dev'));
-    session = await TestSession.create({});
+    session = await TestSession.create();
   });
 
   after(async () => {
