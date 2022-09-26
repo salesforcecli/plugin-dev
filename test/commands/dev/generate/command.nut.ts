@@ -100,11 +100,30 @@ describe('dev generate command NUTs', () => {
     });
 
     describe('generated command under existing topic', () => {
-      const name = 'deploy:awesome:stuff';
-      const command = `dev generate command --name ${name} --force --nuts --unit`;
-
       before(async () => {
-        execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+        execCmd('dev generate command --name deploy:awesome:stuff --force --nuts --unit', {
+          ensureExitCode: 0,
+          cli: 'sf',
+          cwd: session.project.dir,
+        });
+
+        execCmd('dev generate command --name hello:every:one --force --nuts --unit', {
+          ensureExitCode: 0,
+          cli: 'sf',
+          cwd: session.project.dir,
+        });
+      });
+
+      it('should add new subtopics in package.json', async () => {
+        const packageJson = readJson<PackageJson>(path.join(session.project.dir, 'package.json'));
+        expect(packageJson.oclif.topics.hello).to.deep.equal({
+          description: 'Commands to say hello.',
+          subtopics: {
+            every: {
+              description: 'description for hello.every',
+            },
+          },
+        });
       });
 
       it('should add new topics in package.json', async () => {
