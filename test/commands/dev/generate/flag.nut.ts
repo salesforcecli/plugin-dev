@@ -31,7 +31,10 @@ describe('dev generate flag NUTs', () => {
     await session?.clean();
   });
 
-  it('should generate a new boolean flag', async () => {
+  it.only('should generate a new boolean flag', async () => {
+    // eslint-disable-next-line no-console
+    console.log('HELLO WORLD');
+    process.env.DEBUG = 'testkit:execInteractiveCmd';
     await execInteractiveCmd(
       'dev generate flag',
       {
