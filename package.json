@@ -24,7 +24,7 @@
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^3.1.4",
     "@oclif/test": "^2.1.1",
-    "@salesforce/cli-plugins-testkit": "^2.5.0",
+    "@salesforce/cli-plugins-testkit": "^2.5.1",
     "@salesforce/dev-config": "^3.0.0",
     "@salesforce/dev-scripts": "^2",
     "@salesforce/plugin-command-reference": "^2.1.1",
@@ -125,7 +125,7 @@
     "pretest": "sf-compile-test",
     "test": "sf-test --timeout 600000",
     "test:deprecation-policy": "./bin/dev snapshot:compare",
-    "test:nuts": "nyc mocha \"test/**/*.nut.ts\" --slow 4500 --timeout 600000",
+    "test:nuts": "nyc mocha \"test/**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
     "version": "oclif readme"
   },
   "publishConfig": {
