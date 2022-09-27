@@ -52,7 +52,7 @@ describe('dev generate plugin NUTs', () => {
     expect(packageJson.homepage).to.equal('https://github.com/salesforcecli/plugin-awesome');
   });
 
-  it('should generate a 3PP plugin', async () => {
+  it.only('should generate a 3PP plugin', async () => {
     process.env.DEBUG = 'testkit:execInteractiveCmd';
     await execInteractiveCmd(
       'dev generate plugin',
