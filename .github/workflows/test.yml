@@ -5,10 +5,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  unit-tests:
-    uses: salesforcecli/github-workflows/.github/workflows/unitTest.yml@main
+  # unit-tests:
+  #   uses: salesforcecli/github-workflows/.github/workflows/unitTest.yml@main
   nuts:
-    needs: unit-tests
+    # needs: unit-tests
     uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
     secrets: inherit
     strategy:
