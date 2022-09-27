@@ -10,7 +10,7 @@ import { exec } from 'shelljs';
 import { expect } from 'chai';
 
 function getLocalBin(...parts: string[]): string {
-  return path.join(...parts, process.cwd(), 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev');
+  return path.join(...parts, 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev');
 }
 
 describe('dev generate flag NUTs', () => {
