@@ -9,6 +9,10 @@ import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-pl
 import { exec } from 'shelljs';
 import { expect } from 'chai';
 
+function getLocalBin(...parts: string[]): string {
+  return path.join(...parts, process.cwd(), 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev');
+}
+
 describe('dev generate flag NUTs', () => {
   let session: TestSession;
 
@@ -31,10 +35,7 @@ describe('dev generate flag NUTs', () => {
     await session?.clean();
   });
 
-  it.only('should generate a new boolean flag', async () => {
-    // eslint-disable-next-line no-console
-    console.log('HELLO WORLD');
-    process.env.DEBUG = 'testkit:execInteractiveCmd';
+  it('should generate a new boolean flag', async () => {
     await execInteractiveCmd(
       'dev generate flag',
       {
@@ -48,7 +49,7 @@ describe('dev generate flag NUTs', () => {
       { cwd: path.join(session.dir, 'plugin-awesome'), ensureExitCode: 0 }
     );
 
-    const localBin = path.join(session.dir, 'plugin-awesome', 'bin', 'dev');
+    const localBin = getLocalBin(session.dir, 'plugin-awesome');
     const helpOutput = exec(`${localBin} hello world --help`, { silent: true });
     expect(helpOutput.stdout).to.contain('-m, --my-boolean-flag');
   });
@@ -71,7 +72,7 @@ describe('dev generate flag NUTs', () => {
       { cwd: path.join(session.dir, 'plugin-awesome'), ensureExitCode: 0 }
     );
 
-    const localBin = path.join(session.dir, 'plugin-awesome', 'bin', 'dev');
+    const localBin = getLocalBin(session.dir, 'plugin-awesome');
     const helpOutput = exec(`${localBin} hello world --help`, { silent: true });
     expect(helpOutput.stdout).to.contain('-i, --my-integer-flag=<value>...');
   });
