@@ -12,7 +12,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Duration } from '@salesforce/kit';
 
-import { Config, Interfaces, toConfiguredId, toStandardizedId } from '@oclif/core';
+import { Config, Interfaces, toStandardizedId } from '@oclif/core';
 import * as fg from 'fast-glob';
 import { fileExists, FlagBuilder } from '../../../util';
 import { FlagAnswers } from '../../../types';
@@ -308,14 +308,24 @@ export default class DevGenerateFlag extends SfCommand<void> {
   private async findExistingCommands(): Promise<string[]> {
     return (await fg('src/commands/**/*.ts'))
       .map((file) => {
-        const p = path.parse(file.replace(path.join('.', 'src', 'commands'), ''));
+        // eslint-disable-next-line no-console
+        console.log('file', file);
+        // fast-glob always returns posix paths so no need to use path.join here
+        const p = path.parse(file.replace('./src/commands', ''));
+        // eslint-disable-next-line no-console
+        console.log('p', p);
         const topics = p.dir.split('/');
+        // eslint-disable-next-line no-console
+        console.log('topics', topics);
         const command = p.name !== 'index' && p.name;
-        const id = [...topics, command].filter((f) => f).join(':');
+        // eslint-disable-next-line no-console
+        console.log('command', command);
+        const id = [...topics, command].filter((f) => f).join(this.config.topicSeparator);
+        // eslint-disable-next-line no-console
+        console.log('id', id);
         return id === '' ? '.' : id;
       })
-      .sort()
-      .map((c) => toConfiguredId(c, this.config));
+      .sort();
   }
 
   private async updateMarkdownFile(answers: FlagAnswers, commandName: string): Promise<void> {
