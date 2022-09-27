@@ -50,7 +50,10 @@ describe('dev generate flag NUTs', () => {
     );
 
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
-    const helpOutput = exec(`${localBin} hello world --help`, { silent: true });
+    exec('ls', { silent: false, cwd: session.dir });
+    exec('ls', { silent: false, cwd: path.join(session.dir, 'plugin-awesome') });
+    exec('ls', { silent: false, cwd: path.join(session.dir, 'plugin-awesome', 'bin') });
+    const helpOutput = exec(`${localBin} hello world --help`, { silent: false });
     expect(helpOutput.stdout).to.contain('-m, --my-boolean-flag');
   });
 
@@ -73,7 +76,10 @@ describe('dev generate flag NUTs', () => {
     );
 
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
-    const helpOutput = exec(`${localBin} hello world --help`, { silent: true });
+    exec('ls', { silent: false, cwd: session.dir });
+    exec('ls', { silent: false, cwd: path.join(session.dir, 'plugin-awesome') });
+    exec('ls', { silent: false, cwd: path.join(session.dir, 'plugin-awesome', 'bin') });
+    const helpOutput = exec(`${localBin} hello world --help`, { silent: false });
     expect(helpOutput.stdout).to.contain('-i, --my-integer-flag=<value>...');
   });
 });
