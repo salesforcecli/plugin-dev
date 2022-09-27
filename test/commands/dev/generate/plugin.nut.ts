@@ -21,7 +21,7 @@ describe('dev generate plugin NUTs', () => {
     await session?.clean();
   });
 
-  it.only('should generate a 2PP plugin', async () => {
+  it('should generate a 2PP plugin', async () => {
     await execInteractiveCmd(
       'dev generate plugin',
       {
@@ -35,7 +35,7 @@ describe('dev generate plugin NUTs', () => {
           Interaction.ENTER,
         ],
       },
-      { cwd: session.dir, ensureExitCode: 0, env: { ...process.env, DEBUG: 'testkit:execInteractiveCmd' } }
+      { cwd: session.dir, ensureExitCode: 0 }
     );
 
     const packageJsonPath = path.join(session.dir, 'plugin-awesome', 'package.json');
