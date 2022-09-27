@@ -7,6 +7,7 @@
 import * as path from 'path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
+import { exec } from 'shelljs';
 import { fileExists, readJson } from '../../../../src/util';
 import { NYC, PackageJson } from '../../../../src/types';
 
@@ -52,6 +53,7 @@ describe('dev generate plugin NUTs', () => {
   });
 
   it('should generate a 3PP plugin', async () => {
+    process.env.DEBUG = 'testkit:execInteractiveCmd';
     await execInteractiveCmd(
       'dev generate plugin',
       {
@@ -64,6 +66,7 @@ describe('dev generate plugin NUTs', () => {
       { cwd: session.dir, ensureExitCode: 0 }
     );
 
+    exec('ls', { cwd: path.join(session.dir, 'my-plugin'), silent: false });
     const packageJsonPath = path.join(session.dir, 'my-plugin', 'package.json');
     expect(await fileExists(packageJsonPath)).to.be.true;
 
