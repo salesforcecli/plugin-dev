@@ -1644,7 +1644,7 @@
     semver "^7.3.7"
     tsutils "^3.21.0"
 
-"@typescript-eslint/utils@5.38.1", "@typescript-eslint/utils@^5.27.1":
+"@typescript-eslint/utils@5.38.1", "@typescript-eslint/utils@^5.38.0":
   version "5.38.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/utils/-/utils-5.38.1.tgz#e3ac37d7b33d1362bb5adf4acdbe00372fb813ef"
   integrity sha512-oIuUiVxPBsndrN81oP8tXnFa/+EcZ03qLqPDfSZ5xIJVm7A9V0rlkQwwBOAGtrdN70ZKDlKv+l1BeT4eSFxwXA==
@@ -3309,12 +3309,12 @@ eslint-plugin-prettier@^3.1.3, eslint-plugin-prettier@^3.4.1:
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
-eslint-plugin-sf-plugin@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-sf-plugin/-/eslint-plugin-sf-plugin-1.1.0.tgz#be6c5bdd8417c8ab2feb55401432349cab1fbc0d"
-  integrity sha512-YFftQF7GoOk6PWc7HfPRuFDZCLwXVdmuiiZ5g9R6njx5+UrFsX41Sb081+FVXPJ/OfEP6jxYDkC2V5fGDgPDjg==
+eslint-plugin-sf-plugin@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-sf-plugin/-/eslint-plugin-sf-plugin-1.1.1.tgz#5ccaa9ffee1253cc117361367b4d792bc2b494ff"
+  integrity sha512-Ee9NFePj4jWoXJgLHJNbrCZ58ERUtmC8VbNc2d66QGzjCsoS0rM9eqLsE0EYRLc+TTPNmTxhGpzQaMycmC/WRA==
   dependencies:
-    "@typescript-eslint/utils" "^5.27.1"
+    "@typescript-eslint/utils" "^5.38.0"
 
 eslint-scope@^5.1.1:
   version "5.1.1"
