@@ -40,6 +40,13 @@ export function fileExists(file: string): boolean {
   }
 }
 
+export function validatePluginName(name: string, type: '2PP' | '3PP'): boolean {
+  // This regex for valid npm package name is taken from https://github.com/dword-design/package-name-regex/blob/master/src/index.js
+  const validNpmPackageName = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
+  const valid2PPName = /plugin-([a-z][a-z]*)(-[a-z]+)*$/;
+  return type === '2PP' ? validNpmPackageName.test(name) && valid2PPName.test(name) : validNpmPackageName.test(name);
+}
+
 export class FlagBuilder {
   public constructor(private answers: FlagAnswers, private commandFilePath: string) {}
 

@@ -24,7 +24,11 @@ export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
   unit: boolean;
 }
 
-export function addTopics(newCmd: string, commands: string[] = []): Record<string, Topic> {
+export function addTopics(
+  newCmd: string,
+  existingTopics: Record<string, Topic>,
+  commands: string[] = []
+): Record<string, Topic> {
   const updated: Record<string, Topic> = {};
 
   const paths: string[] = [];
@@ -45,12 +49,14 @@ export function addTopics(newCmd: string, commands: string[] = []): Record<strin
             subtopics: existing,
           }
         : {
-            description: `description for ${p}`,
+            description: get(existingTopics, `${p}.description`, `description for ${p}`),
             subtopics: existing,
           };
       set(updated, p, merged);
     } else {
-      const entry = isExternal ? { external: true } : { description: `description for ${p}` };
+      const entry = isExternal
+        ? { external: true }
+        : { description: get(existingTopics, `${p}.description`, `description for ${p}`) };
       set(updated, p, entry);
     }
   }
@@ -61,6 +67,8 @@ export function addTopics(newCmd: string, commands: string[] = []): Record<strin
 export default class Command extends Generator {
   public declare options: CommandGeneratorOptions;
   public pjson!: PackageJson;
+
+  private internalPlugin = false;
 
   public constructor(args: string | string[], opts: CommandGeneratorOptions) {
     super(args, opts);
@@ -75,10 +83,11 @@ export default class Command extends Generator {
       const commandSnapshotUrl = 'https://raw.githubusercontent.com/salesforcecli/cli/main/command-snapshot.json';
       const commandSnapshot = await got(commandSnapshotUrl).json<Array<{ command: string }>>();
       const commands = commandSnapshot.map((c) => c.command.replace(/:/g, '.'));
-      const newTopics = addTopics(this.options.name, commands);
+      const newTopics = addTopics(this.options.name, this.pjson.oclif.topics, commands);
       this.pjson.oclif.topics = { ...this.pjson.oclif.topics, ...newTopics };
+      this.internalPlugin = true;
     } else {
-      const newTopics = addTopics(this.options.name);
+      const newTopics = addTopics(this.options.name, this.pjson.oclif.topics);
       this.pjson.oclif.topics = { ...this.pjson.oclif.topics, ...newTopics };
     }
 
@@ -123,6 +132,7 @@ export default class Command extends Generator {
       returnType: `${className}Result`,
       commandPath,
       year: new Date().getFullYear(),
+      copyright: this.internalPlugin,
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
     };
@@ -144,6 +154,7 @@ export default class Command extends Generator {
     const opts = {
       cmd: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
+      copyright: this.internalPlugin,
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
     };
@@ -159,6 +170,7 @@ export default class Command extends Generator {
       ...this.options,
       name: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
+      copyright: this.internalPlugin,
     });
   }
 }

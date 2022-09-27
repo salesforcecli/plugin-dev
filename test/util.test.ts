@@ -7,7 +7,7 @@
 
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import { FlagBuilder } from '../src/util';
+import { FlagBuilder, validatePluginName } from '../src/util';
 import { FlagAnswers } from '../src/types';
 
 const templateCommand = `
@@ -776,6 +776,117 @@ describe('FlagBuilder', () => {
       expect(updated).to.include(
         "const messages = Messages.load('@salesforce/plugin-rosie', 'hello.world', ['summary', 'description', 'examples', 'info.hello', 'flags.my-flag.summary']);"
       );
+    });
+  });
+});
+
+describe('validatePluginName', () => {
+  describe('2PP', () => {
+    it('should return true for valid plugin name', () => {
+      expect(validatePluginName('plugin-test', '2PP')).to.be.true;
+    });
+
+    it('should return true for valid plugin name with multiple hyphens', () => {
+      expect(validatePluginName('plugin-test-with-hyphens', '2PP')).to.be.true;
+    });
+
+    it('should return false for empty plugin name', () => {
+      expect(validatePluginName('', '2PP')).to.be.false;
+    });
+
+    it('should return false for plugin name with number', () => {
+      expect(validatePluginName('plugin-test2', '2PP')).to.be.false;
+    });
+
+    it('should return false for plugin name that does not start with plugin-', () => {
+      expect(validatePluginName('my-plugin', '2PP')).to.be.false;
+    });
+
+    it('should return false for plugin name that contains special characters', () => {
+      expect(validatePluginName('plugin-test!', '2PP')).to.be.false;
+    });
+  });
+
+  describe('3PP', () => {
+    it('should return true for valid plugin name', () => {
+      expect(validatePluginName('my-plugin', '3PP')).to.be.true;
+    });
+
+    it('should return true for valid plugin name with multiple hyphens', () => {
+      expect(validatePluginName('my-plugin-with-hyphens', '3PP')).to.be.true;
+    });
+
+    it('should return true for valid plugin name with underscores', () => {
+      expect(validatePluginName('my_plugin', '3PP')).to.be.true;
+    });
+
+    it('should return true for valid plugin name with period', () => {
+      expect(validatePluginName('my.plugin', '3PP')).to.be.true;
+    });
+
+    it('should return true for valid plugin name with numbers', () => {
+      expect(validatePluginName('my-plugin-123', '3PP')).to.be.true;
+    });
+
+    it('should return true for valid plugin name that starts with @', () => {
+      expect(validatePluginName('@me/my-plugin', '3PP')).to.be.true;
+    });
+
+    it('should return false for empty plugin name', () => {
+      expect(validatePluginName('', '3PP')).to.be.false;
+    });
+
+    it('should return false for valid plugin name that starts with period', () => {
+      expect(validatePluginName('.my-plugin', '3PP')).to.be.false;
+    });
+
+    it('should return false for valid plugin name that starts with underscore', () => {
+      expect(validatePluginName('_my-plugin', '3PP')).to.be.false;
+    });
+
+    it('should return false for valid plugin name that contains capitals', () => {
+      expect(validatePluginName('my-Plugin', '3PP')).to.be.false;
+    });
+
+    it('should return false for plugin name that contains special characters', () => {
+      const specialCharacters = [
+        ' ',
+        '!',
+        '#',
+        '$',
+        '%',
+        '^',
+        '&',
+        '*',
+        '(',
+        ')',
+        '+',
+        '=',
+        '{',
+        '}',
+        '[',
+        ']',
+        '|',
+        '\\',
+        ':',
+        ';',
+        '"',
+        "'",
+        '<',
+        '>',
+        ',',
+        '?',
+        '/',
+      ];
+
+      for (const char of specialCharacters) {
+        expect(validatePluginName(`plugin-test${char}`, '3PP'), `expect name to be invalid with ${char} at end`).to.be
+          .false;
+        expect(validatePluginName(`plugin${char}test`, '3PP'), `expect name to be invalid with ${char} at middle`).to
+          .false;
+        expect(validatePluginName(`${char}plugin-test`, '3PP'), `expect name to be invalid with ${char} at beginning`)
+          .to.be.false;
+      }
     });
   });
 });

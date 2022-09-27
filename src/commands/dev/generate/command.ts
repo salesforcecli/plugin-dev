@@ -43,7 +43,7 @@ export default class GenerateCommand extends SfCommand<void> {
     unit: Flags.boolean({
       summary: messages.getMessage('flags.unit.summary'),
       allowNo: true,
-      default: false,
+      default: true,
     }),
   };
 
