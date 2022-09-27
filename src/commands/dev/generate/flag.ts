@@ -311,7 +311,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
         // eslint-disable-next-line no-console
         console.log('file', file);
         // fast-glob always returns posix paths so no need to use path.join here
-        const p = path.parse(file.replace('./src/commands', ''));
+        const p = path.parse(file.replace('src/commands', ''));
         // eslint-disable-next-line no-console
         console.log('p', p);
         const topics = p.dir.split('/');
