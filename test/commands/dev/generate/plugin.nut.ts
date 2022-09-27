@@ -10,8 +10,6 @@ import { expect } from 'chai';
 import { fileExists, readJson } from '../../../../src/util';
 import { NYC, PackageJson } from '../../../../src/types';
 
-process.env.DEBUG = 'testkit:execInteractiveCmd';
-
 describe('dev generate plugin NUTs', () => {
   let session: TestSession;
 
@@ -37,7 +35,7 @@ describe('dev generate plugin NUTs', () => {
           Interaction.ENTER,
         ],
       },
-      { cwd: session.dir, ensureExitCode: 0 }
+      { cwd: session.dir, ensureExitCode: 0, env: { ...process.env, DEBUG: 'testkit:execInteractiveCmd' } }
     );
 
     const packageJsonPath = path.join(session.dir, 'plugin-awesome', 'package.json');
