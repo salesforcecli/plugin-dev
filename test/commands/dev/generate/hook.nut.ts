@@ -10,7 +10,7 @@ import { expect } from 'chai';
 import { PackageJson } from '../../../../src/types';
 import { readJson, fileExists } from '../../../../src/util';
 
-describe.skip('dev generate hook NUTs', () => {
+describe('dev generate hook NUTs', () => {
   let session: TestSession;
 
   before(async () => {
