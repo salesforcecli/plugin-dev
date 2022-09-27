@@ -8179,10 +8179,10 @@ yargs@^17.0.0, yargs@^17.2.1, yargs@^17.3.1:
     y18n "^5.0.5"
     yargs-parser "^21.0.0"
 
-yeoman-environment@^3.10.0, yeoman-environment@^3.9.1:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/yeoman-environment/-/yeoman-environment-3.10.0.tgz#d8c56571b68d16b4af8abfb950f83acc503eed77"
-  integrity sha512-sYtSxBK9daq21QjoskJTHKLQ1xEsRPURkmFV/aM8HS8ZlQVzwx57Rz1zCs8EGPhK4vqsmTE8H92Gp1jg1fT3EA==
+yeoman-environment@^3.11.1, yeoman-environment@^3.9.1:
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/yeoman-environment/-/yeoman-environment-3.11.1.tgz#7379489f0925a9e8cb619c0333629ba1ff8d4bbd"
+  integrity sha512-WxPntJFhdJiBtkaJOmkv/v5siWVJvLX2GB26TXMPaIgxHGhreKUwACI2jzjnsFcHv1F8Uayp668NZsz8ygalvg==
   dependencies:
     "@npmcli/arborist" "^4.0.4"
     are-we-there-yet "^2.0.0"

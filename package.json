@@ -15,7 +15,7 @@
     "replace-in-file": "^6.3.2",
     "shelljs": "^0.8.5",
     "tslib": "^2",
-    "yeoman-environment": "^3.10.0",
+    "yeoman-environment": "^3.11.1",
     "yeoman-generator": "^5.7.0",
     "yosay": "^2.0.2"
   },
