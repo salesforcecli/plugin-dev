@@ -308,21 +308,11 @@ export default class DevGenerateFlag extends SfCommand<void> {
   private async findExistingCommands(): Promise<string[]> {
     return (await fg('src/commands/**/*.ts'))
       .map((file) => {
-        // eslint-disable-next-line no-console
-        console.log('file', file);
         // fast-glob always returns posix paths so no need to use path.join here
         const p = path.parse(file.replace('src/commands', ''));
-        // eslint-disable-next-line no-console
-        console.log('p', p);
         const topics = p.dir.split('/');
-        // eslint-disable-next-line no-console
-        console.log('topics', topics);
         const command = p.name !== 'index' && p.name;
-        // eslint-disable-next-line no-console
-        console.log('command', command);
         const id = [...topics, command].filter((f) => f).join(this.config.topicSeparator);
-        // eslint-disable-next-line no-console
-        console.log('id', id);
         return id === '' ? '.' : id;
       })
       .sort();
