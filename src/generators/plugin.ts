@@ -176,8 +176,6 @@ export default class Plugin extends Generator {
       this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
     }
 
-    this.fs.delete(this.destinationPath('./.circleci/external.config.yml'));
-
     this.fs.writeJSON(this.destinationPath('./package.json'), final);
 
     replace.sync({
