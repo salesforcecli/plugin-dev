@@ -14,7 +14,7 @@ import replace = require('replace-in-file');
 import { camelCase } from 'change-case';
 import { Messages } from '@salesforce/core';
 import { Hook, NYC, PackageJson } from '../types';
-import { addHookToPackageJson, readJson } from '../util';
+import { addHookToPackageJson, readJson, validatePluginName } from '../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'plugin.generator', [
@@ -26,7 +26,8 @@ const messages = Messages.load('@salesforce/plugin-dev', 'plugin.generator', [
   'question.author',
   'question.code-coverage',
   'question.hooks',
-  'error.InvalidName',
+  'error.Invalid2ppName',
+  'error.Invalid3ppName',
 ]);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
@@ -66,10 +67,10 @@ export default class Plugin extends Generator {
         name: 'name',
         message: messages.getMessage('question.internal.name'),
         validate: (input: string): boolean | string => {
-          const result = /plugin-[a-z]+$/.test(input);
+          const result = validatePluginName(input, '2PP');
           if (result) return true;
 
-          return messages.getMessage('error.InvalidName');
+          return messages.getMessage('error.Invalid2ppName');
         },
         when: (answers: { internal: boolean }): boolean => answers.internal,
       },
@@ -77,7 +78,12 @@ export default class Plugin extends Generator {
         type: 'input',
         name: 'name',
         message: messages.getMessage('question.external.name'),
-        validate: (input: string): boolean => Boolean(input),
+        validate: (input: string): string | boolean => {
+          const result = validatePluginName(input, '3PP');
+          if (result) return true;
+
+          return messages.getMessage('error.Invalid3ppName');
+        },
         when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
       {
@@ -110,7 +116,11 @@ export default class Plugin extends Generator {
     ]);
 
     const directory = path.resolve(this.answers.name);
-    exec(`git clone https://github.com/salesforcecli/plugin-template-sf.git ${directory}`);
+
+    const templateRepo = this.answers.internal
+      ? 'git clone https://github.com/salesforcecli/plugin-template-sf.git'
+      : 'git clone https://github.com/salesforcecli/plugin-template-sf-external.git';
+    exec(`${templateRepo} ${directory}`);
     try {
       fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
     } catch {
@@ -119,6 +129,8 @@ export default class Plugin extends Generator {
 
     this.destinationRoot(directory);
     this.env.cwd = this.destinationPath();
+
+    exec('git init', { cwd: this.env.cwd });
   }
 
   public writing(): void {
@@ -153,39 +165,7 @@ export default class Plugin extends Generator {
 
     const final = Object.assign({}, pjson, updated);
 
-    if (!this.answers.internal) {
-      // If we are building a 3PP plugin, we don't want to set defaults for these properties.
-      // We could ask these questions in the prompt, but that would be too many questions for a good UX.
-      // We want developers to be able to quickly get up and running with their plugin.
-      delete final.homepage;
-      delete final.repository;
-      delete final.bugs;
-
-      // 3PP plugins don't need these tests.
-      delete final.scripts['test:json-schema'];
-      delete final.scripts['test:deprecation-policy'];
-      delete final.scripts['test:command-reference'];
-      final.scripts.posttest = 'yarn lint';
-
-      // 3PP plugins don't need these either.
-      // Can't use the class's this.fs since it doesn't delete the directory, just the files in it.
-      fs.rmSync(this.destinationPath('./schemas'), { recursive: true });
-      fs.rmSync(this.destinationPath('./.git2gus'), { recursive: true });
-      fs.rmSync(this.destinationPath('./command-snapshot.json'));
-
-      // Remove /schemas from the published files.
-      final.files = final.files.filter((f) => f !== '/schemas');
-
-      fs.rmSync(this.destinationPath('./.github/ISSUE_TEMPLATE'), { recursive: true });
-      this.fs.delete(this.destinationPath('./.github/CODEOWNERS'));
-      this.fs.delete(this.destinationPath('./.github/PULL_REQUEST_TEMPLATE.md'));
-      this.fs.delete(this.destinationPath('./.github/no-response.yml'));
-      this.fs.delete(this.destinationPath('./.github/dependabot.yml'));
-      this.fs.delete(this.destinationPath('./.github/workflows/automerge.yml'));
-      this.fs.delete(this.destinationPath('./.github/workflows/failureNotifications.yml'));
-      this.fs.delete(this.destinationPath('./.github/workflows/slackprnotification.yml'));
-      this.fs.delete(this.destinationPath('./.github/workflows/validate-pr.yml'));
-
+    if (!this.answers.internal && this.answers.codeCoverage) {
       const nycConfig = readJson<NYC>(path.join(this.env.cwd, '.nycrc'));
       const codeCoverage = Number.parseInt(this.answers.codeCoverage.replace('%', ''), 10);
       nycConfig['check-coverage'] = true;
@@ -193,8 +173,6 @@ export default class Plugin extends Generator {
       nycConfig.statements = codeCoverage;
       nycConfig.functions = codeCoverage;
       nycConfig.branches = codeCoverage;
-      delete nycConfig.extends;
-
       this.fs.writeJSON(this.destinationPath('.nycrc'), nycConfig);
     }
 
@@ -202,17 +180,18 @@ export default class Plugin extends Generator {
 
     replace.sync({
       files: `${this.env.cwd}/**/*`,
-      from: this.answers.internal ? /plugin-template-sf/g : /@salesforce\/plugin-template-sf/g,
+      from: this.answers.internal ? /plugin-template-sf/g : /plugin-template-sf-external/g,
       to: this.answers.name,
     });
   }
 
   public end(): void {
-    exec('git init', { cwd: this.env.cwd });
+    exec('yarn', { cwd: this.env.cwd });
     exec('yarn build', { cwd: this.env.cwd });
-    // Run yarn install in case dev-scripts detected changes during yarn build.
-    exec('yarn install', { cwd: this.env.cwd });
+
     if (this.answers.internal) {
+      // Run yarn install in case dev-scripts detected changes during yarn build.
+      exec('yarn install', { cwd: this.env.cwd });
       exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
     }
   }

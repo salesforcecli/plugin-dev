@@ -71,3 +71,13 @@ export type FlagAnswers = {
   integerMax?: number;
   integerDefault?: number;
 };
+
+export type OctokitError = {
+  response: {
+    data: {
+      message: string;
+      // eslint-disable-next-line camelcase
+      documentation_url: string;
+    };
+  };
+};
