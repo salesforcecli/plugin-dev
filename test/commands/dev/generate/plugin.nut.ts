@@ -10,6 +10,8 @@ import { expect } from 'chai';
 import { fileExists, readJson } from '../../../../src/util';
 import { NYC, PackageJson } from '../../../../src/types';
 
+process.env.DEBUG = 'testkit:execInteractiveCmd';
+
 describe('dev generate plugin NUTs', () => {
   let session: TestSession;
 
@@ -21,7 +23,7 @@ describe('dev generate plugin NUTs', () => {
     await session?.clean();
   });
 
-  it('should generate a 2PP plugin', async () => {
+  it.only('should generate a 2PP plugin', async () => {
     await execInteractiveCmd(
       'dev generate plugin',
       {
