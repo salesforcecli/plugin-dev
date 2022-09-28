@@ -4,6 +4,7 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+import * as fs from 'fs';
 import * as path from 'path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
 import { exec } from 'shelljs';
@@ -48,16 +49,19 @@ describe('dev generate flag NUTs', () => {
       },
       { cwd: path.join(session.dir, 'plugin-awesome'), ensureExitCode: 0 }
     );
-
+    // eslint-disable-next-line no-console
+    console.log(
+      await fs.promises.readFile(
+        path.join(session.dir, 'plugin-awesome', 'src', 'commands', 'hello', 'world.ts'),
+        'utf8'
+      )
+    );
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
-    exec('ls', { silent: false, cwd: session.dir });
-    exec('ls', { silent: false, cwd: path.join(session.dir, 'plugin-awesome') });
-    exec('ls', { silent: false, cwd: path.join(session.dir, 'plugin-awesome', 'bin') });
     const helpOutput = exec(`${localBin} hello world --help`, { silent: false });
     expect(helpOutput.stdout).to.contain('-m, --my-boolean-flag');
   });
 
-  it('should generate a new integer flag', async () => {
+  it.skip('should generate a new integer flag', async () => {
     await execInteractiveCmd(
       'dev generate flag',
       {
@@ -76,9 +80,6 @@ describe('dev generate flag NUTs', () => {
     );
 
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
-    exec('ls', { silent: false, cwd: session.dir });
-    exec('ls', { silent: false, cwd: path.join(session.dir, 'plugin-awesome') });
-    exec('ls', { silent: false, cwd: path.join(session.dir, 'plugin-awesome', 'bin') });
     const helpOutput = exec(`${localBin} hello world --help`, { silent: false });
     expect(helpOutput.stdout).to.contain('-i, --my-integer-flag=<value>...');
   });
