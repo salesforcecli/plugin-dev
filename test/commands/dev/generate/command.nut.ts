@@ -53,14 +53,14 @@ describe('dev generate command NUTs', () => {
 
       it('should generate a markdown message file', async () => {
         const messagesFile = path.join(session.project.dir, 'messages', `${name.replace(/:/g, '.')}.md`);
-        expect(fileExists(messagesFile)).to.be.true;
+        expect(await fileExists(messagesFile)).to.be.true;
       });
 
       it('should generate a passing NUT', async () => {
         const parts = name.split(':');
         const cmd = parts.pop();
         const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
-        expect(fileExists(nutFile)).to.be.true;
+        expect(await fileExists(nutFile)).to.be.true;
 
         const result = exec('yarn test:nuts', {
           cwd: session.project.dir,
@@ -79,7 +79,7 @@ describe('dev generate command NUTs', () => {
         const parts = name.split(':');
         const cmd = parts.pop();
         const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
-        expect(fileExists(unitTestFile)).to.be.true;
+        expect(await fileExists(unitTestFile)).to.be.true;
 
         const result = exec('yarn test', { cwd: session.project.dir, silent: true });
         expect(result.code).to.equal(0);
@@ -166,14 +166,14 @@ describe('dev generate command NUTs', () => {
 
       it('should generate a markdown message file', async () => {
         const messagesFile = path.join(session.project.dir, 'messages', `${name.replace(/:/g, '.')}.md`);
-        expect(fileExists(messagesFile)).to.be.true;
+        expect(await fileExists(messagesFile)).to.be.true;
       });
 
       it('should generate a passing NUT', async () => {
         const parts = name.split(':');
         const cmd = parts.pop();
         const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
-        expect(fileExists(nutFile)).to.be.true;
+        expect(await fileExists(nutFile)).to.be.true;
 
         const result = exec('yarn test:nuts', {
           cwd: session.project.dir,
@@ -191,7 +191,7 @@ describe('dev generate command NUTs', () => {
         const parts = name.split(':');
         const cmd = parts.pop();
         const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
-        expect(fileExists(unitTestFile)).to.be.true;
+        expect(await fileExists(unitTestFile)).to.be.true;
 
         const result = exec('yarn test', { cwd: session.project.dir, silent: true });
         expect(result.code).to.equal(0);

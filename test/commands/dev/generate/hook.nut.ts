@@ -37,7 +37,7 @@ describe('dev generate hook NUTs', () => {
 
     it('should generate a hook file', async () => {
       const hookFile = path.join(session.project.dir, 'src', 'hooks', 'envList.ts');
-      expect(fileExists(hookFile)).to.be.true;
+      expect(await fileExists(hookFile)).to.be.true;
     });
 
     it('should update hooks in package.json', async () => {

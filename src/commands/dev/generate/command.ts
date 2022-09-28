@@ -49,7 +49,7 @@ export default class GenerateCommand extends SfCommand<void> {
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(GenerateCommand);
-    if (!fileExists('package.json')) throw messages.createError('errors.InvalidDir');
+    if (!(await fileExists('package.json'))) throw messages.createError('errors.InvalidDir');
     await generate('command', {
       name: flags.name,
       force: flags.force,

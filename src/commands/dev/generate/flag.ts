@@ -12,7 +12,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Duration } from '@salesforce/kit';
 
-import { Config, Interfaces, toConfiguredId, toStandardizedId } from '@oclif/core';
+import { Config, Interfaces, toStandardizedId } from '@oclif/core';
 import * as fg from 'fast-glob';
 import { fileExists, FlagBuilder } from '../../../util';
 import { FlagAnswers } from '../../../types';
@@ -77,7 +77,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
   public async run(): Promise<void> {
     const { flags } = await this.parse(DevGenerateFlag);
 
-    if (!fileExists('package.json')) throw messages.createError('error.InvalidDir');
+    if (!(await fileExists('package.json'))) throw messages.createError('error.InvalidDir');
 
     const ids = await this.findExistingCommands();
 
@@ -308,14 +308,14 @@ export default class DevGenerateFlag extends SfCommand<void> {
   private async findExistingCommands(): Promise<string[]> {
     return (await fg('src/commands/**/*.ts'))
       .map((file) => {
-        const p = path.parse(file.replace(path.join('.', 'src', 'commands'), ''));
+        // fast-glob always returns posix paths so no need to use path.join here
+        const p = path.parse(file.replace('src/commands', ''));
         const topics = p.dir.split('/');
         const command = p.name !== 'index' && p.name;
-        const id = [...topics, command].filter((f) => f).join(':');
+        const id = [...topics, command].filter((f) => f).join(this.config.topicSeparator);
         return id === '' ? '.' : id;
       })
-      .sort()
-      .map((c) => toConfiguredId(c, this.config));
+      .sort();
   }
 
   private async updateMarkdownFile(answers: FlagAnswers, commandName: string): Promise<void> {

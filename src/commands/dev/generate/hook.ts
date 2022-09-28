@@ -39,7 +39,7 @@ export default class GenerateHook extends SfCommand<void> {
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(GenerateHook);
-    if (!fileExists('package.json')) throw messages.createError('errors.InvalidDir');
+    if (!(await fileExists('package.json'))) throw messages.createError('errors.InvalidDir');
     await generate('hook', {
       force: flags.force,
       event: flags.event,
