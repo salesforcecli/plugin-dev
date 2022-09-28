@@ -4,7 +4,7 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as fs from 'fs';
+
 import * as path from 'path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
 import { exec } from 'shelljs';
@@ -14,7 +14,8 @@ function getLocalBin(...parts: string[]): string {
   return path.join(...parts, 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev');
 }
 
-describe('dev generate flag NUTs', () => {
+// Flag generator doesn't work on Windows (W-11823784)
+(process.platform === 'win32' ? describe.skip : describe)('dev generate flag NUTs', () => {
   let session: TestSession;
 
   before(async () => {
@@ -49,19 +50,13 @@ describe('dev generate flag NUTs', () => {
       },
       { cwd: path.join(session.dir, 'plugin-awesome'), ensureExitCode: 0 }
     );
-    // eslint-disable-next-line no-console
-    console.log(
-      await fs.promises.readFile(
-        path.join(session.dir, 'plugin-awesome', 'src', 'commands', 'hello', 'world.ts'),
-        'utf8'
-      )
-    );
+
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
     const helpOutput = exec(`${localBin} hello world --help`, { silent: false });
     expect(helpOutput.stdout).to.contain('-m, --my-boolean-flag');
   });
 
-  it.skip('should generate a new integer flag', async () => {
+  it('should generate a new integer flag', async () => {
     await execInteractiveCmd(
       'dev generate flag',
       {
