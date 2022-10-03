@@ -24,7 +24,7 @@ describe('<%- cmd %> NUTs', () => {
   it('should display provided name', () => {
     const name = 'World';
     const command = `<%- cmd %> --name ${name}`;
-    const output = execCmd(command, { ensureExitCode: 0, cli: 'sf' }).shellOutput.stdout;
+    const output = execCmd(command, { ensureExitCode: 0 }).shellOutput.stdout;
     expect(output).to.contain(name);
   });
 });
