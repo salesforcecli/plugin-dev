@@ -42,7 +42,7 @@ describe('dev generate command NUTs', () => {
       const command = `dev generate command --name ${name} --force --nuts --unit`;
 
       before(async () => {
-        execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir, silent: true });
+        execCmd(command, { ensureExitCode: 0, cwd: session.project.dir, silent: true });
       });
 
       it('should generate a command that can be executed', () => {
@@ -103,13 +103,11 @@ describe('dev generate command NUTs', () => {
       before(async () => {
         execCmd('dev generate command --name deploy:awesome:stuff --force --nuts --unit', {
           ensureExitCode: 0,
-          cli: 'sf',
           cwd: session.project.dir,
         });
 
         execCmd('dev generate command --name hello:every:one --force --nuts --unit', {
           ensureExitCode: 0,
-          cli: 'sf',
           cwd: session.project.dir,
         });
       });
@@ -155,7 +153,7 @@ describe('dev generate command NUTs', () => {
       const command = `dev generate command --name ${name} --force --nuts --unit`;
 
       before(async () => {
-        execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+        execCmd(command, { ensureExitCode: 0, cwd: session.project.dir });
       });
 
       it('should generate a command that can be executed', () => {
