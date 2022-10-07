@@ -32,7 +32,7 @@ describe('dev generate hook NUTs', () => {
     const command = `dev generate hook --event ${event} --force`;
 
     before(async () => {
-      execCmd(command, { ensureExitCode: 0, cli: 'sf', cwd: session.project.dir });
+      execCmd(command, { ensureExitCode: 0, cwd: session.project.dir });
     });
 
     it('should generate a hook file', async () => {
