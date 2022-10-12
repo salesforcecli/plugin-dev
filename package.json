@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/plugin-dev",
   "description": "commands for sf plugin development",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
@@ -17,12 +17,12 @@
     "replace-in-file": "^6.3.2",
     "shelljs": "^0.8.5",
     "tslib": "^2",
-    "yeoman-environment": "^3.11.1",
+    "yeoman-environment": "^3.12.0",
     "yeoman-generator": "^5.7.0",
     "yosay": "^2.0.2"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^3.2.0",
+    "@oclif/plugin-command-snapshot": "^3.2.3",
     "@oclif/test": "^2.2.0",
     "@salesforce/cli-plugins-testkit": "^3.2.2",
     "@salesforce/dev-config": "^3.0.0",
