@@ -7,7 +7,7 @@
   "dependencies": {
     "@oclif/core": "^1.16.4",
     "@octokit/rest": "^19.0.4",
-    "@salesforce/core": "^3.30.13",
+    "@salesforce/core": "^3.30.14",
     "@salesforce/kit": "^1.6.0",
     "@salesforce/sf-plugins-core": "^1.14.1",
     "change-case": "^4.1.2",
@@ -22,7 +22,7 @@
     "yosay": "^2.0.2"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^3.2.0",
+    "@oclif/plugin-command-snapshot": "^3.2.3",
     "@oclif/test": "^2.2.0",
     "@salesforce/cli-plugins-testkit": "^3.2.2",
     "@salesforce/dev-config": "^3.0.0",
