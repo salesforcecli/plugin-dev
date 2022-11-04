@@ -1,5 +1,16 @@
 [
     {
+        "command": "dev:audit:messages",
+        "plugin": "@salesforce/plugin-dev",
+        "flags": [
+            "json",
+            "messages-dir",
+            "project-dir",
+            "source-dir"
+        ],
+        "alias": []
+    },
+    {
         "command": "dev:configure:repo",
         "plugin": "@salesforce/plugin-dev",
         "flags": [
