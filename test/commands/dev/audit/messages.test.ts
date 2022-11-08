@@ -48,78 +48,33 @@ describe('audit messages', () => {
     await fs.promises.writeFile(helloWorldPath, helloWorld.join('\n'), 'utf8');
   });
 
-  it('should have a test', async () => {
+  it('should audit messages', async () => {
     const cmd = new AuditMessages(['-p', path.join(runResult.cwd, 'plugin-test'), '--json'], {} as Config);
     const result = await cmd.run();
     expect(result).to.deep.equal({
-      unusedBundles: ['my.unused.md'],
-      messageState: {
-        'hello.world.md:summary': {
-          found: true,
-          files: ['src/commands/hello/world.ts'],
+      missingMessages: [
+        {
+          Bundle: 'hello.world',
+          File: 'src/commands/hello/world.ts',
+          IsLiteral: false,
+          Name: 'msg',
+          SourceVar: 'messages',
         },
-        'hello.world.md:description': {
-          found: true,
-          files: ['src/commands/hello/world.ts'],
+        {
+          Bundle: 'hello.world',
+          File: 'src/commands/hello/world.ts',
+          IsLiteral: true,
+          Name: 'noWayYouFindThis',
+          SourceVar: 'messages',
         },
-        'hello.world.md:flags.name.summary': {
-          found: true,
-          files: ['src/commands/hello/world.ts'],
+      ],
+      unusedBundles: ['my.unused'],
+      unusedMessages: [
+        {
+          Bundle: 'hello.world',
+          Name: 'unusedMessage',
         },
-        'hello.world.md:examples': {
-          found: true,
-          files: ['src/commands/hello/world.ts'],
-        },
-        'hello.world.md:info.hello': {
-          found: true,
-          files: ['src/commands/hello/world.ts'],
-        },
-        'hello.world.md:unusedMessage': {
-          found: false,
-          files: [],
-        },
-        'my.unused.md:unusedMessageInUnusedBundle': {
-          found: false,
-          files: [],
-        },
-      },
-      missing: {
-        summary: {
-          isLiteral: true,
-          missing: false,
-          files: ['src/commands/hello/world.ts'],
-        },
-        description: {
-          isLiteral: true,
-          missing: false,
-          files: ['src/commands/hello/world.ts'],
-        },
-        examples: {
-          isLiteral: true,
-          missing: false,
-          files: ['src/commands/hello/world.ts'],
-        },
-        'flags.name.summary': {
-          isLiteral: true,
-          missing: false,
-          files: ['src/commands/hello/world.ts'],
-        },
-        'info.hello': {
-          isLiteral: true,
-          missing: false,
-          files: ['src/commands/hello/world.ts'],
-        },
-        noWayYouFindThis: {
-          isLiteral: true,
-          missing: true,
-          files: ['src/commands/hello/world.ts'],
-        },
-        msg: {
-          isLiteral: false,
-          missing: true,
-          files: ['src/commands/hello/world.ts'],
-        },
-      },
+      ],
     });
   });
 });

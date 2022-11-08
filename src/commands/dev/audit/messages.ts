@@ -9,12 +9,41 @@ import { join, parse, relative, resolve } from 'path';
 import { Logger, Messages } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Duration, ThrottledPromiseAll } from '@salesforce/kit';
+import { MultiDirectedGraph } from 'graphology';
 
 export type AuditResults = {
   unusedBundles: string[];
-  messageState: Record<string, { found: boolean; files: string[] }>;
-  missing: Record<string, { isLiteral: boolean; missing: boolean; files: string[] }>;
+  unusedMessages: Array<{ Bundle: string; Name: string }>;
+  missingMessages: Array<{ File: string; Name: string; SourceVar: string; Bundle: string; IsLiteral: boolean }>;
 };
+
+type NodeType = {
+  type: 'bundle' | 'source' | 'message' | 'messageReference' | 'bundleReference';
+};
+
+type FileNode = NodeType & {
+  path: string;
+};
+
+type BundleNode = NodeType & {
+  name: string;
+};
+
+type BundleRefNode = NodeType & {
+  variable: string;
+  name: string;
+};
+
+type MessageNode = NodeType & {
+  key: string;
+};
+
+type MessageRefNode = NodeType & {
+  key: string;
+  isLiteral: boolean;
+};
+
+type Node = FileNode | BundleNode | MessageNode | MessageRefNode | BundleRefNode;
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'audit.messages', [
@@ -68,10 +97,11 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   private bundles: string[] = [];
   private sourceDirPath: string;
   private source: Map<string, string> = new Map();
-  private auditResults: AuditResults = { unusedBundles: [], messageState: {}, missing: {} };
+  private auditResults: AuditResults = { unusedBundles: [], unusedMessages: [], missingMessages: [] };
   private package: string;
   private projectDir: string;
   private logger: Logger;
+  private graph: MultiDirectedGraph<Node> = new MultiDirectedGraph<Node>();
 
   public async run(): Promise<AuditResults> {
     this.logger = Logger.childFromRoot(this.constructor.name);
@@ -81,42 +111,44 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     await this.loadMessages();
     await this.loadSource();
     this.auditMessages();
+    this.buildAuditResults();
     this.displayResults();
     return this.auditResults;
   }
 
   private async validateFlags(): Promise<void> {
     this.projectDir = resolve(this.flags['project-dir'] as string);
-    this.logger.debug('Loading project directory: %s', this.projectDir);
+    this.logger.debug(`Loading project directory: ${this.projectDir}`);
     const { name } = JSON.parse(await fs.promises.readFile(resolve(this.projectDir, 'package.json'), 'utf8')) as {
       name: string;
     };
-    this.logger.debug('Loaded package name: %s', name);
+    this.logger.debug(`Loaded package name: ${name}`);
     this.package = name;
   }
 
   private async loadMessages(): Promise<void> {
     this.messagesDirPath = resolve(this.projectDir, this.flags['messages-dir']);
-    this.logger.debug('Loading messages from %s', this.messagesDirPath);
+    this.logger.debug(`Loading messages from ${this.messagesDirPath}`);
     const messagesDir = await fs.promises.readdir(this.messagesDirPath, { withFileTypes: true });
     Messages.importMessagesDirectory(this.messagesDirPath);
     this.bundles = messagesDir.filter((entry) => entry.isFile()).map((entry) => entry.name);
+    this.logger.debug(`Loaded ${this.bundles.length} bundles with names ${this.bundles.toString()}`);
   }
 
   private async loadSource(): Promise<void> {
     this.sourceDirPath = resolve(this.projectDir, this.flags['source-dir']);
-    this.logger.debug('Loading source from %s', this.sourceDirPath);
+    this.logger.debug(`Loading source from ${this.sourceDirPath}`);
     const throttledPromise = new ThrottledPromiseAll<string, void>({ concurrency: 10, timeout: Duration.minutes(5) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const fileProducer = async (file: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
-      this.logger.trace('Loading file %s', file);
+      this.logger.trace(`Loading file ${file}`);
       const fileContents = await fs.promises.readFile(file, 'utf8');
       const contents = fileContents.replace(/\n/g, ' ').replace(/\s{2,}/g, '');
       this.source.set(relative(this.projectDir, file), contents);
     };
 
     const dirHandler = async (dir: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
-      this.logger.debug('Loading directory %s', dir);
+      this.logger.debug(`Loading directory ${dir}`);
       const contents = await fs.promises.readdir(dir, { withFileTypes: true });
       producer.add(
         contents.filter((entry) => entry.isDirectory()).map((entry) => join(dir, entry.name)),
@@ -141,41 +173,20 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     } else {
       this.styledHeader(messages.getMessage('unusedBundlesFound'));
       this.table(
-        this.auditResults.unusedBundles.sort().map((Bundle) => ({ Bundle })),
+        this.auditResults.unusedBundles.map((Bundle) => ({ Bundle })),
         { Bundle: { header: 'Bundle' } }
       );
     }
-    const unusedMessages = [...Object.entries(this.auditResults.messageState)]
-      .filter(([, { found }]) => !found)
-      .map(([key]) => {
-        const [Bundle, Name] = key.split(':');
-        return { Bundle, Name };
-      })
-      .filter((unused) => !this.auditResults.unusedBundles.includes(unused.Bundle))
-      .sort((a, b) => {
-        return a.Bundle.localeCompare(b.Bundle) || a.Name.localeCompare(b.Name);
-      });
     this.log();
-    if (unusedMessages.length === 0) {
+    if (this.auditResults.unusedMessages.length === 0) {
       this.styledHeader(messages.getMessage('noUnusedMessagesFound'));
     } else {
       this.styledHeader(messages.getMessage('unusedMessagesFound'));
-      this.table(unusedMessages, { Bundle: { header: 'Bundle' }, Name: { header: 'Name' } });
+      this.table(this.auditResults.unusedMessages, { Bundle: { header: 'Bundle' }, Name: { header: 'Name' } });
     }
-    const hasNonLiteralReferences = Object.values(this.auditResults.missing).some((missing) => !missing.isLiteral);
-    const missingMessages = [...Object.entries(this.auditResults.missing)]
-      .filter(([, { missing }]) => missing)
-      .sort((a, b) => {
-        const [akey] = a[0];
-        const [bkey] = b[0];
-        return akey.localeCompare(bkey);
-      })
-      .map((entry) => {
-        const [key, { isLiteral, files }] = entry;
-        return { Name: key, isLiteral: isLiteral ? '' : '*', Files: files.sort().join('\n') };
-      });
+    const hasNonLiteralReferences = this.auditResults.missingMessages.some((msg) => !msg.IsLiteral);
     this.log();
-    if (missingMessages.length === 0) {
+    if (this.auditResults.missingMessages.length === 0) {
       this.styledHeader(messages.getMessage('noMissingMessagesFound'));
     } else {
       this.styledHeader(messages.getMessage('missingMessagesFound'));
@@ -185,76 +196,155 @@ export default class AuditMessages extends SfCommand<AuditResults> {
         this.warn(messages.getMessage('missingMessagesNonLiteralWarning'));
         this.log();
       }
+      const data = this.auditResults.missingMessages.map(({ File, SourceVar, Name, IsLiteral, Bundle }) => ({
+        File,
+        SourceVar,
+        Name,
+        IsLiteral: IsLiteral ? '' : '*',
+        Bundle,
+      }));
       this.table(
-        missingMessages,
-        { Name: { header: 'Name' }, isLiteral: { header: '*' }, Files: { header: 'Files' } },
+        data,
+        {
+          File: { header: 'File' },
+          SourceVar: { header: 'Message Bundle Var' },
+          Name: { header: 'Name' },
+          IsLiteral: { header: '*' },
+          Bundle: { header: 'Referenced Bundle' },
+        },
         { 'no-truncate': true }
       );
     }
   }
 
   private auditMessages(): void {
-    this.bundles.forEach((bundleName) => {
-      const bundle: Messages<string> = Messages.loadMessages(this.package, parse(bundleName).name);
+    this.logger.debug('Auditing messages');
+    const re = /(#?\w+?)\.(?:getMessage|getMessages|getMessageWithMap|createError|createWarn|createInfo)\((.*?)\)/g;
+
+    // create bundle/message nodes add edges between them
+    this.bundles.forEach((bundleFileName) => {
+      this.logger.trace(`Adding bundle ${bundleFileName} to graph`);
+      const bundle: Messages<string> = Messages.loadMessages(this.package, parse(bundleFileName).name);
+      const bundleName = parse(bundleFileName).name;
+      this.graph.addNode(bundleName, { type: 'bundle', name: bundleFileName });
       /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const keys: string[] = [...bundle.messages.keys()] as string[];
-      // audits bundle for unused keys
-      const loadBundleRegex = new RegExp(`Messages.load(Messages)?\\(.*?${parse(bundleName).name}.*?\\)`);
       keys.forEach((key) => {
-        const messageKeyRegex = `\\.(?:getMessage|getMessages|getMessageWithMap|createError|createWarn|createInfo)\\(['"]?(${key})['"]?.*?\\)`;
-        const re = new RegExp(messageKeyRegex, 'g');
-        const keyFound: { found: boolean; files: string[] } = { found: false, files: [] };
-        [...this.source.entries()]
-          .filter(([, contents]) => loadBundleRegex.test(contents))
-          .forEach(([file, contents]) => {
-            const matches = [...contents.matchAll(re)];
-            matches.forEach(() => {
-              keyFound.found = true;
-              keyFound.files.push(file);
-            });
-          });
-
-        this.auditResults.messageState = Object.assign(this.auditResults.messageState, {
-          [`${bundleName}:${key}`]: keyFound,
-        });
+        this.logger.trace(`Adding message ${key} to graph with key ${bundleName}:${key}`);
+        this.graph.addNode(`${bundleName}:${key}`, { type: 'message', key });
+        this.graph.addEdge(bundleName, `${bundleName}:${key}`);
       });
-      // audits bundle this is not used
-      const allMessagesNotFound = [...Object.entries(this.auditResults.messageState)]
-        .filter(([key]) => {
-          const [bundlePart] = key.split(':');
-          return bundlePart === bundleName;
-        })
-        .every(([, { found }]) => !found);
-      if (allMessagesNotFound) {
-        this.auditResults.unusedBundles.push(bundleName);
-      }
+    });
+    [...this.source.entries()].forEach(([file, contents]) => {
+      this.logger.trace(`Auditing file ${file} to graph`);
+      this.graph.addNode(file, { type: 'source', name: file });
+      // find and record references to bundles
+      const bundleRegexp = new RegExp('.*?\\s+(.\\w+?) = Messages.load(Messages)?\\((.*?)\\)', 'g');
+      const bundleMatches = [...contents.matchAll(bundleRegexp)];
+      bundleMatches.forEach((match) => {
+        const [, bundleName] = match[3].split(',');
+        const bundle = bundleName.trim().replace(/['"]/g, '');
+        const bundleVar = match[1].trim();
+        const bundleRefKey = `${file}:${bundleVar}`;
+        this.logger.trace(`Adding bundle reference ${bundleRefKey} to graph`);
+        if (!this.graph.hasNode(bundleRefKey)) {
+          this.graph.addNode(bundleRefKey, { type: 'bundleReference', variable: bundleVar, name: bundle });
+        }
+        this.graph.addEdge(file, bundleRefKey);
+        if (this.graph.hasNode(bundle)) {
+          this.graph.addEdge(bundleRefKey, bundle);
+        }
+      });
+      [...contents.matchAll(re)]
+        .filter((m) => m?.[2]) // filter out function calls with no parameters
+        .forEach(([, bundleVar, paramString]) => {
+          this.logger.trace(`Processing Message class function references in ${file}`);
 
-      // audits source for missing messages
-      [...this.source.entries()]
-        .filter(([, contents]) => loadBundleRegex.test(contents))
-        .forEach(([file, contents]) => {
-          const reString =
-            '\\.(?:getMessage|getMessages|getMessageWithMap|createError|createWarn|createInfo)\\((.*?)\\)';
-          const re = new RegExp(reString, 'g');
-          const matches = [...contents.matchAll(re)];
-          matches
-            .filter((m) => m?.[1])
-            .forEach((match) => {
-              const params = match[1].split(',');
-              const isLiteral = /^['"]/.test(params[0]);
-              const key = params[0].replace(/['"]/g, '');
-              const missingKey = this.auditResults.missing[key] || { isLiteral, missing: true, files: [] };
-              if (keys.includes(key)) {
-                missingKey.missing = false;
-              }
-              if (!missingKey.files.includes(file)) {
-                missingKey.files.push(file);
-              }
-              this.auditResults.missing = Object.assign(this.auditResults.missing, { [key]: missingKey });
-            });
+          const params = paramString.split(',');
+          const isLiteral = /^['"]/.test(params[0]);
+          const key = params[0].replace(/['"]/g, '');
+          this.logger.trace(`Found message ${key} in file ${file} and isLiteral is ${isLiteral}`);
+          const mesageRefNodeKey = `${file}:${bundleVar}:${key}`;
+          if (!this.graph.hasNode(mesageRefNodeKey)) {
+            this.graph.addNode(mesageRefNodeKey, { type: 'messageReference', key, isLiteral });
+          }
+          if (!this.graph.hasNode(`${file}:${bundleVar}`)) {
+            this.graph.addNode(`${file}:${bundleVar}`, { type: 'bundleReference', name: 'unknown', variable: key });
+          }
+          this.graph.addEdge(`${file}:${bundleVar}`, mesageRefNodeKey);
+          if (isLiteral) {
+            const bundleRefNode = this.graph.getNodeAttributes(`${file}:${bundleVar}`) as BundleRefNode;
+            if (this.graph.hasNode(`${bundleRefNode.name}:${key}`)) {
+              this.logger.trace(
+                `Try to add edge from message ref ${mesageRefNodeKey} to message ${bundleRefNode.name}:${key}`
+              );
+              this.graph.addEdge(mesageRefNodeKey, `${bundleRefNode.name}:${key}`);
+            }
+          }
         });
     });
+  }
+
+  private buildAuditResults(): void {
+    // find unused bundles
+    this.auditResults.unusedBundles = this.graph
+      .filterNodes((node, attrs) => attrs.type === 'bundle' && this.graph.inDegree(node) === 0)
+      .sort();
+
+    // find unused messages that are not part of an unused bundle
+    this.auditResults.unusedMessages = this.graph
+      .filterNodes((node, attrs) => {
+        if (attrs.type !== 'message') {
+          return false;
+        }
+        const inboundMessageRefs = this.graph.filterInboundNeighbors(node, (inboundNode, inboundAttrs) => {
+          return inboundAttrs.type === 'messageReference';
+        });
+        return inboundMessageRefs.length === 0;
+      })
+      .map((key) => {
+        const [Bundle, Name] = key.split(':');
+        return { Bundle, Name };
+      })
+      .filter((unused) => !this.auditResults.unusedBundles.includes(unused.Bundle))
+      .sort((a, b) => {
+        return a.Bundle.localeCompare(b.Bundle) || a.Name.localeCompare(b.Name);
+      });
+
+    // find message references there are no outbound edges to messages
+    this.auditResults.missingMessages = this.graph
+      .filterNodes(
+        (node, attrs) =>
+          attrs.type === 'messageReference' &&
+          this.graph.filterOutboundNeighbors(node, (msgNode, msgAtrs) => {
+            return msgAtrs.type === 'message';
+          }).length === 0
+      )
+      .map((key) => {
+        const bundleRef = this.graph.findInboundNeighbor(key, (node, attrs) => {
+          return attrs.type === 'bundleReference';
+        });
+        if (!bundleRef) {
+          throw new Error(`Unable to find bundle reference for ${key}`);
+        }
+        const bundle = this.graph.getNodeAttributes(bundleRef) as BundleRefNode;
+        const messageRef = this.graph.getNodeAttributes(key) as MessageRefNode;
+        const [File, SourceVar, Name] = key.split(':');
+        return { File, SourceVar, Name, IsLiteral: messageRef.isLiteral, Bundle: bundle.name };
+      })
+      .sort((a, b) => {
+        const fileCompare = a.File.localeCompare(b.File);
+        const nameCompare = a.Name.localeCompare(b.Name);
+        const sourceVarCompare = a.SourceVar.localeCompare(b.SourceVar);
+        if (fileCompare === 0) {
+          if (sourceVarCompare === 0) {
+            return nameCompare;
+          }
+          return sourceVarCompare;
+        }
+        return fileCompare;
+      });
   }
 }
