@@ -10,6 +10,7 @@ import { Logger, Messages } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Duration, ThrottledPromiseAll } from '@salesforce/kit';
 import { MultiDirectedGraph } from 'graphology';
+import { Interfaces } from '@oclif/core';
 
 export type AuditResults = {
   unusedBundles: string[];
@@ -19,6 +20,8 @@ export type AuditResults = {
 
 type NodeType = {
   type: 'bundle' | 'source' | 'message' | 'messageReference' | 'bundleReference';
+  x: number;
+  y: number;
 };
 
 type FileNode = NodeType & {
@@ -76,23 +79,22 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       summary: messages.getMessage('flags.project-dir.summary'),
       char: 'p',
       description: messages.getMessage('flags.project-dir.description'),
-      default: './',
+      default: '.',
     }),
     'messages-dir': Flags.directory({
       summary: messages.getMessage('flags.messages-dir.summary'),
       char: 'm',
       description: messages.getMessage('flags.messages-dir.description'),
-      default: './messages',
+      default: 'messages',
     }),
     'source-dir': Flags.directory({
       summary: messages.getMessage('flags.source-dir.summary'),
-
       char: 's',
       description: messages.getMessage('flags.source-dir.description'),
-      default: './src',
+      default: 'src',
     }),
   };
-  private flags: { 'source-dir': string; 'messages-dir': string };
+  private flags: Interfaces.InferredFlags<typeof AuditMessages.flags>;
   private messagesDirPath: string;
   private bundles: string[] = [];
   private sourceDirPath: string;
@@ -117,7 +119,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   }
 
   private async validateFlags(): Promise<void> {
-    this.projectDir = resolve(this.flags['project-dir'] as string);
+    this.projectDir = resolve(this.flags['project-dir']);
     this.logger.debug(`Loading project directory: ${this.projectDir}`);
     const { name } = JSON.parse(await fs.promises.readFile(resolve(this.projectDir, 'package.json'), 'utf8')) as {
       name: string;
@@ -224,55 +226,75 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     // create bundle/message nodes add edges between them
     this.bundles.forEach((bundleFileName) => {
       this.logger.trace(`Adding bundle ${bundleFileName} to graph`);
+      // load the bundle and add its node in the graph
       const bundle: Messages<string> = Messages.loadMessages(this.package, parse(bundleFileName).name);
       const bundleName = parse(bundleFileName).name;
-      this.graph.addNode(bundleName, { type: 'bundle', name: bundleFileName });
+      this.graph.addNode(bundleName, { type: 'bundle', name: bundleFileName, x: 1, y: 1 });
+      // add the messages nodes and edges to the graph
       /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const keys: string[] = [...bundle.messages.keys()] as string[];
       keys.forEach((key) => {
         this.logger.trace(`Adding message ${key} to graph with key ${bundleName}:${key}`);
-        this.graph.addNode(`${bundleName}:${key}`, { type: 'message', key });
+        this.graph.addNode(`${bundleName}:${key}`, { type: 'message', key, x: 1, y: 1 });
         this.graph.addEdge(bundleName, `${bundleName}:${key}`);
       });
     });
+    // let's find all the references to messages
     [...this.source.entries()].forEach(([file, contents]) => {
       this.logger.trace(`Auditing file ${file} to graph`);
-      this.graph.addNode(file, { type: 'source', name: file });
+      this.graph.addNode(file, { type: 'source', name: file, x: 1, y: 1 });
       // find and record references to bundles
       const bundleRegexp = new RegExp('.*?\\s+(.\\w+?) = Messages.load(Messages)?\\((.*?)\\)', 'g');
       const bundleMatches = [...contents.matchAll(bundleRegexp)];
+      // for each bundle reference, add a bundle ref node to the graph and add an edge from the source file to the bundle reference
       bundleMatches.forEach((match) => {
+        // the bundle name is the third capture group
         const [, bundleName] = match[3].split(',');
         const bundle = bundleName.trim().replace(/['"]/g, '');
+        // the source variable name is the first capture group
         const bundleVar = match[1].trim();
+        // create unique key to bundle ref node - file name plus bundle var name used to reference the bundle
         const bundleRefKey = `${file}:${bundleVar}`;
         this.logger.trace(`Adding bundle reference ${bundleRefKey} to graph`);
         if (!this.graph.hasNode(bundleRefKey)) {
-          this.graph.addNode(bundleRefKey, { type: 'bundleReference', variable: bundleVar, name: bundle });
+          this.graph.addNode(bundleRefKey, { type: 'bundleReference', variable: bundleVar, name: bundle, x: 1, y: 1 });
         }
+        // add an edge from the source file to the bundle reference
         this.graph.addEdge(file, bundleRefKey);
+        // add an edge from the bundle reference to the bundle (only if necessary)
         if (this.graph.hasNode(bundle)) {
           this.graph.addEdge(bundleRefKey, bundle);
         }
       });
+      // now find and record references to messages
       [...contents.matchAll(re)]
         .filter((m) => m?.[2]) // filter out function calls with no parameters
         .forEach(([, bundleVar, paramString]) => {
           this.logger.trace(`Processing Message class function references in ${file}`);
-
+          // parse the parameters to capture the message name
           const params = paramString.split(',');
+          // check to see if this is a literal or a variable or some other expression
           const isLiteral = /^['"]/.test(params[0]);
           const key = params[0].replace(/['"]/g, '');
           this.logger.trace(`Found message ${key} in file ${file} and isLiteral is ${isLiteral}`);
           const mesageRefNodeKey = `${file}:${bundleVar}:${key}`;
+          // add message reference node to the graph
           if (!this.graph.hasNode(mesageRefNodeKey)) {
-            this.graph.addNode(mesageRefNodeKey, { type: 'messageReference', key, isLiteral });
+            this.graph.addNode(mesageRefNodeKey, { type: 'messageReference', key, isLiteral, x: 1, y: 1 });
           }
+          // this is a case where we have a reference to a bundle in source, but is not loaded in this source file
           if (!this.graph.hasNode(`${file}:${bundleVar}`)) {
-            this.graph.addNode(`${file}:${bundleVar}`, { type: 'bundleReference', name: 'unknown', variable: key });
+            this.graph.addNode(`${file}:${bundleVar}`, {
+              type: 'bundleReference',
+              name: 'unknown',
+              variable: key,
+              x: 1,
+              y: 1,
+            });
           }
+          // add an edge from bundle reference to the message reference
           this.graph.addEdge(`${file}:${bundleVar}`, mesageRefNodeKey);
           if (isLiteral) {
             const bundleRefNode = this.graph.getNodeAttributes(`${file}:${bundleVar}`) as BundleRefNode;
@@ -280,6 +302,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
               this.logger.trace(
                 `Try to add edge from message ref ${mesageRefNodeKey} to message ${bundleRefNode.name}:${key}`
               );
+              // add an edge from the message reference to the message
               this.graph.addEdge(mesageRefNodeKey, `${bundleRefNode.name}:${key}`);
             }
           }
@@ -295,32 +318,32 @@ export default class AuditMessages extends SfCommand<AuditResults> {
 
     // find unused messages that are not part of an unused bundle
     this.auditResults.unusedMessages = this.graph
-      .filterNodes((node, attrs) => {
-        if (attrs.type !== 'message') {
-          return false;
-        }
-        const inboundMessageRefs = this.graph.filterInboundNeighbors(node, (inboundNode, inboundAttrs) => {
-          return inboundAttrs.type === 'messageReference';
-        });
-        return inboundMessageRefs.length === 0;
-      })
+      // looking for message nodes that do not have any incoming edges from message reference nodes
+      .filterNodes(
+        (node, attrs) =>
+          attrs.type === 'message' &&
+          !this.graph.someInboundNeighbor(node, (inboundNode, inboundAttrs) => {
+            return inboundAttrs.type === 'messageReference';
+          })
+      )
       .map((key) => {
         const [Bundle, Name] = key.split(':');
         return { Bundle, Name };
       })
+      // filter out messages that are part of an unused bundle
       .filter((unused) => !this.auditResults.unusedBundles.includes(unused.Bundle))
       .sort((a, b) => {
         return a.Bundle.localeCompare(b.Bundle) || a.Name.localeCompare(b.Name);
       });
 
-    // find message references there are no outbound edges to messages
+    // find message references where are no outbound edges to messages
     this.auditResults.missingMessages = this.graph
       .filterNodes(
         (node, attrs) =>
           attrs.type === 'messageReference' &&
-          this.graph.filterOutboundNeighbors(node, (msgNode, msgAtrs) => {
+          !this.graph.someOutboundNeighbor(node, (msgNode, msgAtrs) => {
             return msgAtrs.type === 'message';
-          }).length === 0
+          })
       )
       .map((key) => {
         const bundleRef = this.graph.findInboundNeighbor(key, (node, attrs) => {
