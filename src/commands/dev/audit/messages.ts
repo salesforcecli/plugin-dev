@@ -15,6 +15,7 @@ import { Interfaces } from '@oclif/core';
 export type AuditResults = {
   unusedBundles: string[];
   unusedMessages: Array<{ Bundle: string; Name: string }>;
+  missingBundles: Array<{ Bundle: string; File: string; SourceVar: string }>;
   missingMessages: Array<{ File: string; Name: string; SourceVar: string; Bundle: string; IsLiteral: boolean }>;
 };
 
@@ -53,15 +54,18 @@ const messages = Messages.load('@salesforce/plugin-dev', 'audit.messages', [
   'summary',
   'description',
   'examples',
+  'duplicateBundles',
   'flags.messages-dir.summary',
   'flags.messages-dir.description',
   'flags.project-dir.summary',
   'flags.project-dir.description',
   'flags.source-dir.summary',
   'flags.source-dir.description',
+  'missingBundlesFound',
   'missingMessagesExplanation',
   'missingMessagesNonLiteralWarning',
   'missingMessagesFound',
+  'noMissingBundlesFound',
   'noMissingMessagesFound',
   'noUnusedBundlesFound',
   'noUnusedMessagesFound',
@@ -99,7 +103,12 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   private bundles: string[] = [];
   private sourceDirPath: string;
   private source: Map<string, string> = new Map();
-  private auditResults: AuditResults = { unusedBundles: [], unusedMessages: [], missingMessages: [] };
+  private auditResults: AuditResults = {
+    unusedBundles: [],
+    unusedMessages: [],
+    missingBundles: [],
+    missingMessages: [],
+  };
   private package: string;
   private projectDir: string;
   private logger: Logger;
@@ -115,6 +124,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     this.auditMessages();
     this.buildAuditResults();
     this.displayResults();
+    this.determineExitCode();
     return this.auditResults;
   }
 
@@ -135,6 +145,17 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     Messages.importMessagesDirectory(this.messagesDirPath);
     this.bundles = messagesDir.filter((entry) => entry.isFile()).map((entry) => entry.name);
     this.logger.debug(`Loaded ${this.bundles.length} bundles with names ${this.bundles.toString()}`);
+    const bundleMap = this.bundles.reduce((m, bundle) => {
+      const count = m.get(parse(bundle).name) || 0;
+      m.set(parse(bundle).name, count + 1);
+      return m;
+    }, new Map<string, number>());
+    if ([...bundleMap.values()].some((count) => count > 1)) {
+      const duplicates = [...bundleMap.entries()].filter(([, count]) => count > 1);
+      throw messages.createError('duplicateBundles', [
+        duplicates.map(([name, count]) => `${name}:${count}`).join(', '),
+      ]);
+    }
   }
 
   private async loadSource(): Promise<void> {
@@ -169,23 +190,6 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   }
 
   private displayResults(): void {
-    this.log();
-    if (this.auditResults.unusedBundles.length === 0) {
-      this.styledHeader(messages.getMessage('noUnusedBundlesFound'));
-    } else {
-      this.styledHeader(messages.getMessage('unusedBundlesFound'));
-      this.table(
-        this.auditResults.unusedBundles.map((Bundle) => ({ Bundle })),
-        { Bundle: { header: 'Bundle' } }
-      );
-    }
-    this.log();
-    if (this.auditResults.unusedMessages.length === 0) {
-      this.styledHeader(messages.getMessage('noUnusedMessagesFound'));
-    } else {
-      this.styledHeader(messages.getMessage('unusedMessagesFound'));
-      this.table(this.auditResults.unusedMessages, { Bundle: { header: 'Bundle' }, Name: { header: 'Name' } });
-    }
     const hasNonLiteralReferences = this.auditResults.missingMessages.some((msg) => !msg.IsLiteral);
     this.log();
     if (this.auditResults.missingMessages.length === 0) {
@@ -216,6 +220,40 @@ export default class AuditMessages extends SfCommand<AuditResults> {
         },
         { 'no-truncate': true }
       );
+    }
+
+    this.log();
+    if (this.auditResults.unusedMessages.length === 0) {
+      this.styledHeader(messages.getMessage('noUnusedMessagesFound'));
+    } else {
+      this.styledHeader(messages.getMessage('unusedMessagesFound'));
+      this.table(this.auditResults.unusedMessages, {
+        Bundle: { header: 'Bundle' },
+        Name: { header: 'Name' },
+        ReferencedInNonLiteral: { header: '*' },
+      });
+    }
+
+    this.log();
+    if (this.auditResults.unusedBundles.length === 0) {
+      this.styledHeader(messages.getMessage('noUnusedBundlesFound'));
+    } else {
+      this.styledHeader(messages.getMessage('unusedBundlesFound'));
+      this.table(
+        this.auditResults.unusedBundles.map((Bundle) => ({ Bundle })),
+        { Bundle: { header: 'Bundle' } }
+      );
+    }
+    this.log();
+    if (this.auditResults.missingBundles.length === 0) {
+      this.styledHeader(messages.getMessage('noMissingBundlesFound'));
+    } else {
+      this.styledHeader(messages.getMessage('missingBundlesFound'));
+      this.table(this.auditResults.missingBundles, {
+        File: { header: 'File' },
+        SourceVar: { header: 'Message Bundle Var' },
+        Bundle: { header: 'Bundle' },
+      });
     }
   }
 
@@ -316,24 +354,21 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       .filterNodes((node, attrs) => attrs.type === 'bundle' && this.graph.inDegree(node) === 0)
       .sort();
 
-    // find unused messages that are not part of an unused bundle
-    this.auditResults.unusedMessages = this.graph
-      // looking for message nodes that do not have any incoming edges from message reference nodes
-      .filterNodes(
-        (node, attrs) =>
-          attrs.type === 'message' &&
-          !this.graph.someInboundNeighbor(node, (inboundNode, inboundAttrs) => {
-            return inboundAttrs.type === 'messageReference';
-          })
-      )
-      .map((key) => {
-        const [Bundle, Name] = key.split(':');
-        return { Bundle, Name };
+    // find missing bundles
+    this.auditResults.missingBundles = this.graph
+      .filterNodes((node, attrs) => attrs.type === 'bundleReference' && this.graph.outDegree(node) === 0)
+      .map((node) => {
+        const bundleRefNode = this.graph.getNodeAttributes(node) as BundleRefNode;
+        const [File] = node.split(':');
+        return { Bundle: bundleRefNode.name, File, SourceVar: bundleRefNode.variable };
       })
-      // filter out messages that are part of an unused bundle
-      .filter((unused) => !this.auditResults.unusedBundles.includes(unused.Bundle))
       .sort((a, b) => {
-        return a.Bundle.localeCompare(b.Bundle) || a.Name.localeCompare(b.Name);
+        const fileCompare = a.File.localeCompare(b.File);
+        const sourceVarCompare = a.SourceVar.localeCompare(b.SourceVar);
+        if (fileCompare === 0) {
+          return sourceVarCompare;
+        }
+        return fileCompare;
       });
 
     // find message references where are no outbound edges to messages
@@ -369,5 +404,63 @@ export default class AuditMessages extends SfCommand<AuditResults> {
         }
         return fileCompare;
       });
+
+    const nonLiteralMessageBundleRefs = this.auditResults.missingMessages
+      .filter((m) => !m.IsLiteral)
+      .map((m) => m.Bundle)
+      .reduce((acc, bundle) => acc.add(bundle), new Set<string>());
+
+    // find unused messages that are not part of an unused bundle
+    this.auditResults.unusedMessages = this.graph
+      // looking for message nodes that do not have any incoming edges from message reference nodes
+      .filterNodes(
+        (node, attrs) =>
+          attrs.type === 'message' &&
+          !this.graph.someInboundNeighbor(node, (inboundNode, inboundAttrs) => {
+            return inboundAttrs.type === 'messageReference';
+          })
+      )
+      .map((key) => {
+        const [Bundle, Name] = key.split(':');
+        return { Bundle, Name, ReferencedInNonLiteral: nonLiteralMessageBundleRefs.has(Bundle) ? '*' : '' };
+      })
+      // filter out messages that are part of an unused bundle
+      .filter((unused) => !this.auditResults.unusedBundles.includes(unused.Bundle))
+      .sort((a, b) => {
+        return a.Bundle.localeCompare(b.Bundle) || a.Name.localeCompare(b.Name);
+      });
+  }
+
+  /**
+   * Calculates the exit code based on the audit results
+   * The exit code is a sum of the following:
+   * exit code = unusedBundles
+   * + unusedMessages
+   * + missingBundles
+   * + missingMessages
+   * - non-literal missing messages
+   * - unused messages bundles when the bundle is referenced in non-literal message references
+   *
+   * Given the possibility of false positives due to non-literal message key references, the exit code calculation
+   * removes the count of non-literal missing messages
+   * removes the count of unused messages that are part of a bundle that is referenced in non-literal message references
+   *
+   * @private
+   */
+  private determineExitCode(): void {
+    const { unusedBundles, unusedMessages, missingBundles, missingMessages } = this.auditResults;
+
+    const nonLiteralBundleRefs = missingMessages.filter((msg) => !msg.IsLiteral).map((msg) => msg.Bundle);
+    const unusedMessagesInNonLiteralBundleRefs = unusedMessages.filter((msg) =>
+      nonLiteralBundleRefs.includes(msg.Bundle)
+    );
+
+    process.exitCode =
+      unusedBundles.length +
+      missingBundles.length +
+      unusedMessages.length +
+      missingMessages.length -
+      unusedMessagesInNonLiteralBundleRefs.length -
+      nonLiteralBundleRefs.length;
   }
 }

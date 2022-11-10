@@ -36,6 +36,14 @@ Location of the plugin's source code.
 
 The directory that holds the plugin's source code. The default is the src directory in the current working directory.
 
+# flags.report-on.summary
+
+Audit types to report on.
+
+# flags.report-on.description
+
+Audit types to report on.
+
 # noUnusedMessagesFound
 
 No unused messages found
@@ -71,3 +79,19 @@ Unused bundles found
 # noUnusedBundlesFound
 
 No unused bundles found
+
+# duplicateBundles
+
+Duplicate message bundles found in directory %s
+
+# duplicateBundles.actions
+
+Check the messages directory for duplicate message bundles.
+
+# noMissingBundlesFound
+
+No missing bundles found
+
+# missingBundlesFound
+
+Missing bundles found
