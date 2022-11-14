@@ -52,6 +52,7 @@ describe('audit messages', () => {
     const cmd = new AuditMessages(['-p', path.join(runResult.cwd, 'plugin-test'), '--json'], {} as Config);
     const result = await cmd.run();
     expect(result).to.deep.equal({
+      missingBundles: [],
       missingMessages: [
         {
           Bundle: 'hello.world',
@@ -73,6 +74,7 @@ describe('audit messages', () => {
         {
           Bundle: 'hello.world',
           Name: 'unusedMessage',
+          ReferencedInNonLiteral: '*',
         },
       ],
     });
