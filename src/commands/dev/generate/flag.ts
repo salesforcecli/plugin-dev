@@ -71,6 +71,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
     'dry-run': Flags.boolean({
       summary: messages.getMessage('flags.dry-run.summary'),
       char: 'd',
+      aliases: ['dryrun'],
     }),
   };
 

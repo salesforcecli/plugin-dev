@@ -84,18 +84,21 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       char: 'p',
       description: messages.getMessage('flags.project-dir.description'),
       default: '.',
+      aliases: ['projectdir'],
     }),
     'messages-dir': Flags.directory({
       summary: messages.getMessage('flags.messages-dir.summary'),
       char: 'm',
       description: messages.getMessage('flags.messages-dir.description'),
       default: 'messages',
+      aliases: ['messagesdir'],
     }),
     'source-dir': Flags.directory({
       summary: messages.getMessage('flags.source-dir.summary'),
       char: 's',
       description: messages.getMessage('flags.source-dir.description'),
       default: 'src',
+      aliases: ['sourcedir'],
     }),
   };
   private flags: Interfaces.InferredFlags<typeof AuditMessages.flags>;
@@ -429,6 +432,15 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       .sort((a, b) => {
         return a.Bundle.localeCompare(b.Bundle) || a.Name.localeCompare(b.Name);
       });
+
+    const snowflakeMessages = this.auditResults.unusedMessages.filter(
+      (m) =>
+        m.Name.endsWith('.actions') &&
+        !this.auditResults.unusedMessages.some((m2) => m2.Name === m.Name.replace('.actions', ''))
+    );
+    this.auditResults.unusedMessages = this.auditResults.unusedMessages.filter(
+      (m) => !snowflakeMessages.some((msg) => msg.Name.endsWith('.actions') && m.Bundle === msg.Bundle)
+    );
   }
 
   /**
