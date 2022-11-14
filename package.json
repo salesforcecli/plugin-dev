@@ -102,6 +102,9 @@
       "dev": {
         "description": "Commands for sf plugin development.",
         "subtopics": {
+          "convert": {
+            "description": "description for dev.convert"
+          },
           "generate": {
             "description": "Commands for generating sf plugins, commands, and hooks."
           }
