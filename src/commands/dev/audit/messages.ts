@@ -280,7 +280,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
 
   private auditMessages(): void {
     this.logger.debug('Auditing messages');
-    const re = /(#?\w+?)\.(?:getMessage|getMessages|getMessageWithMap|createError|createWarn|createInfo)\((.*?)\)/g;
+    const re = /(#?\w+?)\.(?:getMessage|getMessages|getMessageWithMap|createError|createWarning|createInfo)\((.*?)\)/g;
 
     // create bundle/message nodes add edges between them
     this.bundles.forEach((bundleFileName) => {
