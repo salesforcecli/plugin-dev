@@ -65,7 +65,8 @@ export default class ConfigureSecrets extends SfCommand<SecretsResult> {
     }),
     'dry-run': Flags.boolean({
       summary: messages.getMessage('flags.dryRun.summary'),
-      char: 'c',
+      char: 'd',
+      aliases: ['dryrun'],
     }),
   };
 

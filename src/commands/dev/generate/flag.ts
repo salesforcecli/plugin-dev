@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import * as os from 'os';
 import * as fs from 'fs/promises';
 import { exec } from 'shelljs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
@@ -71,6 +72,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
     'dry-run': Flags.boolean({
       summary: messages.getMessage('flags.dry-run.summary'),
       char: 'd',
+      aliases: ['dryrun'],
     }),
   };
 
@@ -102,7 +104,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     if (flags['dry-run']) {
       this.styledHeader('New flag:');
-      this.log(newFlag.join('\n'));
+      this.log(newFlag.join(os.EOL));
       return;
     }
 
@@ -320,6 +322,9 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
   private async updateMarkdownFile(answers: FlagAnswers, commandName: string): Promise<void> {
     const filePath = path.join('messages', `${commandName.split(':').join('.')}.md`);
-    await fs.appendFile(filePath, `\n# flags.${answers.name}.summary\n\n${answers.summary}\n`);
+    await fs.appendFile(
+      filePath,
+      `${os.EOL}# flags.${answers.name}.summary${os.EOL}${os.EOL}${answers.summary}${os.EOL}`
+    );
   }
 }

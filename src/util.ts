@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import * as fs from 'fs';
+import * as os from 'os';
 import { createEnv } from 'yeoman-environment';
 import { ensureArray } from '@salesforce/kit';
 import { FlagAnswers, Hook, PackageJson } from './types';
@@ -73,16 +74,16 @@ export class FlagBuilder {
     if (this.answers.type === 'enum') flagOptions.push('options: []');
 
     const flagName = this.answers.name.includes('-') ? `'${this.answers.name}'` : this.answers.name;
-
-    const newFlag = `    ${flagName}: Flags.${this.answers.type}({
-      ${flagOptions.join(',\n      ')},
-    }),`.split('\n');
-
+    const newFlag = [
+      `    ${flagName}: Flags.${this.answers.type}({`,
+      ...flagOptions.map((o) => `      ${o},`),
+      '    }),',
+    ];
     return newFlag;
   }
 
   public async apply(flagParts: string[]): Promise<string> {
-    const lines = (await this.readFile()).split('\n');
+    const lines = (await this.readFile()).split(os.EOL);
     const flagsStartIndex = lines.findIndex(
       (line) => line.includes('public static flags') || line.includes('public static readonly flags')
     );
@@ -90,7 +91,7 @@ export class FlagBuilder {
     // If index isn't found, that means that no flags are defined yet
     if (flagsStartIndex === -1) {
       const altFlagsStartIndex = lines.findIndex((line) => line.includes('public async run')) - 1;
-      lines.splice(altFlagsStartIndex, 0, `public static flags = {${flagParts.join('\n')}};\n`);
+      lines.splice(altFlagsStartIndex, 0, `public static flags = {${flagParts.join(os.EOL)}};${os.EOL}`);
     } else {
       const flagsEndIndex = lines.slice(flagsStartIndex).findIndex((line) => line.endsWith('};')) + flagsStartIndex;
       lines.splice(flagsEndIndex, 0, ...flagParts);
@@ -132,7 +133,7 @@ export class FlagBuilder {
       }
     }
 
-    return lines.join('\n');
+    return lines.join(os.EOL);
   }
 
   public async readFile(): Promise<string> {
