@@ -742,8 +742,6 @@ describe('FlagBuilder', () => {
       const flag = flagBuilder.build();
       const updated = await flagBuilder.apply(flag);
 
-      // eslint-disable-next-line no-console
-      console.log(updated);
       expect(updated).to.not.include('@oclif/core');
       expect(updated).to.include("import { SfCommand , Flags} from '@salesforce/sf-plugins-core';");
     });
