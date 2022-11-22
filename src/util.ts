@@ -74,13 +74,11 @@ export class FlagBuilder {
     if (this.answers.type === 'enum') flagOptions.push('options: []');
 
     const flagName = this.answers.name.includes('-') ? `'${this.answers.name}'` : this.answers.name;
-
-    // do not change the format of this next line
-    const newFlag = `    ${flagName}: Flags.${this.answers.type}({${os.EOL}      ${flagOptions.join(
-      `,${os.EOL}      `
-    )},
-    ${os.EOL}    }),`.split(os.EOL);
-
+    const newFlag = [
+      `    ${flagName}: Flags.${this.answers.type}({`,
+      ...flagOptions.map((o) => `      ${o},`),
+      '    }),',
+    ];
     return newFlag;
   }
 
