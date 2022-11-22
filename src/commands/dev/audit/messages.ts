@@ -15,7 +15,7 @@ import { Interfaces } from '@oclif/core';
 
 export type AuditResults = {
   unusedBundles: string[];
-  unusedMessages: Array<{ Bundle: string; Name: string }>;
+  unusedMessages: Array<{ Bundle: string; Name: string; ReferencedInNonLiteral: string }>;
   missingBundles: Array<{ Bundle: string; File: string; SourceVar: string }>;
   missingMessages: Array<{ File: string; Name: string; SourceVar: string; Bundle: string; IsLiteral: boolean }>;
 };
@@ -216,13 +216,20 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       }));
       this.table(
         data,
-        {
-          File: { header: 'File' },
-          SourceVar: { header: 'Message Bundle Var' },
-          Name: { header: 'Name' },
-          IsLiteral: { header: '*' },
-          Bundle: { header: 'Referenced Bundle' },
-        },
+        hasNonLiteralReferences
+          ? {
+              File: { header: 'File' },
+              SourceVar: { header: 'Message Bundle Var' },
+              Name: { header: 'Name' },
+              IsLiteral: { header: '*' },
+              Bundle: { header: 'Referenced Bundle' },
+            }
+          : {
+              File: { header: 'File' },
+              SourceVar: { header: 'Message Bundle Var' },
+              Name: { header: 'Name' },
+              Bundle: { header: 'Referenced Bundle' },
+            },
         { 'no-truncate': true }
       );
     }
@@ -232,11 +239,20 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       this.styledHeader(messages.getMessage('noUnusedMessagesFound'));
     } else {
       this.styledHeader(messages.getMessage('unusedMessagesFound'));
-      this.table(this.auditResults.unusedMessages, {
-        Bundle: { header: 'Bundle' },
-        Name: { header: 'Name' },
-        ReferencedInNonLiteral: { header: '*' },
-      });
+      const hasReferencedInNonLiteral = this.auditResults.unusedMessages.some((msg) => msg.ReferencedInNonLiteral);
+      this.table(
+        this.auditResults.unusedMessages,
+        hasReferencedInNonLiteral
+          ? {
+              Bundle: { header: 'Bundle' },
+              Name: { header: 'Name' },
+              ReferencedInNonLiteral: { header: '*' },
+            }
+          : {
+              Bundle: { header: 'Bundle' },
+              Name: { header: 'Name' },
+            }
+      );
     }
 
     this.log();
