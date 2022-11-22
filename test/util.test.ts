@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import * as os from 'os';
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { FlagBuilder, validatePluginName } from '../src/util';
@@ -59,7 +60,7 @@ export default class World extends SfCommand<HelloWorldResult> {
   }
 }
 
-`;
+`.replace(/\n/g, os.EOL);
 
 const templateCommandNoFlags = `
 /*
@@ -96,7 +97,7 @@ export default class World extends SfCommand<HelloWorldResult> {
   }
 }
 
-`;
+`.replace(/\n/g, os.EOL);
 
 const templateCommandOclifFlags = `
 /*
@@ -148,7 +149,7 @@ export default class World extends SfCommand<HelloWorldResult> {
   }
 }
 
-`;
+`.replace(/\n/g, os.EOL);
 
 const templateCommandOclifFlagsWithMultipleImports = `
 /*
@@ -200,7 +201,7 @@ export default class World extends SfCommand<HelloWorldResult> {
   }
 }
 
-`;
+`.replace(/\n/g, os.EOL);
 
 const templateCommandSingleLineMessages = `
 /*
@@ -232,7 +233,7 @@ export default class World extends SfCommand<HelloWorldResult> {
   }
 }
 
-`;
+`.replace(/\n/g, os.EOL);
 
 describe('FlagBuilder', () => {
   let sandbox: sinon.SinonSandbox;
