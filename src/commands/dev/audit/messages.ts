@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import * as fs from 'fs';
+import * as os from 'os';
 import { join, parse, relative, resolve } from 'path';
 import { Logger, Messages } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
@@ -169,7 +170,8 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     const fileProducer = async (file: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
       this.logger.trace(`Loading file ${file}`);
       const fileContents = await fs.promises.readFile(file, 'utf8');
-      const contents = fileContents.replace(/\n/g, ' ').replace(/\s{2,}/g, '');
+      const newLineRegex = new RegExp(`${os.EOL}`, 'g');
+      const contents = fileContents.replace(newLineRegex, ' ').replace(/\s{2,}/g, '');
       this.source.set(relative(this.projectDir, file), contents);
     };
 
