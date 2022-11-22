@@ -5,7 +5,6 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import * as fs from 'fs';
-import * as os from 'os';
 import { join, parse, relative, resolve } from 'path';
 import { Logger, Messages } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
@@ -170,9 +169,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     const fileProducer = async (file: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
       this.logger.trace(`Loading file ${file}`);
       const fileContents = await fs.promises.readFile(file, 'utf8');
-      const newLineRegex = new RegExp(`${os.EOL}`, 'g');
-      const contents = fileContents.replace(newLineRegex, ' ').replace(/\s{2,}/g, '');
-      this.source.set(relative(this.projectDir, file), contents);
+      this.source.set(relative(this.projectDir, file), fileContents);
     };
 
     const dirHandler = async (dir: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
@@ -280,7 +277,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
 
   private auditMessages(): void {
     this.logger.debug('Auditing messages');
-    const re = /(#?\w+?)\.(?:getMessage|getMessages|getMessageWithMap|createError|createWarning|createInfo)\((.*?)\)/g;
+    const re = /(#?\w+?)\.(?:getMessage|getMessages|getMessageWithMap|createError|createWarning|createInfo)\((.*?)\)/gs;
 
     // create bundle/message nodes add edges between them
     this.bundles.forEach((bundleFileName) => {
@@ -305,7 +302,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       this.logger.trace(`Auditing file ${file} to graph`);
       this.graph.addNode(file, { type: 'source', name: file, x: 1, y: 1 });
       // find and record references to bundles
-      const bundleRegexp = new RegExp('.*?\\s+(.\\w+?) = Messages.load(Messages)?\\((.*?)\\)', 'g');
+      const bundleRegexp = new RegExp('.*?\\s+(.\\w+?) = Messages.load(Messages)?\\((.*?)\\)', 'gs');
       const bundleMatches = [...contents.matchAll(bundleRegexp)];
       // for each bundle reference, add a bundle ref node to the graph and add an edge from the source file to the bundle reference
       bundleMatches.forEach((match) => {
