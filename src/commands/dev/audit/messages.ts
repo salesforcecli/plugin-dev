@@ -410,9 +410,9 @@ export default class AuditMessages extends SfCommand<AuditResults> {
         return fileCompare;
       });
 
-    const nonLiteralMessageBundleRefs = new Set(this.auditResults.missingMessages
-      .filter((m) => !m.IsLiteral)
-      .map((m) => m.Bundle))
+    const nonLiteralMessageBundleRefs = new Set(
+      this.auditResults.missingMessages.filter((m) => !m.IsLiteral).map((m) => m.Bundle)
+    );
 
     // find unused messages that are not part of an unused bundle
     this.auditResults.unusedMessages = this.graph
