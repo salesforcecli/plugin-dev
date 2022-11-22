@@ -75,8 +75,9 @@ export class FlagBuilder {
 
     const flagName = this.answers.name.includes('-') ? `'${this.answers.name}'` : this.answers.name;
 
-    const newFlag = `    ${flagName}: Flags.${this.answers.type}({
-      ${flagOptions.join(`,${os.EOL}      `)},
+    const newFlag = `    ${flagName}: Flags.${this.answers.type}({${os.EOL}      ${flagOptions.join(
+      `,${os.EOL}      `
+    )},
     }),`.split(os.EOL);
 
     return newFlag;

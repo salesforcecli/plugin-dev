@@ -56,14 +56,14 @@ describe('audit messages', () => {
       missingMessages: [
         {
           Bundle: 'hello.world',
-          File: 'src/commands/hello/world.ts',
+          File: 'src/commands/hello/world.ts'.split('/').join(path.sep),
           IsLiteral: false,
           Name: 'msg',
           SourceVar: 'messages',
         },
         {
           Bundle: 'hello.world',
-          File: 'src/commands/hello/world.ts',
+          File: 'src/commands/hello/world.ts'.split('/').join(path.sep),
           IsLiteral: true,
           Name: 'noWayYouFindThis',
           SourceVar: 'messages',
