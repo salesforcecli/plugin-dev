@@ -42,7 +42,8 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
     }),
     'dry-run': Flags.boolean({
       summary: messages.getMessage('flags.dryRun.summary'),
-      char: 'c',
+      char: 'd',
+      aliases: ['dryrun'],
     }),
     bot: Flags.string({
       summary: messages.getMessage('flags.bot.summary'),
