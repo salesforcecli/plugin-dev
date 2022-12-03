@@ -1092,12 +1092,12 @@
     mv "~2"
     safe-json-stringify "~1"
 
-"@salesforce/cli-plugins-testkit@^3.2.8":
-  version "3.2.9"
-  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-3.2.9.tgz#9bbfca80e9c95258b364b2e1d56173419da69ce8"
-  integrity sha512-GpJQ+toqDVOizyYnemtE11oWkNS6hMUxV7ht6nambzWCArIcK4aUVW7VIMxO6WnSLb66GZ9CbIHA1NEvWluydw==
+"@salesforce/cli-plugins-testkit@^3.2.11":
+  version "3.2.11"
+  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-3.2.11.tgz#ac6136dd604d250f140e69686f65f4f51913dcc8"
+  integrity sha512-8kGWrHbqfPyHZiLLIYCDjrxKMuAZ4tfb4HfHBLH5+S/ve5EeH3H2hjUsLaxCs7bPNpbrnpFU94dmiQBDpSUHiA==
   dependencies:
-    "@salesforce/core" "^3.32.1"
+    "@salesforce/core" "^3.32.2"
     "@salesforce/kit" "^1.8.0"
     "@salesforce/ts-types" "^1.5.21"
     "@types/shelljs" "^0.8.11"
@@ -1107,17 +1107,17 @@
     strip-ansi "6.0.1"
     ts-retry-promise "^0.7.0"
 
-"@salesforce/core@^3.30.14", "@salesforce/core@^3.32.1", "@salesforce/core@^3.8.0":
-  version "3.32.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-3.32.1.tgz#1a338a1985c58c1be819f99c6b33b24b32817cbe"
-  integrity sha512-hVcweKGy1CS3t0duS+0jxGVou5ZoQMXRZPQmcz1FyW31Oef5U07rhs3wTrwJqhCPHL817R/gm5V9wSRNcYdDtA==
+"@salesforce/core@^3.30.14", "@salesforce/core@^3.32.1", "@salesforce/core@^3.32.2", "@salesforce/core@^3.8.0":
+  version "3.32.6"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-3.32.6.tgz#ee42663ffbf9db2478247fa7e6af3df652eebb5f"
+  integrity sha512-+j9nXnVnK4H+YmRfhcmSW/RZu2XIM6zKlXImsy+XhWBV1zOvM1JZiQngj3pdrGck7hoMc68YfWP0UEVzmM/k+g==
   dependencies:
     "@salesforce/bunyan" "^2.0.0"
     "@salesforce/kit" "^1.8.0"
-    "@salesforce/schemas" "^1.1.0"
+    "@salesforce/schemas" "^1.4.0"
     "@salesforce/ts-types" "^1.5.21"
     "@types/graceful-fs" "^4.1.5"
-    "@types/semver" "^7.3.9"
+    "@types/semver" "^7.3.13"
     ajv "^8.11.0"
     archiver "^5.3.0"
     change-case "^4.1.2"
@@ -1205,10 +1205,10 @@
   resolved "https://registry.yarnpkg.com/@salesforce/prettier-config/-/prettier-config-0.0.2.tgz#ded39bf7cb75238edc9db6dd093649111350f8bc"
   integrity sha512-KExM355BLbxCW6siGBV7oUOotXvvVp0tAWERgzUkM2FcMb9fWrjwXDrIHc8V0UdDlA3UXtFltDWgN+Yqi+BA/g==
 
-"@salesforce/schemas@^1.1.0":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@salesforce/schemas/-/schemas-1.1.3.tgz#fce83f55c7557d47b9c814d5d02978ad734300b3"
-  integrity sha512-XWohlOT2oQDqAJH00OXS3f2MGjkwZ6pr4emnnkHSQbg7UdGW0rvGpEnRKqBbDUfZ4K5YKSo9Gj216ZtaP3JLXg==
+"@salesforce/schemas@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/schemas/-/schemas-1.4.0.tgz#7dff427c8059895d8108176047aee600703c82d6"
+  integrity sha512-BJ25uphssN42Zy6kksheFHMTLiR98AAHe/Wxnv0T4dYxtrEbUjSXVAGKZqfewJPFXA4xB5gxC+rQZtfz6xKCFg==
 
 "@salesforce/sf-plugins-core@^1.19.0", "@salesforce/sf-plugins-core@^1.9.0":
   version "1.19.0"
@@ -1602,10 +1602,15 @@
   dependencies:
     "@types/node" "*"
 
-"@types/semver@^7.3.12", "@types/semver@^7.3.9":
+"@types/semver@^7.3.12":
   version "7.3.12"
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.12.tgz#920447fdd78d76b19de0438b7f60df3c4a80bf1c"
   integrity sha512-WwA1MW0++RfXmCr12xeYOOC5baSC9mSb0ZqCquFzKhcoF4TvHu5MKOuXsncgZcpVFhB1pXd5hZmM0ryAoCp12A==
+
+"@types/semver@^7.3.13":
+  version "7.3.13"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.13.tgz#da4bfd73f49bd541d28920ab0e2bf0ee80f71c91"
+  integrity sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==
 
 "@types/shelljs@^0.8.10", "@types/shelljs@^0.8.11":
   version "0.8.11"
