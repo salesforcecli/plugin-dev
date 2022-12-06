@@ -64,7 +64,8 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
 
 const convertValue = (key: string, value: string | string[] | Record<string, string>): string => {
   if (typeof value === 'string') {
-    return `# ${key}${skip1Line}${value.trim()}`;
+    // trim, and also convert any internal new line characters to os EOL
+    return `# ${key}${skip1Line}${value.trim().replace(/(\\r\\n|\\r|\\n)/g, EOL)}`;
   } else if (Array.isArray(value)) {
     return [`# ${key}`, `${skip1Line}- ` + value.join(`${skip1Line}- `)].join('');
   } else {
