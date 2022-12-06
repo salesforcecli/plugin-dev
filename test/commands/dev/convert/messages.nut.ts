@@ -7,7 +7,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { execCmd } from '@salesforce/cli-plugins-testkit';
-import { expect } from 'chai';
+import { expect, config } from 'chai';
+
+config.truncateThreshold = 0;
 
 describe('dev convert messsages NUTs', () => {
   const parentPath = path.join('test', 'commands', 'dev', 'convert', 'samples');
