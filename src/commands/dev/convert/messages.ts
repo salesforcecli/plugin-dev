@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import * as fs from 'fs';
+import { EOL } from 'os';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
@@ -62,12 +63,12 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
 
 const convertValue = (key: string, value: string | string[] | Record<string, string>): string => {
   if (typeof value === 'string') {
-    return `# ${key}\n\n${value.trim()}`;
+    return `# ${key}${EOL}${EOL}${value.trim()}`;
   } else if (Array.isArray(value)) {
-    return [`# ${key}`, '\n\n- ' + value.join('\n\n- ')].join('');
+    return [`# ${key}`, `${EOL}${EOL}- ` + value.join(`${EOL}${EOL}- `)].join('');
   } else {
     return Object.entries(value)
       .map(([subkey, subvalue]) => convertValue(`${key}.${subkey}`, subvalue))
-      .join('\n\n');
+      .join(`${EOL}${EOL}`);
   }
 };
