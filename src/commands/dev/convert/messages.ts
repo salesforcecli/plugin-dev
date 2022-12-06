@@ -22,6 +22,7 @@ export type DevConvertMessagesResult = {
   contents: string;
 };
 
+const skip1Line = `${EOL}${EOL}`;
 export default class DevConvertMessages extends SfCommand<DevConvertMessagesResult[]> {
   public static summary = messages.getMessage('summary');
   public static description = messages.getMessage('description');
@@ -50,7 +51,7 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
         const contents = Object.entries(original)
           // .map(([key, value]) => `# ${key}\n\n${Array.isArray(value) ? value.join('\n\n') : value}\n\n`)
           .map(([key, value]) => convertValue(key, value))
-          .join('\n\n');
+          .join(`${skip1Line}`);
         await fs.promises.writeFile(newName, contents, 'utf8');
         return {
           path: newName,
@@ -63,12 +64,12 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
 
 const convertValue = (key: string, value: string | string[] | Record<string, string>): string => {
   if (typeof value === 'string') {
-    return `# ${key}${EOL}${EOL}${value.trim()}`;
+    return `# ${key}${skip1Line}${value.trim()}`;
   } else if (Array.isArray(value)) {
-    return [`# ${key}`, `${EOL}${EOL}- ` + value.join(`${EOL}${EOL}- `)].join('');
+    return [`# ${key}`, `${skip1Line}- ` + value.join(`${skip1Line}- `)].join('');
   } else {
     return Object.entries(value)
       .map(([subkey, subvalue]) => convertValue(`${key}.${subkey}`, subvalue))
-      .join(`${EOL}${EOL}`);
+      .join(`${skip1Line}`);
   }
 };
