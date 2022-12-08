@@ -5,9 +5,9 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, Hook as OclifHook } from '@oclif/core';
+import { Hook as OclifHook } from '@oclif/core';
 import { Messages } from '@salesforce/core';
-import { SfCommand, SfHook } from '@salesforce/sf-plugins-core';
+import { SfCommand, SfHook, Flags } from '@salesforce/sf-plugins-core';
 import { AnyJson } from '@salesforce/ts-types';
 
 Messages.importMessagesDirectory(__dirname);
