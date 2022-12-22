@@ -22,6 +22,9 @@ export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
   name: string;
   nuts: boolean;
   unit: boolean;
+  org: boolean;
+  devHub: boolean;
+  resultType: string;
 }
 
 export function addTopics(
@@ -129,7 +132,7 @@ export default class Command extends Generator {
     const opts = {
       ...this.options,
       className,
-      returnType: `${className}Result`,
+      returnType: this.options.resultType === 'void' ? 'void' : `${className}Result`,
       commandPath,
       year: new Date().getFullYear(),
       copyright: this.internalPlugin,

@@ -10,6 +10,8 @@ import { createEnv } from 'yeoman-environment';
 import { ensureArray } from '@salesforce/kit';
 import { FlagAnswers, Hook, PackageJson } from './types';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 export function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
   const env = createEnv();
   env.register(require.resolve(`./generators/${type}`), `sf:${type}`);

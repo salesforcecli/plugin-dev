@@ -15,10 +15,12 @@
     "got": "^11.8.5",
     "graphology": "^0.25.1",
     "graphology-types": "^0.24.5",
+    "inquirer": "^8.2.5",
     "js-yaml": "^4.1.0",
     "replace-in-file": "^6.3.2",
     "shelljs": "^0.8.5",
     "tslib": "^2",
+    "wordpos": "^2.1.0",
     "yeoman-environment": "^3.12.1",
     "yeoman-generator": "^5.7.0",
     "yosay": "^2.0.2"

@@ -18,9 +18,16 @@ const messages = Messages.load('<%- pluginName %>', '<%- messageFile %>', [
   'flags.name.summary',
 ]);
 
+<% if (!resultType || resultType === 'object') { -%>
 export type <%- returnType %> = {
   path: string;
 };
+<% } %>
+<% if (resultType === 'list') { -%>
+export type <%- returnType %> = Array<{
+  path: string;
+}>;
+<% } %>
 
 export default class <%- className %> extends SfCommand<<%- returnType %>> {
   public static summary = messages.getMessage('summary');
@@ -28,20 +35,40 @@ export default class <%- className %> extends SfCommand<<%- returnType %>> {
   public static examples = messages.getMessages('examples');
 
   public static flags = {
+    <% if (!org && !devHub) { %>
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),
       char: 'n',
       required: false,
     }),
-  };
+    <% } %>
+    <% if (org) { %>
+    'target-org': Flags.requiredOrg(),
+    <% } %>
+    <% if (devHub) { %>
+      'target-dev-hub': Flags.requiredHub(),
+    <% } %>
+    };
 
   public async run(): Promise<<%- returnType %>> {
     const { flags } = await this.parse(<%- className %>);
 
+    <% if (!org && !devHub) { %>
     const name = flags.name ?? 'world';
     this.log(`hello ${name} from <%- commandPath.replace(/\\/g, '\\\\') %>`);
+    <% } %>
+    <% if (org) { %>
+    this.log(`hello ${flags['target-org'].getUsername()} from <%- commandPath.replace(/\\/g, '\\\\') %>`);
+    <% } %>
+    <% if (!resultType || resultType === 'object') { %>
     return {
       path: '<%- commandPath.replace(/\\/g, '\\\\') %>',
     };
-  }
+    <% } %>
+    <% if (resultType === 'list') { %>
+    return [{
+      path: '<%- commandPath.replace(/\\/g, '\\\\') %>',
+    }];
+    <% } %>
+    }
 }
