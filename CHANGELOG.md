@@ -1,3 +1,12 @@
+## [0.5.2](https://github.com/salesforcecli/plugin-dev/compare/0.5.1...0.5.2) (2022-12-24)
+
+
+### Bug Fixes
+
+* **deps:** bump yeoman-environment from 3.12.1 to 3.13.0 ([6c9fe71](https://github.com/salesforcecli/plugin-dev/commit/6c9fe7120fad4641e1ae065f99c7266822cf253f))
+
+
+
 ## [0.5.1](https://github.com/salesforcecli/plugin-dev/compare/0.5.0...0.5.1) (2022-12-17)
 
 
