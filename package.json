@@ -24,7 +24,7 @@
     "yosay": "^2.0.2"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^3.2.11",
+    "@oclif/plugin-command-snapshot": "^3.2.13",
     "@oclif/test": "^2.2.4",
     "@salesforce/cli-plugins-testkit": "^3.2.12",
     "@salesforce/dev-config": "^3.0.0",
