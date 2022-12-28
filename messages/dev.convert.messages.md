@@ -10,6 +10,14 @@ Converts a .json messages file to markdown. Preserves the filename and the origi
 
 Filename to convert
 
+# flags.project-dir.summary
+
+Location project where messages are to be audited.
+
+# flags.project-dir.description
+
+The project directory.
+
 # examples
 
 - <%= config.bin %> <%= command.id %> --filename something.json

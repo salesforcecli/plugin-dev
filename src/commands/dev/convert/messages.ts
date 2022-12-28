@@ -6,6 +6,8 @@
  */
 import * as fs from 'fs';
 import { EOL } from 'os';
+import * as path from 'path';
+import { resolve } from 'path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
@@ -15,12 +17,16 @@ const messages = Messages.load('@salesforce/plugin-dev', 'dev.convert.messages',
   'description',
   'examples',
   'flags.filename.summary',
+  'flags.project-dir.summary',
+  'flags.project-dir.description',
 ]);
 
 export type DevConvertMessagesResult = {
   path: string;
   contents: string;
 };
+
+type ValueType = string | string[] | Record<string, string>;
 
 const skip1Line = `${EOL}${EOL}`;
 export default class DevConvertMessages extends SfCommand<DevConvertMessagesResult[]> {
@@ -29,6 +35,14 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
   public static examples = messages.getMessages('examples');
 
   public static flags = {
+    'project-dir': Flags.directory({
+      summary: messages.getMessage('flags.project-dir.summary'),
+      char: 'p',
+      description: messages.getMessage('flags.project-dir.description'),
+      default: '.',
+      aliases: ['projectdir'],
+    }),
+
     filename: Flags.file({
       exists: true,
       summary: messages.getMessage('flags.filename.summary'),
@@ -40,29 +54,43 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
 
   public async run(): Promise<DevConvertMessagesResult[]> {
     const { flags } = await this.parse(DevConvertMessages);
-
+    const projectDir = resolve(flags['project-dir']);
+    const { name } = JSON.parse(await fs.promises.readFile(resolve(projectDir, 'package.json'), 'utf8')) as {
+      name: string;
+    };
+    const loadedMessageDirectories: Set<string> = new Set();
     return Promise.all(
-      flags.filename.map(async (filename) => {
-        const original = JSON.parse(await fs.promises.readFile(filename, 'utf8')) as Record<
-          string,
-          string | Record<string, string> | string[]
-        >;
-        const newName = filename.replace('.json', '.md');
-        const contents = Object.entries(original)
-          // .map(([key, value]) => `# ${key}\n\n${Array.isArray(value) ? value.join('\n\n') : value}\n\n`)
-          .map(([key, value]) => convertValue(key, value))
-          .join(`${skip1Line}`);
-        await fs.promises.writeFile(newName, contents, 'utf8');
-        return {
-          path: newName,
-          contents,
-        };
-      })
+      flags.filename
+        .filter((fileName) => !fileName.endsWith('.md'))
+        .map(async (filename) => {
+          const messageDirectory = path.dirname(path.resolve(filename));
+          if (!loadedMessageDirectories.has(messageDirectory)) {
+            Messages.importMessagesDirectory(path.dirname(path.resolve(filename)));
+            loadedMessageDirectories.add(messageDirectory);
+          }
+          const bundle: Messages<string> = Messages.loadMessages(name, path.parse(filename).name);
+          /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          const contents = ([...bundle.messages.keys()] as string[])
+            .map((key) => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              return convertValue(key, bundle.messages.get(key) as ValueType);
+            })
+            .join(skip1Line);
+          const newName = filename.replace(/\.js$|\.json$/, '.md');
+          await fs.promises.writeFile(newName, contents, 'utf8');
+          return {
+            path: newName,
+            contents,
+          };
+        })
     );
   }
 }
 
-const convertValue = (key: string, value: string | string[] | Record<string, string>): string => {
+const convertValue = (key: string, value: ValueType): string => {
   if (typeof value === 'string') {
     // trim, and also convert any internal new line characters to os EOL
     return `# ${key}${skip1Line}${value.trim()}`;
