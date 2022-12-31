@@ -38,7 +38,7 @@
     "@types/yeoman-generator": "^5.2.10",
     "@types/yeoman-test": "^4.0.3",
     "@types/yosay": "^2.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.46.0",
     "chai": "^4.2.0",
     "cz-conventional-changelog": "^3.3.0",
