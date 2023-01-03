@@ -78,7 +78,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
 
-  public static flags = {
+  public static readonly flags = {
     'project-dir': Flags.directory({
       summary: messages.getMessage('flags.project-dir.summary'),
       char: 'p',

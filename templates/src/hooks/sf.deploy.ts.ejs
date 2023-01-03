@@ -16,6 +16,7 @@ class MyEnvDeployable extends Deployable {
     return basename(this.myEnvDir);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public getType(): string {
     return 'myEnv';
   }
@@ -39,6 +40,7 @@ export class MyEnvDeployer extends Deployer {
     this.deployables = [new MyEnvDeployable(myEnvDir, this)];
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public getName(): string {
     return MyEnvDeployer.NAME;
   }

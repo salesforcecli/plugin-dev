@@ -34,7 +34,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
 
-  public static flags = {
+  public static readonly flags = {
     repository: Flags.string({
       summary: messages.getMessage('flags.repository.summary'),
       char: 'r',

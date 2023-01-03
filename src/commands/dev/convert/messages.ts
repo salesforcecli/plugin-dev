@@ -34,7 +34,7 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
 
-  public static flags = {
+  public static readonly flags = {
     'project-dir': Flags.directory({
       summary: messages.getMessage('flags.project-dir.summary'),
       char: 'p',

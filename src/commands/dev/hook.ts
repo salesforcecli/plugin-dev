@@ -26,7 +26,7 @@ export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
     },
   ];
 
-  public static flags = {
+  public static readonly flags = {
     plugin: Flags.string({
       summary: messages.getMessage('flags.plugin.summary'),
       char: 'p',

@@ -68,7 +68,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
 
-  public static flags = {
+  public static readonly flags = {
     'dry-run': Flags.boolean({
       summary: messages.getMessage('flags.dry-run.summary'),
       char: 'd',

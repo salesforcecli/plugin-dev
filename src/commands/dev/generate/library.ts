@@ -21,7 +21,7 @@ export default class GenerateLibrary extends SfCommand<void> {
   public static description = messages.getMessage('description');
   public static examples = messages.getMessages('examples');
 
-  public static flags = {};
+  public static readonly flags = {};
 
   public async run(): Promise<void> {
     await generate('library', { force: true });
