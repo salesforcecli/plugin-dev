@@ -36,7 +36,8 @@
         "plugin": "@salesforce/plugin-dev",
         "flags": [
             "filename",
-            "json"
+            "json",
+            "project-dir"
         ],
         "alias": []
     },

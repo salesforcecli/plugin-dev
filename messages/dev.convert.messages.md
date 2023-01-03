@@ -21,3 +21,4 @@ The project directory.
 # examples
 
 - <%= config.bin %> <%= command.id %> --filename something.json
+- <%= config.bin %> <%= command.id %> --project-dir ./path/to/plugin --filename something.json
