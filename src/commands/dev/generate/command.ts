@@ -75,8 +75,7 @@ export default class GenerateCommand extends SfCommand<void> {
       char: 'k',
       exclusive: ['wants-help'],
       dependsOn: ['name'],
-      allowNo: true,
-      default: true,
+      default: false,
     }),
   };
 
