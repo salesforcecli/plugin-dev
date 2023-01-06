@@ -53,9 +53,9 @@ export type SecretsResult = {
 };
 
 export default class ConfigureSecrets extends SfCommand<SecretsResult> {
-  public static summary = messages.getMessage('summary');
-  public static description = messages.getMessage('description');
-  public static examples = messages.getMessages('examples');
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
 
   public static readonly flags = {
     repository: Flags.string({

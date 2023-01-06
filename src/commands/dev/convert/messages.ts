@@ -30,9 +30,9 @@ type ValueType = string | string[] | Record<string, string>;
 
 const skip1Line = `${EOL}${EOL}`;
 export default class DevConvertMessages extends SfCommand<DevConvertMessagesResult[]> {
-  public static summary = messages.getMessage('summary');
-  public static description = messages.getMessage('description');
-  public static examples = messages.getMessages('examples');
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
 
   public static readonly flags = {
     'project-dir': Flags.directory({
