@@ -41,13 +41,13 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
       default: '.',
       aliases: ['projectdir'],
     }),
-
-    filename: Flags.file({
+    'file-name': Flags.file({
       exists: true,
       summary: messages.getMessage('flags.filename.summary'),
       char: 'f',
       required: true,
       multiple: true,
+      aliases: ['filename'],
     }),
   };
 
@@ -61,7 +61,7 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
     };
     const loadedMessageDirectories: Set<string> = new Set();
     return Promise.all(
-      flags.filename
+      flags['file-name']
         .filter((fileName) => !fileName.endsWith('.md'))
         .map(async (filename) => {
           const messageDirectory = path.dirname(path.resolve(filename));

@@ -14,6 +14,10 @@ Filename to convert
 
 Location of the project whose messages are to be audited.
 
+# flags.project-dir.description
+
+Location of the project whose messages are to be audited.
+
 # examples
 
 - <%= config.bin %> <%= command.id %> --filename something.json

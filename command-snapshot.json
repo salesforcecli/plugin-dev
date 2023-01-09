@@ -32,6 +32,16 @@
         "alias": []
     },
     {
+        "command": "dev:convert:messages",
+        "plugin": "@salesforce/plugin-dev",
+        "flags": [
+            "file-name",
+            "json",
+            "project-dir"
+        ],
+        "alias": []
+    },
+    {
         "command": "dev:generate:command",
         "plugin": "@salesforce/plugin-dev",
         "flags": [
