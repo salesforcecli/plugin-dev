@@ -61,8 +61,10 @@ export class FlagBuilder {
     if (this.answers.durationDefaultValue) flagOptions.push(`defaultValue: ${this.answers.durationDefaultValue}`);
     if (this.answers.durationMin) flagOptions.push(`min: ${this.answers.durationMin}`);
     if (this.answers.durationMax) flagOptions.push(`max: ${this.answers.durationMax}`);
-    if (['15', '18'].includes(this.answers.salesforceIdLength))
-      flagOptions.push(`length: ${this.answers.salesforceIdLength}`);
+    if (['Both', '15', '18'].includes(this.answers.salesforceIdLength))
+      flagOptions.push(
+        `length: ${this.answers.salesforceIdLength === 'Both' ? "'both'" : this.answers.salesforceIdLength}`
+      );
     if (this.answers.salesforceIdStartsWith) flagOptions.push(`startsWith: '${this.answers.salesforceIdStartsWith}'`);
     if (this.answers.fileOrDirExists) flagOptions.push('exists: true');
     if (this.answers.integerMin) flagOptions.push(`min: ${this.answers.integerMin}`);
