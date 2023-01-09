@@ -1,3 +1,17 @@
+# [0.6.0](https://github.com/salesforcecli/plugin-dev/compare/0.5.3...0.6.0) (2023-01-09)
+
+
+### Bug Fixes
+
+* add alias to cover dx plugins generate ([5bc0fd1](https://github.com/salesforcecli/plugin-dev/commit/5bc0fd1f869068d9df0c38057aae3ae81afd6ff3))
+
+
+### Features
+
+* convert js messages to md ([42f41b9](https://github.com/salesforcecli/plugin-dev/commit/42f41b9f07e9edb2118dc9c22463429fa9347d79))
+
+
+
 ## [0.5.3](https://github.com/salesforcecli/plugin-dev/compare/0.5.2...0.5.3) (2023-01-07)
 
 
