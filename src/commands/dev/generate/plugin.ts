@@ -17,6 +17,7 @@ export default class GeneratePlugin extends SfCommand<void> {
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
   public static aliases = ['plugins:generate'];
+  public static readonly deprecateAliases = true;
   public static readonly flags = {};
 
   public async run(): Promise<void> {
