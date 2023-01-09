@@ -55,7 +55,9 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
   public async run(): Promise<DevConvertMessagesResult[]> {
     const { flags } = await this.parse(DevConvertMessages);
     const projectDir = resolve(flags['project-dir']);
-    const { name } = JSON.parse(await fs.promises.readFile(resolve(projectDir, 'package.json'), 'utf8')) as {
+    const { name: pluginName } = JSON.parse(
+      await fs.promises.readFile(resolve(projectDir, 'package.json'), 'utf8')
+    ) as {
       name: string;
     };
     const loadedMessageDirectories: Set<string> = new Set();
@@ -68,7 +70,7 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
             Messages.importMessagesDirectory(messageDirectory);
             loadedMessageDirectories.add(messageDirectory);
           }
-          const bundle: Messages<string> = Messages.loadMessages(name, path.parse(filename).name);
+          const bundle: Messages<string> = Messages.loadMessages(pluginName, path.parse(filename).name);
           /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
