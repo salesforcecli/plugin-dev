@@ -6,9 +6,9 @@
  */
 import { ensureArray } from '@salesforce/kit';
 import * as inquirer from 'inquirer';
-import WordPOS = require('wordpos');
 import { Answers, Question } from 'inquirer';
 import { Messages } from '@salesforce/core';
+import WordPOS = require('wordpos');
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'command.taxonomy.helper', [
@@ -16,6 +16,7 @@ const messages = Messages.load('@salesforce/plugin-dev', 'command.taxonomy.helpe
   'messages.last-entry-empty',
   'messages.keep-entry',
 ]);
+
 type Lookup = Record<string, string[]> & {
   pos: string;
   synonyms: string[];
@@ -29,6 +30,37 @@ export type POSResult = {
   adverbs: string[];
   rest: string[];
   lookup: Lookup[];
+};
+export type SfThesaurus = {
+  [key: string]: {
+    nouns: string[];
+    verbs: string[];
+  };
+};
+export const SalesforceThesaurus: SfThesaurus = {
+  org: {
+    nouns: [
+      'organization',
+      'instance',
+      'environment',
+      'account',
+      'customer',
+      'tenant',
+      'company',
+      'scratch',
+      'sandbox',
+    ],
+    verbs: [],
+  },
+
+  user: {
+    nouns: ['person', 'account', 'customer', 'individual', 'member', 'owner', 'profile'],
+    verbs: [],
+  },
+  sobject: {
+    nouns: ['sobject', 'object', 'record', 'entity', 'instance', 'item', 'thing', 'resource'],
+    verbs: [],
+  },
 };
 
 type POS = 'noun' | 'verb' | 'all';
@@ -44,9 +76,11 @@ type WordPOSOptions = typeof WordPOS.defaults;
 
 export class CommandTaxonomyHelper {
   private wordPOS: typeof WordPOS;
+
   public constructor(options?: WordPOSOptions) {
     this.wordPOS = new WordPOS(options);
   }
+
   public async isConformingCommand(command: string): Promise<boolean> {
     if (!command) {
       return false;
@@ -54,6 +88,7 @@ export class CommandTaxonomyHelper {
     const [product, action, resource, ..._] = await this.getPOS(command.split(':'));
     return product.nouns.length > 0 && action.verbs.length > 0 && resource.nouns.length > 0;
   }
+
   public async getPOS(text: string | string[]): Promise<POSResult[]> {
     return (
       await Promise.all(
@@ -64,11 +99,13 @@ export class CommandTaxonomyHelper {
       )
     ).sort((a, b) => a.index - b.index);
   }
+
   public isNoun(text: string): Promise<boolean> {
     return this.wordPOS.isNoun(text).then((result) => {
       return result;
     });
   }
+
   public isVerb(text: string): Promise<boolean> {
     return this.wordPOS.isVerb(text).then((result) => {
       return result;
@@ -140,6 +177,7 @@ export class CommandTaxonomyHelper {
     }
     return this.isVerb(part);
   }
+
   private async resolvePart(value: string, partPrompt: string, partPOS: POS): Promise<string> {
     const partValueQuestion: Question = {
       type: 'input',
