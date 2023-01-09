@@ -12,15 +12,34 @@ import { expect, config } from 'chai';
 config.truncateThreshold = 0;
 
 describe('dev convert messsages NUTs', () => {
-  const parentPath = path.join('test', 'commands', 'dev', 'convert', 'samples');
-  const resultPath = path.join(parentPath, 'basic.md');
+  const parentPath = path.resolve(path.join('test', 'commands', 'dev', 'convert', 'samples'));
+  let resultPath: string;
 
-  after(async () => {
+  afterEach(async () => {
     await fs.promises.rm(resultPath);
   });
 
-  it('converts a basic file', async () => {
-    execCmd(`dev:convert:messages -f ${path.join(parentPath, 'basic.json')}`, { ensureExitCode: 0 });
+  it('converts a basic json file', async () => {
+    resultPath = path.join(parentPath, 'messages', 'basic-json.md');
+    execCmd(`dev:convert:messages -p ${parentPath} -f ${path.join(parentPath, 'messages', 'basic-json.json')}`, {
+      ensureExitCode: 0,
+    });
+    expect(fs.existsSync(resultPath)).to.be.true;
+
+    // works fine on windows, but can't make assertions about line endings
+
+    if (process.platform !== 'win32') {
+      // trim to control for EOL differences
+      const result = (await fs.promises.readFile(resultPath, 'utf8')).trim();
+      const expected = (await fs.promises.readFile(path.join(parentPath, 'expected.md'), 'utf8')).trim();
+      expect(result).to.equal(expected);
+    }
+  });
+  it('converts a basic js file', async () => {
+    resultPath = path.join(parentPath, 'messages', 'basic-js.md');
+    execCmd(`dev:convert:messages -p ${parentPath} -f ${path.join(parentPath, 'messages', 'basic-js.js')}`, {
+      ensureExitCode: 0,
+    });
     expect(fs.existsSync(resultPath)).to.be.true;
 
     // works fine on windows, but can't make assertions about line endings

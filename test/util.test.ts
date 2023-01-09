@@ -727,7 +727,7 @@ describe('FlagBuilder', () => {
       const updated = await flagBuilder.apply(flag);
 
       expect(updated).to.include("import { SfCommand , Flags} from '@salesforce/sf-plugins-core';");
-      expect(updated).to.include('public static flags = {');
+      expect(updated).to.include('public static readonly flags = {');
     });
 
     it('should remove Flags import from @oclif/core and replace with @salesforce/sf-plugins-core', async () => {

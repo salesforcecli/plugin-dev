@@ -74,11 +74,11 @@ const messages = Messages.load('@salesforce/plugin-dev', 'audit.messages', [
 ]);
 
 export default class AuditMessages extends SfCommand<AuditResults> {
-  public static summary = messages.getMessage('summary');
-  public static description = messages.getMessage('description');
-  public static examples = messages.getMessages('examples');
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
 
-  public static flags = {
+  public static readonly flags = {
     'project-dir': Flags.directory({
       summary: messages.getMessage('flags.project-dir.summary'),
       char: 'p',
