@@ -65,7 +65,7 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
         .map(async (filename) => {
           const messageDirectory = path.dirname(path.resolve(filename));
           if (!loadedMessageDirectories.has(messageDirectory)) {
-            Messages.importMessagesDirectory(path.dirname(path.resolve(filename)));
+            Messages.importMessagesDirectory(messageDirectory);
             loadedMessageDirectories.add(messageDirectory);
           }
           const bundle: Messages<string> = Messages.loadMessages(name, path.parse(filename).name);

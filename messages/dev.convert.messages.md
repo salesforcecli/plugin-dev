@@ -12,7 +12,7 @@ Filename to convert
 
 # flags.project-dir.summary
 
-Location project where messages are to be audited.
+Location of the project whose messages are to be audited.
 
 # flags.project-dir.description
 
