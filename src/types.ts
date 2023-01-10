@@ -64,7 +64,7 @@ export type FlagAnswers = {
   durationDefaultValue?: number;
   durationMin?: number;
   durationMax?: number;
-  salesforceIdLength?: '15' | '18' | 'None';
+  salesforceIdLength?: 'Both' | '15' | '18' | 'None';
   salesforceIdStartsWith?: string;
   fileOrDirExists?: boolean;
   integerMin?: number;

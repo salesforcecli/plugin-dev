@@ -241,7 +241,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
         type: 'list',
         name: 'salesforceIdLength',
         message: messages.getMessage('question.SalesforceId.Length'),
-        choices: ['15', '18', 'None'],
+        choices: ['Both', '15', '18', 'None'],
         when: (ans: FlagAnswers): boolean => ans.type === 'salesforceId',
       },
       {
