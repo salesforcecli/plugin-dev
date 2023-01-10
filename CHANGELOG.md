@@ -1,3 +1,35 @@
+# [0.6.0](https://github.com/salesforcecli/plugin-dev/compare/0.5.3...0.6.0) (2023-01-09)
+
+
+### Bug Fixes
+
+* add alias to cover dx plugins generate ([5bc0fd1](https://github.com/salesforcecli/plugin-dev/commit/5bc0fd1f869068d9df0c38057aae3ae81afd6ff3))
+
+
+### Features
+
+* convert js messages to md ([42f41b9](https://github.com/salesforcecli/plugin-dev/commit/42f41b9f07e9edb2118dc9c22463429fa9347d79))
+
+
+
+## [0.5.3](https://github.com/salesforcecli/plugin-dev/compare/0.5.2...0.5.3) (2023-01-07)
+
+
+### Bug Fixes
+
+* **deps:** bump json5 from 1.0.1 to 1.0.2 ([c5da947](https://github.com/salesforcecli/plugin-dev/commit/c5da94781c441bd1f8e6e221cbfbe89818dc2320))
+
+
+
+## [0.5.2](https://github.com/salesforcecli/plugin-dev/compare/0.5.1...0.5.2) (2022-12-24)
+
+
+### Bug Fixes
+
+* **deps:** bump yeoman-environment from 3.12.1 to 3.13.0 ([6c9fe71](https://github.com/salesforcecli/plugin-dev/commit/6c9fe7120fad4641e1ae065f99c7266822cf253f))
+
+
+
 ## [0.5.1](https://github.com/salesforcecli/plugin-dev/compare/0.5.0...0.5.1) (2022-12-17)
 
 

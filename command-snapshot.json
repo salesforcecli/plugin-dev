@@ -35,8 +35,9 @@
         "command": "dev:convert:messages",
         "plugin": "@salesforce/plugin-dev",
         "flags": [
-            "filename",
-            "json"
+            "file-name",
+            "json",
+            "project-dir"
         ],
         "alias": []
     },
@@ -78,7 +79,9 @@
         "command": "dev:generate:plugin",
         "plugin": "@salesforce/plugin-dev",
         "flags": [],
-        "alias": []
+        "alias": [
+            "plugins:generate"
+        ]
     },
     {
         "command": "dev:hook",

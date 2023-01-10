@@ -21,11 +21,11 @@ const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.hook', [
 
 export default class GenerateHook extends SfCommand<void> {
   public static enableJsonFlag = false;
-  public static summary = messages.getMessage('summary');
-  public static description = messages.getMessage('description');
-  public static examples = messages.getMessages('examples');
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
 
-  public static flags = {
+  public static readonly flags = {
     force: Flags.boolean({
       summary: messages.getMessage('flags.force.summary'),
     }),

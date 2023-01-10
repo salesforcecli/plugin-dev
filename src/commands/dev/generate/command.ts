@@ -31,12 +31,12 @@ const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.command',
 ]);
 
 export default class GenerateCommand extends SfCommand<void> {
-  public static enableJsonFlag = false;
-  public static summary = messages.getMessage('summary');
-  public static description = messages.getMessage('description');
-  public static examples = messages.getMessages('examples');
+  public static readonly enableJsonFlag = false;
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
 
-  public static flags = {
+  public static readonly flags = {
     name: Flags.string({
       required: false,
       summary: messages.getMessage('flags.name.summary'),

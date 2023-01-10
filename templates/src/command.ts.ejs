@@ -30,11 +30,11 @@ export type <%- returnType %> = Array<{
 <% } %>
 
 export default class <%- className %> extends SfCommand<<%- returnType %>> {
-  public static summary = messages.getMessage('summary');
-  public static description = messages.getMessage('description');
-  public static examples = messages.getMessages('examples');
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
 
-  public static flags = {
+  public static readonly flags = {
     <% if (!org && !devHub) { %>
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),

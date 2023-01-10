@@ -93,7 +93,7 @@ export class FlagBuilder {
     // If index isn't found, that means that no flags are defined yet
     if (flagsStartIndex === -1) {
       const altFlagsStartIndex = lines.findIndex((line) => line.includes('public async run')) - 1;
-      lines.splice(altFlagsStartIndex, 0, `public static flags = {${flagParts.join(os.EOL)}};${os.EOL}`);
+      lines.splice(altFlagsStartIndex, 0, `public static readonly flags = {${flagParts.join(os.EOL)}};${os.EOL}`);
     } else {
       const flagsEndIndex = lines.slice(flagsStartIndex).findIndex((line) => line.endsWith('};')) + flagsStartIndex;
       lines.splice(flagsEndIndex, 0, ...flagParts);
