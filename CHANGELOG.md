@@ -1,3 +1,12 @@
+## [0.6.1](https://github.com/salesforcecli/plugin-dev/compare/0.6.0...0.6.1) (2023-01-10)
+
+
+### Bug Fixes
+
+* support id length of 15 18 orht both ([0229269](https://github.com/salesforcecli/plugin-dev/commit/022926906ace7e1f28c68952904ab50338bf79ef))
+
+
+
 # [0.6.0](https://github.com/salesforcecli/plugin-dev/compare/0.5.3...0.6.0) (2023-01-09)
 
 
