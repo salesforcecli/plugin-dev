@@ -46,9 +46,14 @@
         "plugin": "@salesforce/plugin-dev",
         "flags": [
             "force",
+            "keep-as-is",
             "name",
             "nuts",
-            "unit"
+            "result-type",
+            "unit",
+            "uses-devhub-org",
+            "uses-org",
+            "wants-help"
         ],
         "alias": []
     },
