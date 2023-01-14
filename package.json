@@ -14,7 +14,7 @@
     "fast-glob": "^3.2.12",
     "got": "^11.8.5",
     "graphology": "^0.25.1",
-    "graphology-types": "^0.24.5",
+    "graphology-types": "^0.24.7",
     "js-yaml": "^4.1.0",
     "replace-in-file": "^6.3.2",
     "shelljs": "^0.8.5",
