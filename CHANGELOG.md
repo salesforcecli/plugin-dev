@@ -1,3 +1,12 @@
+# [0.7.0](https://github.com/salesforcecli/plugin-dev/compare/0.6.2...0.7.0) (2023-01-30)
+
+
+### Features
+
+* update sf-plugins-core and oclif/core ([#272](https://github.com/salesforcecli/plugin-dev/issues/272)) ([fce59ce](https://github.com/salesforcecli/plugin-dev/commit/fce59ce95d5bda6f6fa8238809e7905d01ad2487))
+
+
+
 ## [0.6.2](https://github.com/salesforcecli/plugin-dev/compare/0.6.1...0.6.2) (2023-01-14)
 
 
