@@ -9,7 +9,7 @@
 /* eslint-disable camelcase */
 
 import * as fs from 'fs';
-import { CliUx } from '@oclif/core';
+import { ux } from '@oclif/core';
 
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
@@ -179,7 +179,7 @@ const secretCheck = async (
   } catch (e) {
     const typedError = e as OctokitError;
     if (typedError.response.data) {
-      CliUx.ux.log(`check repo secrets for ${secretName}: ${typedError.response.data.message}`);
+      ux.log(`check repo secrets for ${secretName}: ${typedError.response.data.message}`);
     }
     // secret doesn't exist locally, keep looking.
   }
@@ -212,7 +212,7 @@ const secretCheck = async (
     const typedError = e as OctokitError;
 
     if (typedError.response.data) {
-      CliUx.ux.log(`check org secrets for ${secretName}: ${typedError.response.data.message}`);
+      ux.log(`check org secrets for ${secretName}: ${typedError.response.data.message}`);
     }
     return 'does not exist in org';
   }

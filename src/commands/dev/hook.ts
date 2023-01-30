@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Hook as OclifHook } from '@oclif/core';
+import { Args, Hook as OclifHook } from '@oclif/core';
 import { Messages } from '@salesforce/core';
 import { SfCommand, SfHook, Flags } from '@salesforce/sf-plugins-core';
 import { AnyJson } from '@salesforce/ts-types';
@@ -33,13 +33,12 @@ export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
     }),
   };
 
-  public static args = [
-    {
-      name: 'hook',
+  public static args = {
+    hook: Args.string({
       description: 'Name of hook to execute.',
       required: true,
-    },
-  ];
+    }),
+  };
 
   public async run(): Promise<OclifHook.Result<unknown>> {
     const { args, flags } = await this.parse(Hook);
@@ -47,8 +46,8 @@ export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
       // if a plugin is specified, delete the hook in all the other plugins so that
       // it doesn't run in those.
       this.config.plugins.forEach((plugin) => {
-        if ((plugin?.hooks ?? {})[args.hook as string]) {
-          if (plugin.name !== flags.plugin) delete plugin.hooks[args.hook as string];
+        if ((plugin?.hooks ?? {})[args.hook]) {
+          if (plugin.name !== flags.plugin) delete plugin.hooks[args.hook];
         }
       });
     }

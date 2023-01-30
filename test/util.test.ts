@@ -369,37 +369,6 @@ describe('FlagBuilder', () => {
       });
     });
 
-    describe('enum', () => {
-      it('should build a flag with all the options', async () => {
-        const answers: FlagAnswers = {
-          type: 'enum',
-          name: 'my-flag',
-          summary: 'Summary of flag.',
-          char: 's',
-          required: true,
-          multiple: true,
-        };
-
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
-
-        expect(flag).to.deep.equal([
-          "    'my-flag': Flags.enum({",
-          "      summary: messages.getMessage('flags.my-flag.summary'),",
-          "      char: 's',",
-          '      required: true,',
-          '      multiple: true,',
-          '      options: [],',
-          '    }),',
-        ]);
-
-        const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
-        expect(updatedFile).to.include("'my-flag': Flags.enum({");
-      });
-    });
-
     describe('integer', () => {
       it('should build a flag with all the options', async () => {
         const answers: FlagAnswers = {

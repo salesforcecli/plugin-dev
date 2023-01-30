@@ -73,7 +73,6 @@ export class FlagBuilder {
       flagOptions.push(`default: ${this.answers.integerDefault}`);
     if (this.answers.integerDefault && this.answers.multiple)
       flagOptions.push(`default: [${this.answers.integerDefault}]`);
-    if (this.answers.type === 'enum') flagOptions.push('options: []');
 
     const flagName = this.answers.name.includes('-') ? `'${this.answers.name}'` : this.answers.name;
     const newFlag = [
