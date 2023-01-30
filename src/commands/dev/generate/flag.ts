@@ -13,7 +13,8 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Duration } from '@salesforce/kit';
 
-import { Config, Interfaces, toStandardizedId } from '@oclif/core';
+// eslint-disable-next-line sf-plugin/no-oclif-flags-command-import
+import { Config, Command, toStandardizedId } from '@oclif/core';
 import * as fg from 'fast-glob';
 import { fileExists, FlagBuilder } from '../../../util';
 import { FlagAnswers } from '../../../types';
@@ -299,7 +300,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
     ]);
   }
 
-  private async loadExistingFlags(commandId: string): Promise<Record<string, Interfaces.Command.Flag>> {
+  private async loadExistingFlags(commandId: string): Promise<Record<string, Command.Flag.Any>> {
     const config = new Config({ root: process.cwd() });
     config.root = config.options.root;
     await config.load();
