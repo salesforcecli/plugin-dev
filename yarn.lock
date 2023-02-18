@@ -739,10 +739,10 @@
     widest-line "^3.1.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@^2.0.2-beta.6", "@oclif/core@^2.0.3", "@oclif/core@^2.0.7":
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.0.7.tgz#a17a85dfa105dda120fbc5647432010feaa97a9e"
-  integrity sha512-pj7hIH8SBeH3qha47fmyqdaBdNVEqesRgnKFh8Ytdb4S41/4BYOiQuyQGuvnKgvicH6DMxp4FbM9EQEW46V9xw==
+"@oclif/core@^2.0.3", "@oclif/core@^2.0.7", "@oclif/core@^2.1.2":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.1.6.tgz#34a1847da7195616fda62663098c9df0c486ae64"
+  integrity sha512-RMqjKVExVxMmAm3a64LFrIZloKD7emSDro1Mmcc8DOB3O+/pL9drqScc/dw/Alhi6KrmdqwOtxHtKrAwqvyKMg==
   dependencies:
     "@types/cli-progress" "^3.11.0"
     ansi-escapes "^4.3.2"
@@ -750,7 +750,7 @@
     cardinal "^2.1.1"
     chalk "^4.1.2"
     clean-stack "^3.0.1"
-    cli-progress "^3.10.0"
+    cli-progress "^3.11.2"
     debug "^4.3.4"
     ejs "^3.1.6"
     fs-extra "^9.1.0"
@@ -768,7 +768,7 @@
     strip-ansi "^6.0.1"
     supports-color "^8.1.1"
     supports-hyperlinks "^2.2.0"
-    tslib "^2.4.1"
+    tslib "^2.5.0"
     widest-line "^3.1.0"
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
@@ -833,18 +833,18 @@
     chalk "^4.1.0"
     tslib "^2.3.1"
 
-"@oclif/plugin-command-snapshot@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-3.3.0.tgz#d563c3de0dd151b3dcbb427e4c6613e58994c5bf"
-  integrity sha512-8E5QwTVc7COMhJFgYoYQUXUVBn65mJsmI057awhpvKjJqdViJGu6CaYPYhC1++xI4Nnd7+SLcm2UdAv84jGq/Q==
+"@oclif/plugin-command-snapshot@^3.3.5":
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-3.3.5.tgz#a1eab2517f13bb29f7239c9161cca876ac077f61"
+  integrity sha512-T0xK88sDLBbdlgQzKLDbJuBw9h43nLWshR/dJsvOBzabStDyiBDBF2f3W0ylCEKJzDcGt1q4V9rjFNaAmT5Hlw==
   dependencies:
-    "@oclif/core" "^2.0.2-beta.6"
+    "@oclif/core" "^2.1.2"
     chalk "^4.1.2"
     just-diff "^5.2.0"
     lodash "^4.17.21"
     semver "^7.3.8"
     ts-json-schema-generator "^1.2.0"
-    tslib "^2.4.1"
+    tslib "^2.5.0"
 
 "@oclif/plugin-help@3.2.18":
   version "3.2.18"
@@ -2659,7 +2659,7 @@ cli-cursor@^3.1.0:
   dependencies:
     restore-cursor "^3.1.0"
 
-cli-progress@^3.10.0, cli-progress@^3.4.0:
+cli-progress@^3.10.0, cli-progress@^3.11.2, cli-progress@^3.4.0:
   version "3.11.2"
   resolved "https://registry.yarnpkg.com/cli-progress/-/cli-progress-3.11.2.tgz#f8c89bd157e74f3f2c43bcfb3505670b4d48fc77"
   integrity sha512-lCPoS6ncgX4+rJu5bS3F/iCz17kZ9MPZ6dpuTtI0KXKABkhyXIdYB3Inby1OpaGti3YlI3EeEkM9AuWpelJrVA==
