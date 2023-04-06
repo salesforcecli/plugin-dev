@@ -2,39 +2,35 @@
 
 Audit messages in a plugin's messages directory to locate unused messages and missing messages that have references in source code.
 
-# description
-
-Audit messages in a plugin's messages directory to locate unused messages and missing messages that have references in source code.
-
 # examples
 
-sf dev audit messages
-sf dev audit messages --json
-sf dev audit messages --messages-dir ./messages --source-dir ./src
+- Audit messages using default directories:
+
+  <%= config.bin %> <%= command.id %>
+
+- Audit messages in the "messages" directory in the current working directory; the plugin's source directory is in "src":
+
+  <%= config.bin %> <%= command.id %> --messages-dir ./messages --source-dir ./src
 
 # flags.project-dir.summary
 
-Location project where messages are to be audited.
-
-# flags.project-dir.description
-
-The project directory.
+Location of the project where messages are to be audited.
 
 # flags.messages-dir.summary
 
-Location of the message bundle directory.
+Directory that contains the plugin's message files. 
 
 # flags.messages-dir.description
 
-The directory that holds the message bundle files. The default is the messages directory in the current working directory.
+The default is the "messages" directory in the current working directory.
 
 # flags.source-dir.summary
 
-Location of the plugin's source code.
+Directory that contains the plugin's source code.
 
 # flags.source-dir.description
 
-The directory that holds the plugin's source code. The default is the src directory in the current working directory.
+The default is the "src" directory in the current working directory.
 
 # noUnusedMessagesFound
 

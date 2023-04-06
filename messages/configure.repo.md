@@ -1,23 +1,25 @@
 # summary
 
-Configure github repo for Actions pipeline.
+Configure a GitHub repo for the GitHub Actions pipeline.
 
 # description
 
-Sets up labels and exempts the CLI bot for branch protection and PR rules
+Sets up labels and exempts the CLI bot for branch protection and PR rules.
 
 # flags.repository.summary
 
-The github owner/repo
+GitHub owner/repo for which you want to configure GitHub Actions.
 
 # flags.dryRun.summary
 
-Make no changes
+Make no changes.
 
 # examples
 
-- <%= config.bin %> <%= command.id %> -r salesforcecli/testPackageRelease
+- Configure the repo "tesetPackageRelease", with owner "salesforcecli", for GitHub Actions.
+
+  <%= config.bin %> <%= command.id %> --repository salesforcecli/testPackageRelease
 
 # flags.bot.summary
 
-The github login/username for the bot.
+GitHub login/username for the bot.

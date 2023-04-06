@@ -106,10 +106,16 @@
         "description": "Commands for sf plugin development.",
         "subtopics": {
           "convert": {
-            "description": "description for dev.convert"
+            "description": "Commands to help you convert an sfdx plugin to sf."
           },
           "generate": {
             "description": "Commands for generating sf plugins, commands, and hooks."
+          },
+          "audit": {
+            "description": "Commands for auditing a plugin."
+          },
+          "configure": {
+            "description": "Commands for configuring repos and secrets."
           }
         }
       }

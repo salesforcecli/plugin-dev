@@ -52,13 +52,11 @@ type Node = FileNode | BundleNode | MessageNode | MessageRefNode | BundleRefNode
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.load('@salesforce/plugin-dev', 'audit.messages', [
   'summary',
-  'description',
   'examples',
   'duplicateBundles',
   'flags.messages-dir.summary',
   'flags.messages-dir.description',
   'flags.project-dir.summary',
-  'flags.project-dir.description',
   'flags.source-dir.summary',
   'flags.source-dir.description',
   'missingBundlesFound',
@@ -75,14 +73,12 @@ const messages = Messages.load('@salesforce/plugin-dev', 'audit.messages', [
 
 export default class AuditMessages extends SfCommand<AuditResults> {
   public static readonly summary = messages.getMessage('summary');
-  public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
 
   public static readonly flags = {
     'project-dir': Flags.directory({
       summary: messages.getMessage('flags.project-dir.summary'),
       char: 'p',
-      description: messages.getMessage('flags.project-dir.description'),
       default: '.',
       aliases: ['projectdir'],
     }),

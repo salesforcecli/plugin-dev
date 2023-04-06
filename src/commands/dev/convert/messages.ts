@@ -18,7 +18,6 @@ const messages = Messages.load('@salesforce/plugin-dev', 'dev.convert.messages',
   'examples',
   'flags.filename.summary',
   'flags.project-dir.summary',
-  'flags.project-dir.description',
 ]);
 
 export type DevConvertMessagesResult = {
@@ -37,7 +36,6 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
     'project-dir': Flags.directory({
       summary: messages.getMessage('flags.project-dir.summary'),
       char: 'p',
-      description: messages.getMessage('flags.project-dir.description'),
       default: '.',
       aliases: ['projectdir'],
     }),
