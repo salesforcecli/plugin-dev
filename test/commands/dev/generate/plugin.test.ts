@@ -97,10 +97,10 @@ describe('dev generate plugin', () => {
       'sf:logout': './lib/hooks/logout',
     });
 
-    const scripts = Object.keys(packageJson.scripts);
-    expect(scripts).to.include('test:json-schema');
-    expect(scripts).to.include('test:deprecation-policy');
-    expect(scripts).to.include('test:command-reference');
+    const testDependencyScripts = packageJson.wireit.test.dependencies;
+    expect(testDependencyScripts).to.include('test:json-schema');
+    expect(testDependencyScripts).to.include('test:deprecation-policy');
+    expect(testDependencyScripts).to.include('test:command-reference');
 
     runResult.assertFileContent(
       path.join(runResult.cwd, 'plugin-test', 'src', 'commands', 'hello', 'world.ts'),
