@@ -16,7 +16,7 @@ Make no changes.
 
 # examples
 
-- Configure the repo "tesetPackageRelease", with owner "salesforcecli", for GitHub Actions.
+- Configure the repo "testPackageRelease", with owner "salesforcecli", for GitHub Actions.
 
   <%= config.bin %> <%= command.id %> --repository salesforcecli/testPackageRelease
 
