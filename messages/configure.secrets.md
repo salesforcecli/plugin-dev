@@ -18,6 +18,6 @@ Make no changes.
 
 # examples
 
-- Ensure secrets access for the repo "tesetPackageRelease", with owner "salesforcecli":
+- Ensure secrets access for the repo "testPackageRelease", with owner "salesforcecli":
 
 - <%= config.bin %> <%= command.id %> --repository salesforcecli/testPackageRelease
