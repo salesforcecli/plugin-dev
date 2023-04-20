@@ -1,5 +1,14 @@
 [
     {
+        "command": "convert:script",
+        "plugin": "@salesforce/plugin-dev",
+        "flags": [
+            "json",
+            "name"
+        ],
+        "alias": []
+    },
+    {
         "command": "dev:audit:messages",
         "plugin": "@salesforce/plugin-dev",
         "flags": [
