@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-import { Manifest } from '../../manifest';
+import { Manifest, Snapshot } from '../../manifest';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'convert.script');
@@ -67,28 +67,13 @@ export default class ConvertScript extends SfCommand<void> {
         if (line.match(/sfdx \w+/g)?.length && line.includes(':') && !line.startsWith('#')) {
           const commandId = line.split('sfdx ')[1]?.split(' ')[0];
 
-          let replacement = manifest.find(
-            (c) =>
-              (c.state === 'deprecated' &&
-                c.deprecationOptions?.to &&
-                c.id === commandId &&
-                !c.deprecationOptions.to.includes('/')) ||
-              c.aliases.includes(commandId)
-          );
+          const replacement = this.findReplacement(manifest, commandId);
 
           if (Manifest[commandId]?.deprecationOptions?.to.includes('/')) {
             this.warn(`Cannot determine appropriate replacement for ${commandId}`);
           }
 
           if (replacement) {
-            if (
-              replacement.id === commandId &&
-              replacement.state === 'deprecated' &&
-              replacement.deprecationOptions?.to
-            ) {
-              const replacedWithSemiColons = replacement.deprecationOptions.to.replace(/ /g, ':');
-              replacement = manifest.find((c) => c.id === replacedWithSemiColons);
-            }
             // we can only replace flags for commands we know about
 
             if (await this.smartConfirm(`replace ${commandId} for ${replacement.id}`, !flags['no-prompt'])) {
@@ -97,6 +82,7 @@ export default class ConvertScript extends SfCommand<void> {
 
             const replacementFlags = Object.values(replacement.flags);
 
+            // find the flags in the line, and replace them
             for (const flag of line
               .match(/ -\w/g)
               .concat(line.match(/ --\w(\w|-)*/g))
@@ -127,7 +113,7 @@ export default class ConvertScript extends SfCommand<void> {
           data.push(line);
         }
       } catch (e) {
-        line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ');
+        line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
         line = line.concat(' # ERROR converting this line, human intervention required');
         data.push(line);
       }
@@ -137,5 +123,18 @@ export default class ConvertScript extends SfCommand<void> {
 
   private async smartConfirm(message: string, prompt = true): Promise<boolean> {
     return prompt ? await this.confirm(message, 100000) : true;
+  }
+
+  private findReplacement(manifest: Snapshot[], commandId: string): Snapshot | undefined {
+    let result = manifest.find(
+      (c) =>
+        (c.state === 'deprecated' && c.deprecationOptions?.to && c.id === commandId) || c.aliases.includes(commandId)
+    );
+    if (result?.id === commandId) {
+      // we found ourself, can happen with force:source:deploy where we need to get the deprecationOptions.to key from the manifest
+      const replacedWithSemiColons = result.deprecationOptions.to.replace(/ /g, ':');
+      result = Manifest[replacedWithSemiColons];
+    }
+    return result;
   }
 }
