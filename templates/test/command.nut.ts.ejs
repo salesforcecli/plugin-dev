@@ -14,7 +14,7 @@ describe('<%- cmd %> NUTs', () => {
   let session: TestSession;
 
   before(async () => {
-    session = await TestSession.create();
+    session = await TestSession.create({ devhubAuthStrategy: 'NONE' });
   });
 
   after(async () => {

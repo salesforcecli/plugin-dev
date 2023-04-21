@@ -12,13 +12,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'dev.convert.messages', [
-  'summary',
-  'description',
-  'examples',
-  'flags.filename.summary',
-  'flags.project-dir.summary',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.convert.messages');
 
 export type DevConvertMessagesResult = {
   path: string;

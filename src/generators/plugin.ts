@@ -17,18 +17,7 @@ import { Hook, NYC, PackageJson } from '../types';
 import { addHookToPackageJson, readJson, validatePluginName } from '../util';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'plugin.generator', [
-  'info.start',
-  'question.internal',
-  'question.internal.name',
-  'question.external.name',
-  'question.description',
-  'question.author',
-  'question.code-coverage',
-  'question.hooks',
-  'error.Invalid2ppName',
-  'error.Invalid3ppName',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'plugin.generator');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
 const { version } = require('../../package.json');

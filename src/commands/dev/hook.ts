@@ -11,7 +11,7 @@ import { SfCommand, SfHook, Flags } from '@salesforce/sf-plugins-core';
 import { AnyJson } from '@salesforce/ts-types';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'dev.hook', ['summary', 'flags.plugin.summary']);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.hook');
 
 export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
   public static readonly summary = messages.getMessage('summary');

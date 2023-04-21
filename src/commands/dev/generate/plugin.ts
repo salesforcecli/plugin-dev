@@ -9,14 +9,14 @@ import { SfCommand } from '@salesforce/sf-plugins-core';
 import { generate } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.plugin', ['summary', 'description', 'examples']);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.plugin');
 
 export default class GeneratePlugin extends SfCommand<void> {
   public static enableJsonFlag = false;
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
-  public static aliases = ['plugins:generate'];
+  public static readonly aliases = ['plugins:generate'];
   public static readonly deprecateAliases = true;
   public static readonly flags = {};
 

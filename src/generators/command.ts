@@ -8,7 +8,6 @@
 import * as path from 'path';
 import * as Generator from 'yeoman-generator';
 import yosay = require('yosay');
-import got from 'got';
 import { pascalCase } from 'change-case';
 import { set } from '@salesforce/kit';
 import { get } from '@salesforce/ts-types';
@@ -79,10 +78,12 @@ export default class Command extends Generator {
     this.pjson = this.fs.readJSON('package.json') as unknown as PackageJson;
     this.log(yosay(`Adding a command to ${this.pjson.name} Version: ${version as string}`));
 
-    if (this.pjson.scripts['test:command-reference']) {
-      const commandSnapshotUrl = 'https://raw.githubusercontent.com/salesforcecli/cli/main/command-snapshot.json';
-      const commandSnapshot = await got(commandSnapshotUrl).json<Array<{ command: string }>>();
-      const commands = commandSnapshot.map((c) => c.command.replace(/:/g, '.'));
+    if (Object.keys(this.pjson.devDependencies).includes('@salesforce/plugin-command-reference')) {
+      // Get a list of all commands in `sf`. We will use this to determine if a topic is internal or external.
+      const sfCommandsStdout = exec('sf commands --json', { silent: true }).stdout;
+      const commandsJson = JSON.parse(sfCommandsStdout) as Array<{ id: string }>;
+      const commands = commandsJson.map((command) => command.id.replace(/:/g, '.').replace(/ /g, '.'));
+
       const newTopics = addTopics(this.options.name, this.pjson.oclif.topics, commands);
       this.pjson.oclif.topics = { ...this.pjson.oclif.topics, ...newTopics };
       this.internalPlugin = true;

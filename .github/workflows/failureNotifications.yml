@@ -5,6 +5,7 @@ on:
     workflows:
       - version, tag and github release
       - publish
+      - tests-cron
     types:
       - completed
 

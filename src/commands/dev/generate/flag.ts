@@ -20,42 +20,7 @@ import { fileExists, FlagBuilder } from '../../../util';
 import { FlagAnswers } from '../../../types';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.flag', [
-  'default.FlagSummary',
-  'description',
-  'error.FlagExists',
-  'error.FlagNameRequired',
-  'error.FlagShortCharExists',
-  'error.IntegerMaxLessThanMin',
-  'error.InvalidDefaultInteger',
-  'error.InvalidDir',
-  'error.InvalidFlagShortChar',
-  'error.InvalidFlagShortCharLength',
-  'error.InvalidInteger',
-  'error.InvalidSalesforceIdPrefix',
-  'error.InvalidSummary',
-  'error.KebabCase',
-  'examples',
-  'flags.dry-run.summary',
-  'question.AllowMultiple',
-  'question.Duration.DefaultValue',
-  'question.Duration.Maximum',
-  'question.Duration.Minimum',
-  'question.Duration.Unit',
-  'question.FileDir.Exists',
-  'question.FlagName',
-  'question.FlagShortChar',
-  'question.FlagSummary',
-  'question.FlagType',
-  'question.Integer.Default',
-  'question.Integer.Maximum',
-  'question.Integer.Minimum',
-  'question.RequiredFlag',
-  'question.SalesforceId.Length',
-  'question.SalesforceId.StartsWith',
-  'question.SelectCommand',
-  'summary',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.flag');
 
 const toLowerKebabCase = (str: string): string =>
   str

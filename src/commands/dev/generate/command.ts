@@ -9,16 +9,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { fileExists, generate } from '../../../util';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.command', [
-  'summary',
-  'description',
-  'examples',
-  'flags.name.summary',
-  'flags.force.summary',
-  'flags.nuts.summary',
-  'flags.unit.summary',
-  'errors.InvalidDir',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.command');
 
 export default class GenerateCommand extends SfCommand<void> {
   public static readonly enableJsonFlag = false;
