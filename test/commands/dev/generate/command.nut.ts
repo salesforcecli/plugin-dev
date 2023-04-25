@@ -82,7 +82,10 @@ describe('dev generate command NUTs', () => {
         expect(await fileExists(unitTestFile)).to.be.true;
         exec('bin/dev snapshot:generate', { silent: true });
         exec('bin/dev schema:generate', { silent: true });
-        const result = exec('yarn test', { cwd: session.project.dir, silent: true });
+        const result = exec('yarn test', { cwd: session.project.dir });
+        console.log('↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧');
+        console.log(result);
+        console.log('↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥');
         expect(result.code).to.equal(0);
         expect(result.stdout).include(name.replace(/:/g, ' '));
       });
@@ -191,7 +194,10 @@ describe('dev generate command NUTs', () => {
         const cmd = parts.pop();
         const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
         expect(await fileExists(unitTestFile)).to.be.true;
-        const result = exec('yarn test', { cwd: session.project.dir, silent: true });
+        const result = exec('yarn test', { cwd: session.project.dir });
+        console.log('↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧');
+        console.log(result);
+        console.log('↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥');
         expect(result.code).to.equal(0);
         expect(result.stdout).include(name.replace(/:/g, ' '));
       });
