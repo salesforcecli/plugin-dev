@@ -82,7 +82,7 @@ describe('dev generate command NUTs', () => {
         expect(await fileExists(unitTestFile)).to.be.true;
         exec('bin/dev snapshot:generate', { silent: true });
         exec('bin/dev schema:generate', { silent: true });
-        const result = exec('yarn test', { cwd: session.project.dir });
+        const result = exec('yarn test:only', { cwd: session.project.dir });
         console.log('↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧'); // eslint-disable-line no-console
         console.log(result); // eslint-disable-line no-console
         console.log('↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥'); // eslint-disable-line no-console
@@ -194,7 +194,7 @@ describe('dev generate command NUTs', () => {
         const cmd = parts.pop();
         const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
         expect(await fileExists(unitTestFile)).to.be.true;
-        const result = exec('yarn test', { cwd: session.project.dir });
+        const result = exec('yarn test:only', { cwd: session.project.dir });
         console.log('↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧↧'); // eslint-disable-line no-console
         console.log(result); // eslint-disable-line no-console
         console.log('↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥↥'); // eslint-disable-line no-console
