@@ -1,0 +1,31 @@
+name: tests-cron
+on:
+  schedule:
+    - cron: '0 17 * * *'
+
+# Run tests daily to detect breaking changes in the plugin templates
+# - https://github.com/salesforcecli/plugin-template-sf
+# - https://github.com/salesforcecli/plugin-template-sf-external
+# Running these here instead of on the template repos because we don't want
+# the GHA workflows to be included in plugins generated from these templates
+
+jobs:
+  yarn-lockfile-check:
+    uses: salesforcecli/github-workflows/.github/workflows/lockFileCheck.yml@main
+  # Since the Windows unit tests take much longer, we run the linux unit tests first and then run the windows unit tests in parallel with NUTs
+  linux-unit-tests:
+    needs: yarn-lockfile-check
+    uses: salesforcecli/github-workflows/.github/workflows/unitTestsLinux.yml@main
+  windows-unit-tests:
+    needs: linux-unit-tests
+    uses: salesforcecli/github-workflows/.github/workflows/unitTestsWindows.yml@main
+  nuts:
+    needs: linux-unit-tests
+    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
+    secrets: inherit
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
+    with:
+      os: ${{ matrix.os }}

@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import { expect } from 'chai';
 import helpers = require('yeoman-test');
 import { Config } from '@oclif/core';
-import AuditMessages from '../../../../lib/commands/dev/audit/messages';
+import AuditMessages from '../../../../src/commands/dev/audit/messages';
 
 describe('audit messages', () => {
   let runResult: helpers.RunResult;
