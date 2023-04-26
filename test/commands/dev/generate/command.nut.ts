@@ -7,10 +7,12 @@
 
 import * as path from 'path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
-import { expect } from 'chai';
+import { expect, config } from 'chai';
 import { exec } from 'shelljs';
 import { PackageJson } from '../../../../src/types';
 import { readJson, fileExists } from '../../../../src/util';
+
+config.truncateThreshold = 0;
 
 async function setup(repo: string): Promise<TestSession> {
   const session = await TestSession.create({
