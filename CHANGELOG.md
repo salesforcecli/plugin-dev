@@ -1,3 +1,15 @@
+## [0.7.1](https://github.com/salesforcecli/plugin-dev/compare/0.7.0...0.7.1) (2023-04-26)
+
+
+### Bug Fixes
+
+* 2pp plugin tests ([4a0e043](https://github.com/salesforcecli/plugin-dev/commit/4a0e043d5ad11d4562875eb7dea4e12736b23e56))
+* fixes all tests, message linting ([292e03d](https://github.com/salesforcecli/plugin-dev/commit/292e03d8134f2923191ddf7f991e71a6dc15c81b))
+* spelling ([ab63966](https://github.com/salesforcecli/plugin-dev/commit/ab63966cb4a1cdc86b980473bf544cdada92e64d))
+* update messages ([f328a87](https://github.com/salesforcecli/plugin-dev/commit/f328a877e3db0bdd28d435f0ba5fabd34e8b3172))
+
+
+
 # [0.7.0](https://github.com/salesforcecli/plugin-dev/compare/0.6.2...0.7.0) (2023-01-30)
 
 
