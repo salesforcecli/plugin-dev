@@ -4,7 +4,8 @@
         "plugin": "@salesforce/plugin-dev",
         "flags": [
             "json",
-            "name"
+            "no-prompt",
+            "script"
         ],
         "alias": []
     },
