@@ -7,10 +7,12 @@
 
 import * as path from 'path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
-import { expect } from 'chai';
+import { expect, config } from 'chai';
 import { exec } from 'shelljs';
 import { PackageJson } from '../../../../src/types';
 import { readJson, fileExists } from '../../../../src/util';
+
+config.truncateThreshold = 0;
 
 async function setup(repo: string): Promise<TestSession> {
   const session = await TestSession.create({
@@ -80,8 +82,9 @@ describe('dev generate command NUTs', () => {
         const cmd = parts.pop();
         const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
         expect(await fileExists(unitTestFile)).to.be.true;
-
-        const result = exec('yarn test', { cwd: session.project.dir, silent: true });
+        exec('bin/dev snapshot:generate', { silent: true });
+        exec('bin/dev schema:generate', { silent: true });
+        const result = exec('yarn test:only', { cwd: session.project.dir });
         expect(result.code).to.equal(0);
         expect(result.stdout).include(name.replace(/:/g, ' '));
       });
@@ -153,7 +156,7 @@ describe('dev generate command NUTs', () => {
       const command = `dev generate command --name ${name} --force --nuts --unit`;
 
       before(async () => {
-        execCmd(command, { ensureExitCode: 0, cwd: session.project.dir });
+        execCmd(command, { ensureExitCode: 0, cwd: session.project.dir, silent: true });
       });
 
       it('should generate a command that can be executed', () => {
@@ -190,8 +193,7 @@ describe('dev generate command NUTs', () => {
         const cmd = parts.pop();
         const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
         expect(await fileExists(unitTestFile)).to.be.true;
-
-        const result = exec('yarn test', { cwd: session.project.dir, silent: true });
+        const result = exec('yarn test:only', { cwd: session.project.dir });
         expect(result.code).to.equal(0);
         expect(result.stdout).include(name.replace(/:/g, ' '));
       });

@@ -13,14 +13,7 @@ import { Octokit } from '@octokit/rest';
 import { OctokitError } from '../../../types';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'configure.repo', [
-  'summary',
-  'description',
-  'examples',
-  'flags.repository.summary',
-  'flags.dryRun.summary',
-  'flags.bot.summary',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'configure.repo');
 
 export type ConfigureRepoResult = {
   botAccess: boolean;

@@ -10,14 +10,7 @@ import { fileExists, generate } from '../../../util';
 import { Hook } from '../../../types';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'dev.generate.hook', [
-  'summary',
-  'description',
-  'examples',
-  'flags.force.summary',
-  'flags.event.summary',
-  'errors.InvalidDir',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.hook');
 
 export default class GenerateHook extends SfCommand<void> {
   public static enableJsonFlag = false;

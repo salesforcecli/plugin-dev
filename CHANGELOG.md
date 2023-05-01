@@ -1,3 +1,42 @@
+## [0.7.4](https://github.com/salesforcecli/plugin-dev/compare/0.7.3...0.7.4) (2023-04-29)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/core from 3.34.6 to 3.36.0 ([59490f5](https://github.com/salesforcecli/plugin-dev/commit/59490f5f59576f1510faa6e107b8039a0ed96c42))
+
+
+
+## [0.7.3](https://github.com/salesforcecli/plugin-dev/compare/0.7.2...0.7.3) (2023-04-28)
+
+
+### Bug Fixes
+
+* **deps:** bump @octokit/rest from 19.0.5 to 19.0.7 ([427ba51](https://github.com/salesforcecli/plugin-dev/commit/427ba51edc726f67920dcb19fe99dbff5189c16d))
+
+
+
+## [0.7.2](https://github.com/salesforcecli/plugin-dev/compare/0.7.1...0.7.2) (2023-04-27)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/sf-plugins-core from 2.0.1 to 2.2.10 ([1a9319a](https://github.com/salesforcecli/plugin-dev/commit/1a9319a2f27aaa7dbc91b53fd8f01a475e803745))
+
+
+
+## [0.7.1](https://github.com/salesforcecli/plugin-dev/compare/0.7.0...0.7.1) (2023-04-26)
+
+
+### Bug Fixes
+
+* 2pp plugin tests ([4a0e043](https://github.com/salesforcecli/plugin-dev/commit/4a0e043d5ad11d4562875eb7dea4e12736b23e56))
+* fixes all tests, message linting ([292e03d](https://github.com/salesforcecli/plugin-dev/commit/292e03d8134f2923191ddf7f991e71a6dc15c81b))
+* spelling ([ab63966](https://github.com/salesforcecli/plugin-dev/commit/ab63966cb4a1cdc86b980473bf544cdada92e64d))
+* update messages ([f328a87](https://github.com/salesforcecli/plugin-dev/commit/f328a877e3db0bdd28d435f0ba5fabd34e8b3172))
+
+
+
 # [0.7.0](https://github.com/salesforcecli/plugin-dev/compare/0.6.2...0.7.0) (2023-01-30)
 
 

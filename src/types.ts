@@ -44,6 +44,11 @@ export type PackageJson = {
     'test:deprecation-policy': string;
     'test:json-schema': string;
   };
+  wireit: {
+    test: {
+      dependencies: string;
+    };
+  };
 };
 
 export enum Hook {

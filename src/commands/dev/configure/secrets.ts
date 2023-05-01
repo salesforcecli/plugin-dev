@@ -20,13 +20,7 @@ import * as yaml from 'js-yaml';
 import { OctokitError } from '../../../types';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-dev', 'configure.secrets', [
-  'summary',
-  'description',
-  'examples',
-  'flags.repository.summary',
-  'flags.dryRun.summary',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'configure.secrets');
 
 type SecretClassification =
   | 'not needed'
