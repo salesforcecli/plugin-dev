@@ -6,6 +6,7 @@
  */
 import * as fs from 'fs';
 import * as os from 'os';
+import * as path from 'path';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Manifest, Snapshot } from '../../manifest';
@@ -69,6 +70,7 @@ export default class ConvertScript extends SfCommand<void> {
 
           const replacement = this.findReplacement(manifest, commandId);
 
+          // meaning it's deprecated to multiple commands and can't be replaced inline
           if (Manifest[commandId]?.deprecationOptions?.to.includes('/')) {
             this.warn(`Cannot determine appropriate replacement for ${commandId}`);
           }
@@ -77,19 +79,17 @@ export default class ConvertScript extends SfCommand<void> {
             // we can only replace flags for commands we know about
 
             if (await this.smartConfirm(`replace ${commandId} for ${replacement.id}`, !flags['no-prompt'])) {
-              line = line.replace(commandId, replacement.id);
+              line = line.replace(commandId, replacement.id.replace(/:/g, ' '));
             }
 
             const replacementFlags = Object.values(replacement.flags);
 
             // find the flags in the line, and replace them
-            for (const flag of line
-              .match(/ -\w/g)
-              .concat(line.match(/ --\w(\w|-)*/g))
-              .filter((f) => f)) {
+            for (const flag of (line.match(/( -\w)|( --\w+)/g) ?? []).filter((f) => f)) {
               // trim down the flag to remove '-', '--' and optionally a '='
               const flagName =
-                flag.replace(' -', '').replace(' --', '').split(' ')[0] ?? flag.replace(' --', '').split('=')[0];
+                flag.replace(' --', '').replace(' -', '').split(' ')[0] ??
+                flag.replace(' --', '').replace(' -', '').split('=')[0];
 
               const replacementFlag = replacementFlags.find(
                 (f) => f.char === flagName || f.aliases?.includes(flagName)
@@ -118,14 +118,18 @@ export default class ConvertScript extends SfCommand<void> {
         data.push(line);
       }
     }
-    fs.writeFileSync(flags.script, data.join(os.EOL));
+    // write the new script as a new file with a `-converted` suffix
+    fs.writeFileSync(
+      path.basename(flags.script, path.extname(flags.script)) + '-converted' + path.extname(flags.script),
+      data.join(os.EOL)
+    );
   }
 
   private async smartConfirm(message: string, prompt = true): Promise<boolean> {
     return prompt ? await this.confirm(message, 100000) : true;
   }
 
-  private findReplacement(manifest: Snapshot[], commandId: string): Snapshot | undefined {
+  private findReplacement(manifest: Snapshot[], commandId: string): Snapshot {
     let result = manifest.find(
       (c) =>
         (c.state === 'deprecated' && c.deprecationOptions?.to && c.id === commandId) || c.aliases.includes(commandId)
