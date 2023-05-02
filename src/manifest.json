@@ -1,0 +1,1748 @@
+{
+  "version": "7.200.4",
+  "commands": {
+  "schema:generate:field": {
+    "id": "schema:generate:field",
+      "summary": "Generate metadata source files for a new custom field on a specified object.",
+      "description": "This command is interactive and must be run in a Salesforce DX project directory. You're required to specify the field's label with the \"--label\" flag. The command uses this label to provide intelligent suggestions for other field properties, such as its API name.\n\nYou can generate a custom field on either a standard object, such as Account, or a custom object. In both cases, the source files for the object must already exist in your local project before you run this command. If you create a relationship field, the source files for the parent object must also exist in your local directory.  Use the command \"sf metadata retrieve -m CustomObject:<object>\" to retrieve source files for both standard and custom objects from your org.  To create a custom object, run the \"sf generate metadata sobject\" command or use the Object Manager UI in your Salesforce org.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-sobject",
+      "pluginAlias": "@salesforce/plugin-sobject",
+      "pluginType": "jit",
+      "state": "beta",
+      "aliases": [
+      "generate:metadata:field"
+    ],
+      "examples": [
+      "Create a field with the specified label; the command prompts you for the object:\n<%= config.bin %> <%= command.id %> --label \"My Field\"",
+      "Specify the local path to the object's folder:\n<%= config.bin %> <%= command.id %> --label \"My Field\" --object force-app/main/default/objects/MyObject__c"
+    ],
+      "deprecateAliases": true,
+      "flags": {
+      "label": {
+        "name": "label",
+          "type": "option",
+          "char": "l",
+          "summary": "The field's label.",
+          "required": true,
+          "multiple": false,
+          "deprecateAliases": true
+      },
+      "object": {
+        "name": "object",
+          "type": "option",
+          "char": "o",
+          "summary": "The directory that contains the object's source files.",
+          "description": "The object source files in your local project are grouped in a directoy with the same name as the object. Custom object names always end in \"__c\". An example of the object directory for the Account standard object is \"force-app/main/default/objects/Account\" An example custom object directory is \"force-app/main/default/objects/MyObject__c\"\n\nIf you don't specify this flag, the command prompts you to choose from your local objects.",
+          "multiple": false,
+          "deprecateAliases": true
+      }
+    },
+    "args": {},
+    "requiresProject": true
+  },
+  "schema:generate:platformevent": {
+    "id": "schema:generate:platformevent",
+      "summary": "Generate metadata source files for a new platform event.",
+      "description": "This command is interactive and must be run in a Salesforce DX project directory. You're required to specify the event's label with the \"--label\" flag. The command uses this label to provide intelligent suggestions for other event properties, such as its API name.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-sobject",
+      "pluginAlias": "@salesforce/plugin-sobject",
+      "pluginType": "jit",
+      "state": "beta",
+      "aliases": [
+      "generate:metadata:platformevent"
+    ],
+      "examples": [
+      "Create a platform event with the specified label:\n<%= config.bin %> <%= command.id %> --label \"My Platform Event\""
+    ],
+      "deprecateAliases": true,
+      "flags": {
+      "label": {
+        "name": "label",
+          "type": "option",
+          "char": "l",
+          "summary": "The platform event's label.",
+          "required": true,
+          "multiple": false,
+          "deprecateAliases": true
+      }
+    },
+    "args": {},
+    "requiresProject": true
+  },
+  "schema:generate:sobject": {
+    "id": "schema:generate:sobject",
+      "summary": "Generate metadata source files for a new custom object.",
+      "description": "This command is interactive and must be run in a Salesforce DX project directory. You're required to specify the object's label with the \"--label\" flag. The command uses this label to provide intelligent suggestions for other object properties, such as its API name and plural label.\n\nAll Salesforce objects are required to have a Name field, so this command also prompts you for the label and type of the Name field. Run the \"sf metadata generate field\" command to create additional fields for the object.\n\nTo reduce the number of prompts, use the \"--use-default-features\" flag to automatically enable some features, such as reporting and search on the object.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-sobject",
+      "pluginAlias": "@salesforce/plugin-sobject",
+      "pluginType": "jit",
+      "state": "beta",
+      "aliases": [
+      "generate:metadata:sobject"
+    ],
+      "examples": [
+      "Create a custom object with the specified label and be prompted for additional information:\n<%= config.bin %> <%= command.id %> --label \"My Object\"",
+      "Create a custom object and enable optional features without prompting:\n<%= config.bin %> <%= command.id %> --label \"My Object\" --use-default-features"
+    ],
+      "deprecateAliases": true,
+      "flags": {
+      "label": {
+        "name": "label",
+          "type": "option",
+          "char": "l",
+          "summary": "The custom object's label.",
+          "required": true,
+          "multiple": false,
+          "deprecateAliases": true
+      },
+      "use-default-features": {
+        "name": "use-default-features",
+          "type": "boolean",
+          "char": "f",
+          "summary": "Enable all optional features without prompting.",
+          "description": "Enables these features:\n\n* Search: Allows users to find the custom object's records when they search, including SOSL.\n* Feeds: Enables feed tracking.\n* Reports: Allows reporting of the data in the custom object records.\n* History: Enables object history tracking.\n* Activities: Allows users to associate tasks and scheduled calendar events related to the custom object records.\n* Bulk API: With Sharing and Streaming API, classifies the custom object as an Enterprise Application object.\n* Sharing: With Bulk API and Streaming API, classifies the custom object as an Enterprise Application object.\n* Streaming API: With Bulk API and Sharing, classifies the custom object as an Enterprise Application object.",
+          "allowNo": false,
+          "deprecateAliases": true
+      }
+    },
+    "args": {},
+    "requiresProject": true
+  },
+  "schema:generate:tab": {
+    "id": "schema:generate:tab",
+      "summary": "Generate the metadata source files for a new custom tab on a custom object.",
+      "description": "Custom tabs let you display custom object data or other web content in Salesforce. Custom tabs appear in Salesforce as an item in the app’s navigation bar and in the App Launcher.\n\nThis command must be run in a Salesforce DX project directory. You must pass all required information to it with the required flags. The source files for the custom object for which you're generating a tab don't need to exist in your local project.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-sobject",
+      "pluginAlias": "@salesforce/plugin-sobject",
+      "pluginType": "jit",
+      "state": "beta",
+      "aliases": [
+      "generate:metadata:tab"
+    ],
+      "examples": [
+      "Create a tab on the MyObject__c custom object:\n<%= config.bin %> <%= command.id %> --object MyObject__c --icon 54 --directory force-app/main/default/tabs"
+    ],
+      "deprecateAliases": true,
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "Format output as json.",
+          "helpGroup": "GLOBAL",
+          "allowNo": false,
+          "deprecateAliases": true
+      },
+      "object": {
+        "name": "object",
+          "type": "option",
+          "char": "o",
+          "summary": "API name of the custom object you're generating a tab for.",
+          "description": "The API name for a custom object always ends in \"__c\", such as \"MyObject__c\".",
+          "required": true,
+          "multiple": false,
+          "deprecateAliases": true
+      },
+      "directory": {
+        "name": "directory",
+          "type": "option",
+          "char": "d",
+          "summary": "Path to a \"tabs\" directory that will contain the source files for your new tab.",
+          "required": true,
+          "multiple": false,
+          "deprecateAliases": true
+      },
+      "icon": {
+        "name": "icon",
+          "type": "option",
+          "char": "i",
+          "summary": "Number from 1 to 100 that specifies the color scheme and icon for the custom tab.",
+          "description": "See https://lightningdesignsystem.com/icons/\\#custom for the available icons.",
+          "required": true,
+          "multiple": false,
+          "default": 1,
+          "deprecateAliases": true
+      }
+    },
+    "args": {},
+    "requiresProject": true
+  },
+  "dev:hook": {
+    "id": "dev:hook",
+      "summary": "Run a hook. For testing purposes only.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      {
+        "description": "Execute a hook by name:",
+        "command": "<%= config.bin %> <%= command.id %> sf:env:list"
+      },
+      {
+        "description": "Execute a hook by name in a specific plugin:",
+        "command": "<%= config.bin %> <%= command.id %> sf:env:list --plugin env"
+      }
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "Format output as json.",
+          "helpGroup": "GLOBAL",
+          "allowNo": false
+      },
+      "plugin": {
+        "name": "plugin",
+          "type": "option",
+          "char": "p",
+          "summary": "Specific plugin from which to execute hook",
+          "multiple": false
+      }
+    },
+    "args": {
+      "hook": {
+        "name": "hook",
+          "description": "Name of hook to execute.",
+          "required": true
+      }
+    }
+  },
+  "dev:audit:messages": {
+    "id": "dev:audit:messages",
+      "summary": "Audit messages in a plugin's messages directory to locate unused messages and missing messages that have references in source code.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "Audit messages using default directories:\n<%= config.bin %> <%= command.id %>",
+      "Audit messages in the \"messages\" directory in the current working directory; the plugin's source directory is in \"src\":\n<%= config.bin %> <%= command.id %> --messages-dir ./messages --source-dir ./src"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "Format output as json.",
+          "helpGroup": "GLOBAL",
+          "allowNo": false
+      },
+      "project-dir": {
+        "name": "project-dir",
+          "type": "option",
+          "char": "p",
+          "summary": "Location of the project where messages are to be audited.",
+          "multiple": false,
+          "default": ".",
+          "aliases": [
+          "projectdir"
+        ]
+      },
+      "messages-dir": {
+        "name": "messages-dir",
+          "type": "option",
+          "char": "m",
+          "summary": "Directory that contains the plugin's message files.",
+          "description": "The default is the \"messages\" directory in the current working directory.",
+          "multiple": false,
+          "default": "messages",
+          "aliases": [
+          "messagesdir"
+        ]
+      },
+      "source-dir": {
+        "name": "source-dir",
+          "type": "option",
+          "char": "s",
+          "summary": "Directory that contains the plugin's source code.",
+          "description": "The default is the \"src\" directory in the current working directory.",
+          "multiple": false,
+          "default": "src",
+          "aliases": [
+          "sourcedir"
+        ]
+      }
+    },
+    "args": {}
+  },
+  "dev:configure:repo": {
+    "id": "dev:configure:repo",
+      "summary": "Configure a GitHub repo for the GitHub Actions pipeline.",
+      "description": "Sets up labels and exempts the CLI bot for branch protection and PR rules.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "Configure the repo \"testPackageRelease\", with owner \"salesforcecli\", for GitHub Actions.\n<%= config.bin %> <%= command.id %> --repository salesforcecli/testPackageRelease"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "Format output as json.",
+          "helpGroup": "GLOBAL",
+          "allowNo": false
+      },
+      "repository": {
+        "name": "repository",
+          "type": "option",
+          "char": "r",
+          "summary": "GitHub owner/repo for which you want to configure GitHub Actions.",
+          "required": true,
+          "multiple": false
+      },
+      "dry-run": {
+        "name": "dry-run",
+          "type": "boolean",
+          "char": "d",
+          "summary": "Make no changes.",
+          "allowNo": false,
+          "aliases": [
+          "dryrun"
+        ]
+      },
+      "bot": {
+        "name": "bot",
+          "type": "option",
+          "char": "b",
+          "summary": "GitHub login/username for the bot.",
+          "multiple": false,
+          "default": "SF-CLI-BOT"
+      }
+    },
+    "args": {}
+  },
+  "dev:configure:secrets": {
+    "id": "dev:configure:secrets",
+      "summary": "Ensures a GitHub repo has correct access to secrets based on its workflows.",
+      "description": "Inspects a repo's yaml files and verifies that secrets required are available for the repo (either set at the repo level or shared via organization-level secrets).\n\nThis command requires scope:admin permissions to inspect the org secrets and admin access to the repo to inspect the repo secrets.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "Ensure secrets access for the repo \"testPackageRelease\", with owner \"salesforcecli\":",
+      "<%= config.bin %> <%= command.id %> --repository salesforcecli/testPackageRelease"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "Format output as json.",
+          "helpGroup": "GLOBAL",
+          "allowNo": false
+      },
+      "repository": {
+        "name": "repository",
+          "type": "option",
+          "char": "r",
+          "summary": "Github owner/repo.",
+          "required": true,
+          "multiple": false
+      },
+      "dry-run": {
+        "name": "dry-run",
+          "type": "boolean",
+          "char": "d",
+          "summary": "Make no changes.",
+          "allowNo": false,
+          "aliases": [
+          "dryrun"
+        ]
+      }
+    },
+    "args": {}
+  },
+  "dev:convert:messages": {
+    "id": "dev:convert:messages",
+      "summary": "Convert a .json messages file into Markdown.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "Convert the my-command.json message file into my-command.md with the standard messages headers:\n<%= config.bin %> <%= command.id %> --filename my-command.json",
+      "Similar to previous example, but specify the plugin project directory:",
+      "<%= config.bin %> <%= command.id %> --project-dir ./path/to/plugin --filename my-command.json"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "Format output as json.",
+          "helpGroup": "GLOBAL",
+          "allowNo": false
+      },
+      "project-dir": {
+        "name": "project-dir",
+          "type": "option",
+          "char": "p",
+          "summary": "Location of the project whose messages are to be converted.",
+          "multiple": false,
+          "default": ".",
+          "aliases": [
+          "projectdir"
+        ]
+      },
+      "file-name": {
+        "name": "file-name",
+          "type": "option",
+          "char": "f",
+          "summary": "Filename to convert.",
+          "required": true,
+          "multiple": true,
+          "aliases": [
+          "filename"
+        ]
+      }
+    },
+    "args": {}
+  },
+  "dev:generate:command": {
+    "id": "dev:generate:command",
+      "summary": "Generate a new sf command.",
+      "description": "You must run this command from within a plugin directory, such as the directory created with the \"sf dev generate plugin\" command.\n\nThe command generates basic source files, messages (\\*.md), and test files for your new command.  The Typescript files contain import statements for the minimum required Salesforce libraries, and scaffold some basic code. The new type names come from the value you passed to the --name flag.\n\nThe command updates the package.json file, so if it detects conflicts with the existing file, you're prompted whether you want to overwrite the file. There are a number of package.json updates required for a new command, so we recommend you answer \"y\" so the command takes care of them all. If you answer \"n\", you must update the package.json file manually.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "Generate the files for a new \"sf my exciting command\":\n<%= config.bin %> <%= command.id %> --name my:exciting:command"
+    ],
+      "flags": {
+      "name": {
+        "name": "name",
+          "type": "option",
+          "char": "n",
+          "summary": "Name of the new command. Use colons to separate the topic and command names.",
+          "required": true,
+          "multiple": false
+      },
+      "force": {
+        "name": "force",
+          "type": "boolean",
+          "summary": "Overwrite existing files.",
+          "allowNo": false
+      },
+      "nuts": {
+        "name": "nuts",
+          "type": "boolean",
+          "summary": "Generate a NUT test file for the command.",
+          "allowNo": true
+      },
+      "unit": {
+        "name": "unit",
+          "type": "boolean",
+          "summary": "Generate a unit test file for the command.",
+          "allowNo": true
+      }
+    },
+    "args": {}
+  },
+  "dev:generate:flag": {
+    "id": "dev:generate:flag",
+      "summary": "Generate a flag for an existing command.",
+      "description": "You must run this command from within a plugin directory, such as the directory created with the \"sf dev generate plugin\" command.\n\nThis command is interactive. It first discovers all the commands currently implemented in the plugin, and asks you which you want to create a new flag for. It then prompts for other flag properties, such as its long name, optional short name, type, whether it's required, and so on. Long flag names must be kebab-case and not camelCase. The command doesn't let you use an existing long or short flag name. When the command completes, the Typescript file for the command is updated with the code for the new flag.\n\nUse the --dry-run flag to review new code for the command file without actually udpating it.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "Generate a new flag and update the command file:\n<%= config.bin %> <%= command.id %>",
+      "Don't actually update the command file, just view the generated code:\n<%= config.bin %> <%= command.id %> --dry-run"
+    ],
+      "flags": {
+      "dry-run": {
+        "name": "dry-run",
+          "type": "boolean",
+          "char": "d",
+          "summary": "Print new flag code instead of adding it to the command file.",
+          "allowNo": false,
+          "aliases": [
+          "dryrun"
+        ]
+      }
+    },
+    "args": {}
+  },
+  "dev:generate:hook": {
+    "id": "dev:generate:hook",
+      "summary": "Generate a new sf hook.",
+      "description": "You must run this command from within a plugin directory, such as the directory created with the \"sf dev generate plugin\" command.\n\nThe command generates a basic Typescript source file in the \"src/hooks\" directory to get you started. The source file's name is based on the event you're hooking into, such as envList.ts for the \"sf env list\" command.\n\nThe command updates the package.json file, so if it detects conflicts with the existing file, you're prompted whether you want to overwrite the file. There are a number of package.json updates required for a new hook, so we recommend you answer \"y\" so the command takes care of them all. If you answer \"n\", you must update the package.json file manually.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "Generate source file for a hook into the \"sf env display\" command:\n<%= config.bin %> <%= command.id %> --event sf:env:display"
+    ],
+      "flags": {
+      "force": {
+        "name": "force",
+          "type": "boolean",
+          "summary": "Overwrite existing files.",
+          "allowNo": false
+      },
+      "event": {
+        "name": "event",
+          "type": "option",
+          "summary": "Event to run hook on. Use colons to separate topic and command names of the event.",
+          "required": true,
+          "multiple": false,
+          "options": [
+          "sf:env:list",
+          "sf:env:display",
+          "sf:deploy",
+          "sf:logout"
+        ]
+      }
+    },
+    "args": {}
+  },
+  "dev:generate:library": {
+    "id": "dev:generate:library",
+      "summary": "Generate a new library.",
+      "description": "This command is interactive. You're prompted for information to populate the new library, such as the npm scope (which must start with \"@\"), the name and description of the library, and its GitHub organization. The command clones the 'forcedotcom/library-template' GitHub repository, installs the library's npm package dependencies using yarn install, and updates the package properties.\n\nWhen the command completes, your new library contains a few sample source and test files to get you started.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "<%= config.bin %> <%= command.id %>"
+    ],
+      "flags": {},
+    "args": {}
+  },
+  "dev:generate:plugin": {
+    "id": "dev:generate:plugin",
+      "summary": "Generate a new sf plugin.",
+      "description": "This command is interactive. You're prompted for information to populate your new plugin, such as its name, description, author, and percentage of code coverage you want. The command clones the 'salesforcecli/plugin-template-sf' GitHub repository, installs the plug-in's npm package dependencies using yarn install, and updates the package properties.\n\nWhen the command completes, your new plugin contains the source, message, and test files for a sample \"sf hello world\" command.",
+      "strict": true,
+      "pluginName": "@salesforce/plugin-dev",
+      "pluginAlias": "@salesforce/plugin-dev",
+      "pluginType": "jit",
+      "aliases": [
+      "plugins:generate"
+    ],
+      "examples": [
+      "<%= config.bin %> <%= command.id %>"
+    ],
+      "deprecateAliases": true,
+      "flags": {},
+    "args": {}
+  },
+  "force:lightning:lwc:test:create": {
+    "id": "force:lightning:lwc:test:create",
+      "description": "creates a Lightning web component test file with boilerplate code inside a __tests__ directory.",
+      "strict": true,
+      "usage": "<%= command.id %> -f <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-plugin-lwc-test",
+      "pluginAlias": "@salesforce/sfdx-plugin-lwc-test",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "$ sfdx force:lightning:lwc:test:create -f force-app/main/default/lwc/myButton/myButton.js"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      },
+      "filepath": {
+        "name": "filepath",
+          "type": "option",
+          "char": "f",
+          "description": "path to Lightning web component .js file to create a test for",
+          "required": true,
+          "multiple": false
+      }
+    },
+    "args": {},
+    "longDescription": "Creates a __tests__ directory in the specified directory. Creates a yourComponentName.test.js file with boilerplate code in the __tests__ directory.",
+      "requiresProject": true,
+      "flagsConfig": {
+      "filepath": {
+        "kind": "string",
+          "char": "f",
+          "description": "path to Lightning web component .js file to create a test for",
+          "longDescription": "Path to Lightning web component .js file to create a test for.",
+          "required": true,
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      }
+    }
+  },
+  "force:lightning:lwc:test:run": {
+    "id": "force:lightning:lwc:test:run",
+      "description": "invokes Lightning Web Components Jest unit tests.",
+      "strict": true,
+      "usage": "<%= command.id %> [-d | --watch] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-plugin-lwc-test",
+      "pluginAlias": "@salesforce/sfdx-plugin-lwc-test",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "$ sfdx force:lightning:lwc:test:run",
+      "$ sfdx force:lightning:lwc:test:run -w"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      },
+      "debug": {
+        "name": "debug",
+          "type": "boolean",
+          "char": "d",
+          "description": "run tests in debug mode",
+          "allowNo": false,
+          "exclusive": [
+          "watch"
+        ]
+      },
+      "watch": {
+        "name": "watch",
+          "type": "boolean",
+          "description": "run tests in watch mode",
+          "allowNo": false,
+          "exclusive": [
+          "debug"
+        ]
+      }
+    },
+    "args": {
+      "passthrough": {
+        "name": "passthrough"
+      }
+    },
+    "longDescription": "Invokes Lightning Web Components Jest unit tests.",
+      "requiresProject": true,
+      "flagsConfig": {
+      "debug": {
+        "kind": "boolean",
+          "char": "d",
+          "description": "run tests in debug mode",
+          "longDescription": "Runs tests in a Node process that an external debugger can connect to. The run pauses until the debugger is connected. For more information, see: https://jestjs.io/docs/en/troubleshooting",
+          "exclusive": [
+          "watch"
+        ],
+          "allowNo": false,
+          "type": "boolean"
+      },
+      "watch": {
+        "kind": "boolean",
+          "description": "run tests in watch mode",
+          "longDescription": "Runs tests when a watched file changes. Watched files include the component under test and any files it references.",
+          "exclusive": [
+          "debug"
+        ],
+          "allowNo": false,
+          "type": "boolean"
+      }
+    }
+  },
+  "force:lightning:lwc:test:setup": {
+    "id": "force:lightning:lwc:test:setup",
+      "description": "install Jest unit testing tools for Lightning Web Components.",
+      "strict": true,
+      "usage": "<%= command.id %> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-plugin-lwc-test",
+      "pluginAlias": "@salesforce/sfdx-plugin-lwc-test",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "$ sfdx force:lightning:lwc:test:setup"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      }
+    },
+    "args": {},
+    "longDescription": "Installs Jest unit testing tools for Lightning Web Components. For more information, see the Lightning Web Components Dev Guide: https://developer.salesforce.com/docs/component-library/documentation/lwc/lwc.testing",
+      "requiresProject": true
+  },
+  "scanner:run": {
+    "id": "scanner:run",
+      "description": "scan a codebase with a selection of rules",
+      "strict": true,
+      "usage": "<%= command.id %> -t <array> [-c <array>] [-f csv|html|json|junit|sarif|table|xml] [-o <string>] [-s <integer> | --json] [--normalize-severity] [-p <array>] [-r <array>] [-e <array>] [--tsconfig <string>] [--eslintconfig <string>] [--pmdconfig <string>] [--env <string>] [--verbose-violations] [--verbose] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-scanner",
+      "pluginAlias": "@salesforce/sfdx-scanner",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "This example evaluates all rules against somefile.js.\nInvoking code analyzer without specifying any rules causes all rules to be run.\n\t$ sfdx scanner:run --format xml --target \"somefile.js\"\n\nThis example evaluates all rules in the Design and Best Practices categories.\nWhen you specify multiple categories or rulesets, the results are combined with a logical OR.\n\t$ sfdx scanner:run --format xml --target \"somefile.js\" --\n\nThis example evaluates all rules except those in the Design or Best Practices categories.\nExclude categories by specifying the negation operator and enclosing the values in single quotes.\n\t$ sfdx scanner:run --format xml --target \"somefile.js\" --category '!Design,!Best Practices'\n\nWrap globs in quotes. These examples evaluate rules against all .js files in the current directory, except for IgnoreMe.js.\nUnix example:\n\t$ sfdx scanner:run --target './**/*.js,!./**/IgnoreMe.js' ...\nWindows example:\n\t$ sfdx scanner:run --target \".\\**\\*.js,!.\\**\\IgnoreMe.js\" ...\n\nThis example scans the project contained in '/my-project' if the current working directory is another directory.\nSpecify tsconfig.json if the current working directory does not contain the tsconfig.json that corresponds to the TypeScript files being scanned.\n\t$ sfdx scanner:run --target \"/my-project/**/*.ts\" --tsconfig \"/my-project/tsconfig.json\"\n\nThis example evaluates rules against somefile.js, including Jasmine in the environment variables.\nUses --env to override the default ESLint environment variables to add frameworks.\n\t$ sfdx scanner:run --target \"somefile.js\" --env '{\"jasmine\": true}'\n\nThis example evaluates rules aginst somefile.js using eslint-lwc and pmd engines.\nUse --engine to include or exclude engines. Any engine listed will be run, regardless of its current 'disabled' attribute.\n\t$ sfdx scanner:run --target \"somefile.js\" --engine \"eslint-lwc,pmd\"\n\nThis example executes CPD engine against known file extensions in \"/some/dir\". CPD helps detect blocks of code duplication in selected languages.\nUse --engine to invoke engines that are not enabled by default.\n\t$ sfdx scanner:run --target \"/some/dir\" --engine cpd\n\nThis example executes rules defined in pmd_rule_ref.xml against the files in 'src'.\nTo use PMD with your own rule reference file, use --pmdconfig. Note that rule filters are not applied.\n\t$ sfdx scanner:run --target \"src\" --pmdconfig \"pmd_rule_ref.xml\"\n\nThis example uses a custom config to scan the files in 'src'.\nTo use ESLint with your own .eslintrc.json file, use --eslintconfig. Make sure that the directory you run the command from has all the NPM dependencies installed.\n\t$ sfdx scanner:run --target \"src\" --eslintconfig \"/home/my/setup/.eslintrc.json\"\n\nThis example uses --normalize-severity to output normalized severity and engine-specific severity across all engines. Normalized severity is: 1 (high), 2 (moderate), and 3 (low).\n\t$ sfdx scanner:run --target \"/some-project/\" --format csv --normalize-severity\n\nThis example uses --severity-threshold to throw a non-zero exit code when rule violations of normalized severity 2 or greater are found. If any violations with the specified severity (or greater) are found, the exit code equals the severity of the most severe violation.\n\t$ sfdx scanner:run --target \"/some-project/\" --severity-threshold 2\n\nThe paths specified for --projectdir must contain all files specified through --target cumulatively.\n\t$ sfdx scanner:run --target \"./myproject/main/default/classes/*.cls\" --projectdir \"./myproject/\"\n\t$ sfdx scanner:run --target \"./**/*.cls\" --projectdir \"./\"\n\t$ sfdx scanner:run --target \"./dir1/file1.cls,./dir2/file2.cls\" --projectdir \"./dir1/,./dir2/\"\n\nThis example fails because the set of files included in --target is larger than that contained in --projectdir:\n\t$ sfdx scanner:run --target \"./**/*.cls\" --projectdir \"./myproject/\"\n"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      },
+      "verbose": {
+        "name": "verbose",
+          "type": "boolean",
+          "description": "emit additional command output to stdout",
+          "allowNo": false
+      },
+      "category": {
+        "name": "category",
+          "type": "option",
+          "char": "c",
+          "description": "one or more categories of rules to run",
+          "multiple": false
+      },
+      "format": {
+        "name": "format",
+          "type": "option",
+          "char": "f",
+          "description": "specify results output format",
+          "helpValue": "(csv|html|json|junit|sarif|table|xml)",
+          "multiple": false,
+          "options": [
+          "csv",
+          "html",
+          "json",
+          "junit",
+          "sarif",
+          "table",
+          "xml"
+        ]
+      },
+      "outfile": {
+        "name": "outfile",
+          "type": "option",
+          "char": "o",
+          "description": "write output to a file",
+          "multiple": false
+      },
+      "severity-threshold": {
+        "name": "severity-threshold",
+          "type": "option",
+          "char": "s",
+          "description": "throw an error when a violation threshold is reached, the --normalize-severity is invoked, and severity levels are reset to the baseline",
+          "multiple": false,
+          "exclusive": [
+          "json"
+        ]
+      },
+      "normalize-severity": {
+        "name": "normalize-severity",
+          "type": "boolean",
+          "description": "return normalized severity 1 (high), 2 (moderate), and 3 (low), and the engine-specific severity",
+          "allowNo": false
+      },
+      "projectdir": {
+        "name": "projectdir",
+          "type": "option",
+          "char": "p",
+          "description": "provide root directory of project",
+          "multiple": false
+      },
+      "ruleset": {
+        "name": "ruleset",
+          "type": "option",
+          "char": "r",
+          "description": "[deprecated] rulesets to run",
+          "multiple": false,
+          "deprecated": {
+          "messageOverride": "The 'ruleset' command parameter is deprecated. Use 'category' instead."
+        }
+      },
+      "engine": {
+        "name": "engine",
+          "type": "option",
+          "char": "e",
+          "description": "specify which engines to run",
+          "multiple": false
+      },
+      "target": {
+        "name": "target",
+          "type": "option",
+          "char": "t",
+          "description": "source code location",
+          "required": true,
+          "multiple": false
+      },
+      "tsconfig": {
+        "name": "tsconfig",
+          "type": "option",
+          "description": "location of tsconfig.json file",
+          "multiple": false
+      },
+      "eslintconfig": {
+        "name": "eslintconfig",
+          "type": "option",
+          "description": "specify the location of eslintrc config to customize eslint engine",
+          "multiple": false
+      },
+      "pmdconfig": {
+        "name": "pmdconfig",
+          "type": "option",
+          "description": "specify location of PMD rule reference XML file to customize rule selection",
+          "multiple": false
+      },
+      "env": {
+        "name": "env",
+          "type": "option",
+          "description": "[deprecated] override ESLint's default environment variables, in JSON-formatted string",
+          "multiple": false,
+          "deprecated": {
+          "messageOverride": "--env parameter is being deprecated, and will be removed in a future release."
+        }
+      },
+      "verbose-violations": {
+        "name": "verbose-violations",
+          "type": "boolean",
+          "description": "return retire-js violation message details",
+          "allowNo": false
+      }
+    },
+    "args": {
+      "file": {
+        "name": "file"
+      }
+    },
+    "longDescription": "Scans a codebase with a selection of rules. You can scan the codebase with all the rules in the registry, or use parameters to filter the rules based on rulename, category, or ruleset. You can specify the format of the output, such as XML or JUnit. You can print the output to the console (default) or to a file using the --outfile parameter.",
+      "flagsConfig": {
+      "verbose": {
+        "type": "boolean",
+          "kind": "boolean",
+          "description": "emit additional command output to stdout",
+          "longDescription": "Emit additional command output to stdout.",
+          "allowNo": false
+      },
+      "category": {
+        "kind": "array",
+          "char": "c",
+          "description": "one or more categories of rules to run",
+          "longDescription": "One or more categories of rules to run. Specify multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "format": {
+        "kind": "enum",
+          "helpValue": "(csv|html|json|junit|sarif|table|xml)",
+          "char": "f",
+          "description": "specify results output format",
+          "longDescription": "Specifies results output format written directly to the console.",
+          "options": [
+          "csv",
+          "html",
+          "json",
+          "junit",
+          "sarif",
+          "table",
+          "xml"
+        ],
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "outfile": {
+        "kind": "string",
+          "char": "o",
+          "description": "write output to a file",
+          "longDescription": "Writes output to a file.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "severity-threshold": {
+        "kind": "integer",
+          "char": "s",
+          "description": "throw an error when a violation threshold is reached, the --normalize-severity is invoked, and severity levels are reset to the baseline",
+          "longDescription": "Throws an error when violations are found with equal or greater severity than the provided value. Values are 1 (high), 2 (moderate), and 3 (low). Exit code is the most severe violation. Using this flag also invokes the --normalize-severity flag.",
+          "exclusive": [
+          "json"
+        ],
+          "min": 1,
+          "max": 3,
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "normalize-severity": {
+        "kind": "boolean",
+          "description": "return normalized severity 1 (high), 2 (moderate), and 3 (low), and the engine-specific severity",
+          "longDescription": "Returns normalized severity 1 (high), 2 (moderate), and 3 (low), and the engine-specific severity. For the html option, the normalized severity is displayed instead of the engine severity.",
+          "allowNo": false,
+          "type": "boolean"
+      },
+      "projectdir": {
+        "kind": "array",
+          "char": "p",
+          "description": "provide root directory of project",
+          "longDescription": "Provides the relative or absolute root project directory used to set the context for Graph Engine's analysis. Project directory must be a path, not a glob. Specify multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "ruleset": {
+        "kind": "array",
+          "char": "r",
+          "deprecated": {
+          "messageOverride": "The 'ruleset' command parameter is deprecated. Use 'category' instead."
+        },
+        "description": "[deprecated] rulesets to run",
+          "longDescription": "[deprecated] One or more rulesets to run. Specify multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "engine": {
+        "kind": "array",
+          "char": "e",
+          "description": "specify which engines to run",
+          "longDescription": "Specifies one or more engines to run. Submit multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "target": {
+        "kind": "array",
+          "char": "t",
+          "description": "source code location",
+          "longDescription": "Source code location. May use glob patterns. Specify multiple values as a comma-separated list.",
+          "required": true,
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "tsconfig": {
+        "kind": "string",
+          "description": "location of tsconfig.json file",
+          "longDescription": "Location of tsconfig.json file used by eslint-typescript engine.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "eslintconfig": {
+        "kind": "string",
+          "description": "specify the location of eslintrc config to customize eslint engine",
+          "longDescription": "Specifies the location of eslintrc config to customize eslint engine.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "pmdconfig": {
+        "kind": "string",
+          "description": "specify location of PMD rule reference XML file to customize rule selection",
+          "longDescription": "Specifies the location of PMD rule reference XML file to customize rule selection.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "env": {
+        "kind": "string",
+          "description": "[deprecated] override ESLint's default environment variables, in JSON-formatted string",
+          "longDescription": "[deprecated] Overrides ESLint's default environmental variables, in JSON-formatted string.",
+          "deprecated": {
+          "messageOverride": "--env parameter is being deprecated, and will be removed in a future release."
+        },
+        "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "verbose-violations": {
+        "kind": "boolean",
+          "description": "return retire-js violation message details",
+          "longDescription": "Returns retire-js violation messages details about each vulnerability, including summary, Common Vulnerabilities and Exposures (CVE), and URLs.",
+          "allowNo": false,
+          "type": "boolean"
+      }
+    }
+  },
+  "scanner:rule:add": {
+    "id": "scanner:rule:add",
+      "description": "add custom rules to Salesforce Code Analyzer's registry",
+      "strict": true,
+      "usage": "<%= command.id %> -l <string> -p <array> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-scanner",
+      "pluginAlias": "@salesforce/sfdx-scanner",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "Bundle custom PMD rules in JAR files. Follow PMD conventions, such as defining the custom rules in XML files under a `/category/` directory.\nSee PMD's documentation for more information on writing rules.\n\nThis example shows how to specify two JAR files directly.\n\t$ sfdx scanner:rule:add --language apex --path \"/Users/me/rules/Jar1.jar,/Users/me/rules/Jar2.jar\"\n\t\tSuccessfully added rules for apex.\n\t\t2 path(s) added:\n\t\t/Users/me/rules/Jar1.jar,/Users/me/rules/Jar2.jar\n\nThis example shows how to specify a directory containing one or more JARs, all of which are added to the registry.\n\t$ sfdx scanner:rule:add --language apex --path \"/Users/me/rules\"\n\t\tSuccessfully added rules for apex."
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      },
+      "language": {
+        "name": "language",
+          "type": "option",
+          "char": "l",
+          "description": "language that the custom rules are evaluated against",
+          "required": true,
+          "multiple": false
+      },
+      "path": {
+        "name": "path",
+          "type": "option",
+          "char": "p",
+          "description": "one or more paths (such as a directory or JAR file) to custom rule definitions",
+          "required": true,
+          "multiple": false
+      }
+    },
+    "args": {},
+    "longDescription": "Adds custom rules to Salesforce Code Analyzer's registry so that you can run them along with the built-in rules. Compile and test custom rules separately before adding them.",
+      "flagsConfig": {
+      "language": {
+        "kind": "string",
+          "char": "l",
+          "description": "language that the custom rules are evaluated against",
+          "longDescription": "Language that the custom rules are evaluated against.",
+          "required": true,
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "path": {
+        "kind": "array",
+          "char": "p",
+          "description": "one or more paths (such as a directory or JAR file) to custom rule definitions",
+          "longDescription": "One or more paths (such as a directory or JAR file) to  custom rule definitions. Specify multiple values as a comma-separated list.",
+          "required": true,
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      }
+    }
+  },
+  "scanner:rule:describe": {
+    "id": "scanner:rule:describe",
+      "description": "provide detailed information about a rule",
+      "strict": true,
+      "usage": "<%= command.id %> -n <string> [--verbose] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-scanner",
+      "pluginAlias": "@salesforce/sfdx-scanner",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "$ sfdx scanner:rule:describe --rulename ExampleRule\n\tname:        AvoidWithStatement\n\tcategories:   Best Practices\n\trulesets:    Controversial Ecmascript\n\tlanguages:   javascript\n\tdescription: Avoid using with - it's bad news\n\tmessage:     Avoid using with - it's bad news\n\t"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      },
+      "rulename": {
+        "name": "rulename",
+          "type": "option",
+          "char": "n",
+          "description": "the name of the rule",
+          "required": true,
+          "multiple": false
+      },
+      "verbose": {
+        "name": "verbose",
+          "type": "boolean",
+          "description": "emit additional command output to stdout",
+          "allowNo": false
+      }
+    },
+    "args": {
+      "file": {
+        "name": "file"
+      }
+    },
+    "longDescription": "Provides detailed information about a rule. Information includes the rule's language (such as Apex or Java), the violation it detects, and example code of the violation. The command output also includes the rule's categories and rulesets.",
+      "flagsConfig": {
+      "rulename": {
+        "kind": "string",
+          "char": "n",
+          "description": "the name of the rule",
+          "longDescription": "The name of the rule.",
+          "required": true,
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "verbose": {
+        "type": "boolean",
+          "kind": "boolean",
+          "description": "emit additional command output to stdout",
+          "longDescription": "Emit additional command output to stdout.",
+          "allowNo": false
+      }
+    }
+  },
+  "scanner:rule:list": {
+    "id": "scanner:rule:list",
+      "description": "list basic information about all rules matching provided criteria",
+      "strict": true,
+      "usage": "<%= command.id %> [-c <array>] [-r <array>] [-l <array>] [-e <array>] [--verbose] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-scanner",
+      "pluginAlias": "@salesforce/sfdx-scanner",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "\nThis example invokes the command without filter criteria, which returns all rules.\n\t$ sfdx scanner:rule:list\n\nThis example returns all rules for Apex OR Javascript. Values supplied to a single filter are handled with a logical OR.\n\t$ sfdx scanner:rule:list --language apex,javascript\n\nThis example returns all rules except those in the Design or Best Practices categories. Exclude categories by specifying the negation operator and enclosing the values in single quotes.\n\t$ sfdx scanner:rule:list --category '!Design,!Best Practices'\n\nThis example returns all rules that target Apex OR Javascript, AND are members of the Braces OR Security rulesets.\nThe different filters are combined with a logical AND.\n\t$ sfdx scanner:rule:list --language apex,javascript --ruleset Braces,Security\n"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      },
+      "verbose": {
+        "name": "verbose",
+          "type": "boolean",
+          "description": "emit additional command output to stdout",
+          "allowNo": false
+      },
+      "category": {
+        "name": "category",
+          "type": "option",
+          "char": "c",
+          "description": "select rules by category",
+          "multiple": false
+      },
+      "ruleset": {
+        "name": "ruleset",
+          "type": "option",
+          "char": "r",
+          "description": "[deprecated] select rules by ruleset",
+          "multiple": false,
+          "deprecated": {
+          "messageOverride": "The 'ruleset' command parameter is deprecated. Use 'category' instead"
+        }
+      },
+      "language": {
+        "name": "language",
+          "type": "option",
+          "char": "l",
+          "description": "select rules by language",
+          "multiple": false
+      },
+      "engine": {
+        "name": "engine",
+          "type": "option",
+          "char": "e",
+          "description": "select rules by engine",
+          "multiple": false
+      }
+    },
+    "args": {
+      "file": {
+        "name": "file"
+      }
+    },
+    "longDescription": "Lists all the rules available in the catalog. You can filter the output to view a smaller set of rules. To get more information about a specific rule, use the `scanner:rule:describe` command.",
+      "flagsConfig": {
+      "verbose": {
+        "type": "boolean",
+          "kind": "boolean",
+          "description": "emit additional command output to stdout",
+          "longDescription": "Emit additional command output to stdout.",
+          "allowNo": false
+      },
+      "category": {
+        "kind": "array",
+          "char": "c",
+          "description": "select rules by category",
+          "longDescription": "Selects rules by category. Enter multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "ruleset": {
+        "kind": "array",
+          "char": "r",
+          "deprecated": {
+          "messageOverride": "The 'ruleset' command parameter is deprecated. Use 'category' instead"
+        },
+        "description": "[deprecated] select rules by ruleset",
+          "longDescription": "[deprecated] Selects rules by ruleset. Enter multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "language": {
+        "kind": "array",
+          "char": "l",
+          "description": "select rules by language",
+          "longDescription": "Selects rules by language. Enter multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "engine": {
+        "kind": "array",
+          "char": "e",
+          "description": "select rules by engine",
+          "longDescription": "Selects rules by engine. Enter multiple engines as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      }
+    }
+  },
+  "scanner:rule:remove": {
+    "id": "scanner:rule:remove",
+      "description": "remove custom rules from the registry of available rules",
+      "strict": true,
+      "usage": "<%= command.id %> [-f] [-p <array>] [--verbose] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-scanner",
+      "pluginAlias": "@salesforce/sfdx-scanner",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "This example runs the command without arguments to see a list of registered custom paths.\n\t$ sfdx scanner:rule:remove\n\nThis example uses the --path parameter to deregister the rules defined in somerules.jar and any JARs/XMLs contained in the rules folder.\n\t$ sfdx scanner:rule:remove --path \"~/path/to/somerules.jar,~/path/to/folder/containing/rules\"\n\nThis example uses the --force flag to bypass the confirmation prompt, removing all rules defined in somerules.jar.\nBy default, a list of all rules that will be unregistered is displayed, and the action must be confirmed. To bypass that confirmation, use the --force flag.\n\t$ sfdx scanner:rule:remove --force --path \"~/path/to/somerules.jar\"\n"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      },
+      "verbose": {
+        "name": "verbose",
+          "type": "boolean",
+          "description": "emit additional command output to stdout",
+          "allowNo": false
+      },
+      "force": {
+        "name": "force",
+          "type": "boolean",
+          "char": "f",
+          "description": "bypass the confirmation prompt and immediately remove the rules",
+          "allowNo": false
+      },
+      "path": {
+        "name": "path",
+          "type": "option",
+          "char": "p",
+          "description": "one or more paths to remove",
+          "multiple": false
+      }
+    },
+    "args": {
+      "file": {
+        "name": "file"
+      }
+    },
+    "longDescription": "Removes custom rules from the registry of available rules. Use the `-p|--path` parameter to specify one or more paths to remove. If you don't specify any parameters, the command lists all valid custom paths but doesn't remove any.",
+      "flagsConfig": {
+      "verbose": {
+        "type": "boolean",
+          "kind": "boolean",
+          "description": "emit additional command output to stdout",
+          "longDescription": "Emit additional command output to stdout.",
+          "allowNo": false
+      },
+      "force": {
+        "kind": "boolean",
+          "char": "f",
+          "description": "bypass the confirmation prompt and immediately remove the rules",
+          "longDescription": "Bypasses the confirmation prompt and immediately removes the rules.",
+          "allowNo": false,
+          "type": "boolean"
+      },
+      "path": {
+        "kind": "array",
+          "char": "p",
+          "description": "one or more paths to remove",
+          "longDescription": "One or more paths to remove. Specify multiple values with a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      }
+    }
+  },
+  "scanner:run:dfa": {
+    "id": "scanner:run:dfa",
+      "description": "scan codebase with all DFA rules",
+      "strict": true,
+      "usage": "<%= command.id %> -t <array> [-c <array>] [-f csv|html|json|junit|sarif|table|xml] [-o <string>] [-s <integer> | --json] [--normalize-severity] [-p <array>] [--rule-thread-count <integer>] [--rule-thread-timeout <integer>] [--rule-disable-warning-violation] [--sfgejvmargs <string>] [--pathexplimit <integer>] [--verbose] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]",
+      "pluginName": "@salesforce/sfdx-scanner",
+      "pluginAlias": "@salesforce/sfdx-scanner",
+      "pluginType": "jit",
+      "aliases": [],
+      "examples": [
+      "The paths specified for --projectdir must contain all files specified through --target cumulatively.\n\t$ sfdx scanner:run:dfa --target \"./myproject/main/default/classes/*.cls\" --projectdir \"./myproject/\"\n\t$ sfdx scanner:run:dfa --target \"./**/*.cls\" --projectdir \"./\"\n\t$ sfdx scanner:run:dfa --target \"./dir1/file1.cls,./dir2/file2.cls\" --projectdir \"./dir1/,./dir2/\"\nThis example fails because the set of files included in --target is larger than that contained in --projectdir:\n\t$ sfdx scanner:run:dfa --target \"./**/*.cls\" --projectdir \"./myproject/\"\nGlobs must be wrapped in quotes, as in these Windows and Unix examples, which evaluate rules against all .cls files in the current directory and subdirectories except for IgnoreMe.cls:\nUnix example:\n\t$ sfdx scanner:run:dfa --target \"./**/*.cls,!./**/IgnoreMe.cls\" ...\nWindows example:\n\t$ sfdx scanner:run:dfa --target \".\\**\\*.cls,!.\\**\\IgnoreMe.cls\" ...\nYou can target individual methods within a file with a suffix hash (#) on the file's path, and with a semi-colon-delimited list of method names. This syntax is incompatible with globs and directories. This example evaluates rules against all methods named Method1 or Method2 in File1.cls, and all methods named Method3 in File2.cls:\n\t$ sfdx scanner:run:dfa --target \"./File1.cls#Method1;Method2,./File2.cls#Method3\" ...\nUse --normalize-severity to output a normalized severity across all engines, in addition to the engine-specific severity. Normalized severity is 1 (high), 2 (moderate), and 3 (low):\n\t$ sfdx scanner:run:dfa --target \"./some-project/\" --projectdir \"./some-project/\" --format csv --normalize-severity\nUse --severity-threshold to throw a non-zero exit code when rule violations of a specific normalized severity or greater are found. If there are any rule violations with a severity of 2 or 1, the exit code is equal to the severity of the most severe violation:\n\t$ sfdx scanner:run:dfa --target \"./some-project/\" --projectdir \"./some-project/\" --severity-threshold 2\nuse --rule-thread-count to allow more (or fewer) entrypoints to be evaluated concurrently:\n\t$ sfdx scanner:run:dfa --rule-thread-count 6 ...\nUse --rule-thread-timeout to increase or decrease the maximum runtime for a single entrypoint evaluation. This increases the timeout from the 15-minute default to 150 minutes:\n\t$ sfdx scanner:run:dfa --rule-thread-timeout 9000000 ...\nUse --sfgejvmargs to pass Java Virtual Machine args to override system defaults while executing Salesforce Graph Engine's rules.\nThe example overrides the system's default heap space allocation to 8 GB and decreases chances of encountering OutOfMemory error.\n\t$ sfdx scanner:run:dfa --sfgejvmargs \"-Xmx8g\" ...\n"
+    ],
+      "flags": {
+      "json": {
+        "name": "json",
+          "type": "boolean",
+          "description": "format output as json",
+          "allowNo": false
+      },
+      "loglevel": {
+        "name": "loglevel",
+          "type": "option",
+          "description": "logging level for this command invocation",
+          "required": false,
+          "helpValue": "(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+          "multiple": false,
+          "options": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ],
+          "default": "warn"
+      },
+      "verbose": {
+        "name": "verbose",
+          "type": "boolean",
+          "description": "emit additional command output to stdout",
+          "allowNo": false
+      },
+      "category": {
+        "name": "category",
+          "type": "option",
+          "char": "c",
+          "description": "one or more categories of rules to run",
+          "multiple": false
+      },
+      "format": {
+        "name": "format",
+          "type": "option",
+          "char": "f",
+          "description": "specify results output format",
+          "helpValue": "(csv|html|json|junit|sarif|table|xml)",
+          "multiple": false,
+          "options": [
+          "csv",
+          "html",
+          "json",
+          "junit",
+          "sarif",
+          "table",
+          "xml"
+        ]
+      },
+      "outfile": {
+        "name": "outfile",
+          "type": "option",
+          "char": "o",
+          "description": "write output to a file",
+          "multiple": false
+      },
+      "severity-threshold": {
+        "name": "severity-threshold",
+          "type": "option",
+          "char": "s",
+          "description": "throw an error when a violation threshold is reached, the --normalize-severity is invoked, and severity levels are reset to the baseline",
+          "multiple": false,
+          "exclusive": [
+          "json"
+        ]
+      },
+      "normalize-severity": {
+        "name": "normalize-severity",
+          "type": "boolean",
+          "description": "return normalized severity 1 (high), 2 (moderate), and 3 (low), and the engine-specific severity",
+          "allowNo": false
+      },
+      "projectdir": {
+        "name": "projectdir",
+          "type": "option",
+          "char": "p",
+          "description": "provide root directory of project",
+          "multiple": false
+      },
+      "target": {
+        "name": "target",
+          "type": "option",
+          "char": "t",
+          "description": "return location of source code",
+          "required": true,
+          "multiple": false
+      },
+      "rule-thread-count": {
+        "name": "rule-thread-count",
+          "type": "option",
+          "description": "specify number of threads that evaluate DFA rules. Alternatively, set value using environment variable `SFGE_RULE_THREAD_COUNT`. Default is 4",
+          "multiple": false
+      },
+      "rule-thread-timeout": {
+        "name": "rule-thread-timeout",
+          "type": "option",
+          "description": "specify timeout for individual rule threads in milliseconds. Alternatively, set the timeout value using environment variable `SFGE_RULE_THREAD_TIMEOUT`. Default: 90000 ms",
+          "multiple": false
+      },
+      "rule-disable-warning-violation": {
+        "name": "rule-disable-warning-violation",
+          "type": "boolean",
+          "description": "disable warning violations from Salesforce Graph Engine. Alternatively, set value using environment variable `SFGE_RULE_DISABLE_WARNING_VIOLATION`",
+          "allowNo": false
+      },
+      "sfgejvmargs": {
+        "name": "sfgejvmargs",
+          "type": "option",
+          "description": "specify Java Virtual Machine (JVM) arguments to optimize Salesforce Graph Engine execution to your system (optional)",
+          "multiple": false
+      },
+      "pathexplimit": {
+        "name": "pathexplimit",
+          "type": "option",
+          "description": "specify a path expansion  upper boundary to limit the complexity of code that Graph Engine analyzes. Alternatively, set the value using environment variable `SFGE_PATH_EXPANSION_LIMIT`",
+          "multiple": false
+      }
+    },
+    "args": {
+      "file": {
+        "name": "file"
+      }
+    },
+    "longDescription": "Scans codebase with all DFA rules by default.\n\tSpecify the format of output and print results directly or as contents of a file that you provide with --outfile flag.",
+      "flagsConfig": {
+      "verbose": {
+        "type": "boolean",
+          "kind": "boolean",
+          "description": "emit additional command output to stdout",
+          "longDescription": "Emit additional command output to stdout.",
+          "allowNo": false
+      },
+      "category": {
+        "kind": "array",
+          "char": "c",
+          "description": "one or more categories of rules to run",
+          "longDescription": "One or more categories of rules to run. Specify multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "format": {
+        "kind": "enum",
+          "helpValue": "(csv|html|json|junit|sarif|table|xml)",
+          "char": "f",
+          "description": "specify results output format",
+          "longDescription": "Specifies results output format written directly to the console.",
+          "options": [
+          "csv",
+          "html",
+          "json",
+          "junit",
+          "sarif",
+          "table",
+          "xml"
+        ],
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "outfile": {
+        "kind": "string",
+          "char": "o",
+          "description": "write output to a file",
+          "longDescription": "Writes output to a file.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "severity-threshold": {
+        "kind": "integer",
+          "char": "s",
+          "description": "throw an error when a violation threshold is reached, the --normalize-severity is invoked, and severity levels are reset to the baseline",
+          "longDescription": "Throws an error when violations are found with equal or greater severity than the provided value. Values are 1 (high), 2 (moderate), and 3 (low). Exit code is the most severe violation. Using this flag also invokes the --normalize-severity flag.",
+          "exclusive": [
+          "json"
+        ],
+          "min": 1,
+          "max": 3,
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "normalize-severity": {
+        "kind": "boolean",
+          "description": "return normalized severity 1 (high), 2 (moderate), and 3 (low), and the engine-specific severity",
+          "longDescription": "Returns normalized severity 1 (high), 2 (moderate), and 3 (low), and the engine-specific severity. For the html option, the normalized severity is displayed instead of the engine severity.",
+          "allowNo": false,
+          "type": "boolean"
+      },
+      "projectdir": {
+        "kind": "array",
+          "char": "p",
+          "description": "provide root directory of project",
+          "longDescription": "Provides the relative or absolute root project directory used to set the context for Graph Engine's analysis. Project directory must be a path, not a glob. Specify multiple values as a comma-separated list.",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "target": {
+        "kind": "array",
+          "char": "t",
+          "description": "return location of source code",
+          "longDescription": "Returns the source code location. Use glob patterns or specify individual methods with #-syntax. Multiple values are specified as a comma-separated list.",
+          "required": true,
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "rule-thread-count": {
+        "kind": "integer",
+          "description": "specify number of threads that evaluate DFA rules. Alternatively, set value using environment variable `SFGE_RULE_THREAD_COUNT`. Default is 4",
+          "longDescription": "Specifies number of rule evaluation threads, or how many entrypoints can be evaluated concurrently. Inherits value from SFGE_RULE_THREAD_COUNT env-var, if set. Default is 4.",
+          "env": "SFGE_RULE_THREAD_COUNT",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "rule-thread-timeout": {
+        "kind": "integer",
+          "description": "specify timeout for individual rule threads in milliseconds. Alternatively, set the timeout value using environment variable `SFGE_RULE_THREAD_TIMEOUT`. Default: 90000 ms",
+          "longDescription": "Specifies time limit for evaluating a single entrypoint in milliseconds. Inherits value from SFGE_RULE_THREAD_TIMEOUT env-var if set. Default is 900,000 ms, or 15 minutes.",
+          "env": "SFGE_RULE_THREAD_TIMEOUT",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "rule-disable-warning-violation": {
+        "kind": "boolean",
+          "description": "disable warning violations from Salesforce Graph Engine. Alternatively, set value using environment variable `SFGE_RULE_DISABLE_WARNING_VIOLATION`",
+          "longDescription": "Disables warning violations, such as those on StripInaccessible READ access, to get only high-severity violations (default: false). Inherits value from SFGE_RULE_DISABLE_WARNING_VIOLATION env-var if set.",
+          "allowNo": false,
+          "type": "boolean"
+      },
+      "sfgejvmargs": {
+        "kind": "string",
+          "description": "specify Java Virtual Machine (JVM) arguments to optimize Salesforce Graph Engine execution to your system (optional)",
+          "longDescription": "Specifies Java Virtual Machine arguments to override system defaults while executing Salesforce Graph Engine. For multiple arguments, add them to the same string separated by space.",
+          "env": "SFGE_JVM_ARGS",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      },
+      "pathexplimit": {
+        "kind": "integer",
+          "description": "specify a path expansion  upper boundary to limit the complexity of code that Graph Engine analyzes. Alternatively, set the value using environment variable `SFGE_PATH_EXPANSION_LIMIT`",
+          "longDescription": "Specifies a path expansion upper boundary to limit the complexity of code Graph Engine analyzes  before failing fast. Set the value to -1 to remove any upper boundary. --pathexplimit inherits value from SFGE_PATH_EXPANSION_LIMIT env-var, if set. Its default value is derived from JVM heap space allocation.",
+          "env": "SFGE_PATH_EXPANSION_LIMIT",
+          "input": [],
+          "multiple": false,
+          "type": "option"
+      }
+    }
+  }
+}
+}

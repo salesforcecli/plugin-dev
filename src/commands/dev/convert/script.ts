@@ -9,10 +9,35 @@ import * as os from 'os';
 import * as path from 'path';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-import { Manifest, Snapshot } from '../../manifest';
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
+const manifestFile = require('../../../manifest.json');
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('@salesforce/plugin-dev', 'convert.script');
+const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.convert.script');
+
+type Flag = {
+  [key: string]: {
+    name: string;
+    char: string;
+    aliases: string[];
+  };
+};
+
+type Manifest = {
+  version: string;
+  commands: Snapshot[];
+};
+
+type Snapshot = {
+  id: string;
+  pluginName: string;
+  aliases: string[];
+  flags?: Flag;
+  state?: 'deprecated';
+  deprecationOptions?: {
+    to: string;
+  };
+};
 
 export default class ConvertScript extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -49,7 +74,9 @@ export default class ConvertScript extends SfCommand<void> {
 
     const contents = await fs.promises.readFile(flags.script, 'utf8');
 
-    const manifest = Object.values(Manifest);
+    const manifestJson = manifestFile as Manifest;
+
+    const manifest = Object.values(manifestJson.commands);
 
     const lines = contents.split(os.EOL);
     const data: string[] = [];
@@ -64,10 +91,10 @@ export default class ConvertScript extends SfCommand<void> {
         if (line.match(/sfdx \w+/g)?.length && line.includes(':') && !line.startsWith('#')) {
           const commandId = line.split('sfdx ')[1]?.split(' ')[0];
 
-          const replacement = this.findReplacement(manifest, commandId);
+          const replacement = this.findReplacement(manifest, commandId, manifestJson);
 
           // meaning it's deprecated to multiple commands and can't be replaced inline
-          if (Manifest[commandId]?.deprecationOptions?.to.includes('/')) {
+          if ((manifestJson.commands[commandId] as Snapshot)?.deprecationOptions?.to.includes('/')) {
             this.warn(messages.getMessage('cannotDetermine', [commandId]));
           }
 
@@ -124,7 +151,7 @@ export default class ConvertScript extends SfCommand<void> {
     return prompt ? await this.confirm(message, 100000) : true;
   }
 
-  private findReplacement(manifest: Snapshot[], commandId: string): Snapshot {
+  private findReplacement(manifest: Snapshot[], commandId: string, manifestJson: Manifest): Snapshot {
     let result = manifest.find(
       (c) =>
         (c.state === 'deprecated' && c.deprecationOptions?.to && c.id === commandId) || c.aliases.includes(commandId)
@@ -132,7 +159,7 @@ export default class ConvertScript extends SfCommand<void> {
     if (result?.id === commandId) {
       // we found ourself, can happen with force:source:deploy where we need to get the deprecationOptions.to key from the manifest
       const replacedWithSemiColons = result.deprecationOptions.to.replace(/ /g, ':');
-      result = Manifest[replacedWithSemiColons];
+      result = manifestJson.commands[replacedWithSemiColons] as Snapshot;
     }
     return result;
   }

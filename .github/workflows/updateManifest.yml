@@ -1,0 +1,33 @@
+name: update-manifest-json
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Wednesday 7a central (12 UTC)
+    - cron: '0 12 * * 3'
+
+jobs:
+  update-node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.SVC_CLI_BOT_GITHUB_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - run: |
+          mkdir tmp
+          cd tmp
+          npm install sfdx-cli
+          cp node_modules/sfdx-cli/oclif.manifest.json ../src/manifest.json
+      # Push changes if 'git status' is not empty
+      - run: |
+          if [[ -n $(git status --short) ]]; then
+            git add src/oclif.manifest.json
+            git commit -m "fix: update manifest.json" --no-verify
+            git push --no-verify
+          else
+            echo "Already up to date"
+          fi
