@@ -148,7 +148,7 @@ export default class ConvertScript extends SfCommand<void> {
   }
 
   private async smartConfirm(message: string, prompt = true): Promise<boolean> {
-    return prompt ? await this.confirm(message, 100000) : true;
+    return prompt ? await this.confirm(message, 18000000) : true;
   }
 
   private findReplacement(manifest: Snapshot[], commandId: string, manifestJson: Manifest): Snapshot {
