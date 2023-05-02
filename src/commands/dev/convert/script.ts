@@ -137,7 +137,7 @@ export default class ConvertScript extends SfCommand<void> {
         }
       } catch (e) {
         line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
-        line = line.concat(' # ERROR converting this line, human intervention required');
+        line = line.concat(messages.getMessage('errorComment'));
         data.push(line);
       }
     }
