@@ -1,15 +1,5 @@
 [
     {
-        "command": "convert:script",
-        "plugin": "@salesforce/plugin-dev",
-        "flags": [
-            "json",
-            "no-prompt",
-            "script"
-        ],
-        "alias": []
-    },
-    {
         "command": "dev:audit:messages",
         "plugin": "@salesforce/plugin-dev",
         "flags": [
@@ -48,6 +38,16 @@
             "file-name",
             "json",
             "project-dir"
+        ],
+        "alias": []
+    },
+    {
+        "command": "dev:convert:script",
+        "plugin": "@salesforce/plugin-dev",
+        "flags": [
+            "json",
+            "no-prompt",
+            "script"
         ],
         "alias": []
     },
