@@ -41,15 +41,11 @@ export default class ConvertScript extends SfCommand<void> {
   public async run(): Promise<void> {
     const { flags } = await this.parse(ConvertScript);
 
-    this.warn(
-      'This script will replace sfdx commands for sf commands. It does not guarantee breaking changes, or changed json results.'
-    );
-    this.warn(
-      "As an additional reminder, the sfdx commands will be available in sf and can be migrated by simpling changing 'sfdx' to 'sf'."
-    );
-    this.warn("This script assumes you've uninstalled `sf v1` and `sfdx` and are ready to use `sf v2` ");
+    this.warn(messages.getMessage('warnBreakingChange'));
+    this.warn(messages.getMessage('warnSfdxToSf'));
+    this.warn(messages.getMessage('warnSfV2'));
 
-    await this.smartConfirm('Do you want to continue?', !flags['no-prompt']);
+    await this.smartConfirm(messages.getMessage('continue'), !flags['no-prompt']);
 
     const contents = await fs.promises.readFile(flags.script, 'utf8');
 
@@ -72,7 +68,7 @@ export default class ConvertScript extends SfCommand<void> {
 
           // meaning it's deprecated to multiple commands and can't be replaced inline
           if (Manifest[commandId]?.deprecationOptions?.to.includes('/')) {
-            this.warn(`Cannot determine appropriate replacement for ${commandId}`);
+            this.warn(messages.getMessage('cannotDetermine', [commandId]));
           }
 
           if (replacement) {
@@ -119,10 +115,9 @@ export default class ConvertScript extends SfCommand<void> {
       }
     }
     // write the new script as a new file with a `-converted` suffix
-    fs.writeFileSync(
-      path.basename(flags.script, path.extname(flags.script)) + '-converted' + path.extname(flags.script),
-      data.join(os.EOL)
-    );
+    const output = path.basename(flags.script, path.extname(flags.script)) + '-converted' + path.extname(flags.script);
+    this.log(messages.getMessage('success', [output]));
+    fs.writeFileSync(output, data.join(os.EOL));
   }
 
   private async smartConfirm(message: string, prompt = true): Promise<boolean> {
