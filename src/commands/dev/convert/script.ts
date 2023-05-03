@@ -6,7 +6,6 @@
  */
 import * as fs from 'fs';
 import * as os from 'os';
-import * as path from 'path';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
@@ -137,12 +136,15 @@ export default class ConvertScript extends SfCommand<void> {
         }
       } catch (e) {
         line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
-        line = line.concat(messages.getMessage('errorComment'));
+        line = line.concat(` # ${messages.getMessage('errorComment')}`);
         data.push(line);
       }
     }
     // write the new script as a new file with a `-converted` suffix
-    const output = path.basename(flags.script, path.extname(flags.script)) + '-converted' + path.extname(flags.script);
+    const output = `${flags.script.substring(0, flags.script.lastIndexOf('.'))}-converted${flags.script.substring(
+      flags.script.lastIndexOf('.')
+    )}`;
+
     this.log(messages.getMessage('success', [output]));
     fs.writeFileSync(output, data.join(os.EOL));
   }

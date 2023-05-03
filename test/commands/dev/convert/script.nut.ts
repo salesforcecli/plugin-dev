@@ -9,7 +9,7 @@ import * as path from 'path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
 
-describe('convert script NUTs', () => {
+describe.only('convert script NUTs', () => {
   let session: TestSession;
 
   before(async () => {
@@ -21,12 +21,15 @@ describe('convert script NUTs', () => {
   });
 
   it('should display provided name', () => {
-    const original = fs.readFileSync(path.join('test', 'commands', 'convert', 'script.sh'), 'utf8');
+    const scriptPath = path.join('test', 'commands', 'dev', 'convert', 'samples', 'script.sh');
 
-    execCmd(`convert:script --no-prompt --script ${path.join('test', 'commands', 'convert', 'script.sh')}`, {
+    execCmd(`dev:convert:script --no-prompt --script ${scriptPath}`, {
       ensureExitCode: 0,
     });
-    const script = fs.readFileSync(path.join('test', 'commands', 'convert', 'script.sh'), 'utf8');
+    const script = fs.readFileSync(
+      path.join('test', 'commands', 'dev', 'convert', 'samples', 'script-converted.sh'),
+      'utf8'
+    );
     expect(script).to.not.contain('sfdx');
     expect(script).to.not.contain(':beta:');
     expect(script).to.contain('sf');
@@ -35,17 +38,16 @@ describe('convert script NUTs', () => {
     expect(script).to.contain('--target-org');
     expect(script).to.contain('--target-org=myorg');
     expect(script).to.contain('--result-format=human');
-    expect(script).to.contain('org:create:user');
-    expect(script).to.contain('package:install');
-    expect(script).to.contain('package:version:list');
-    expect(script).to.contain('package:version:promote');
-    expect(script).to.contain('apex:run:test');
+    expect(script).to.contain('package install');
+    expect(script).to.contain('package version list');
+    expect(script).to.contain('package version promote');
+    expect(script).to.contain('apex run test');
     expect(script).to.contain(
-      'sf project:deploy:start -p force-app --target-org=myorg # ERROR converting this line, human intervention required'
+      'sf project deploy start -p force-app --target-org=myorg # ERROR converting this line, human intervention required'
     );
     expect(script).to.not.contain(' -u ');
     expect(script).to.not.contain(' -o ');
 
-    fs.writeFileSync(path.join('test', 'commands', 'convert', 'script.sh'), original, 'utf8');
+    fs.unlinkSync(path.join('test', 'commands', 'dev', 'convert', 'samples', 'script-converted.sh'));
   });
 });

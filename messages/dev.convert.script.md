@@ -44,5 +44,5 @@ A converted file has been written to %s
 
 # errorComment
 
-\# ERROR converting this line, human intervention required
+ERROR converting this line, human intervention required
 
