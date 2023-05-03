@@ -9,7 +9,10 @@ import * as path from 'path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
 
-describe('convert script NUTs', () => {
+// because we're loading information from `this.config.commands/plugins` we need to be running from a CLI that knows about all of
+// the commands and plugins (sfdx/sf) and so running from './bin/dev' won't work :/
+
+describe.skip('convert script NUTs', () => {
   let session: TestSession;
 
   before(async () => {

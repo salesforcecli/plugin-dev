@@ -8,8 +8,6 @@ import * as fs from 'fs';
 import * as os from 'os';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
-const manifestFile = require('../../../manifest.json');
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.convert.script');
@@ -19,13 +17,6 @@ type Flag = {
     name: string;
     char: string;
     aliases: string[];
-  };
-};
-
-type Manifest = {
-  version: string;
-  commands: {
-    [key: string]: Snapshot;
   };
 };
 
@@ -76,10 +67,6 @@ export default class ConvertScript extends SfCommand<void> {
 
     const contents = await fs.promises.readFile(flags.script, 'utf8');
 
-    const manifestJson = manifestFile as Manifest;
-
-    const manifest = Object.values(manifestJson.commands);
-
     const lines = contents.split(os.EOL);
     const data: string[] = [];
     //  examples:
@@ -93,12 +80,12 @@ export default class ConvertScript extends SfCommand<void> {
         if (line.match(/sfdx \w+/g)?.length && line.includes(':') && !line.startsWith('#')) {
           const commandId = line.split('sfdx ')[1]?.split(' ')[0];
 
-          const replacement = this.findReplacement(manifest, commandId, manifestJson);
+          const replacement = this.findReplacement(commandId);
 
           // meaning it's deprecated to multiple commands and can't be replaced inline
           // or if there is no "to", but there is a "message", then print the message
-          const depMessage = manifestJson.commands[commandId]?.deprecationOptions?.message;
-          const depTo = manifestJson.commands[commandId]?.deprecationOptions?.to;
+          const depMessage = replacement.deprecationOptions?.message;
+          const depTo = replacement.deprecationOptions?.to;
 
           if ((depTo && depTo.includes('/')) || (!depTo && depMessage)) {
             this.warn(messages.getMessage('cannotDetermine', [commandId]));
@@ -110,9 +97,9 @@ export default class ConvertScript extends SfCommand<void> {
 
           if (replacement) {
             // we can only replace flags for commands we know about
-
-            if (await this.smartConfirm(`replace ${commandId} for ${replacement.id}`, !flags['no-prompt'])) {
-              line = line.replace(commandId, replacement.id.replace(/:/g, ' '));
+            const commandWithSpaces = replacement.id.replace(/:/g, ' ');
+            if (await this.smartConfirm(`replace ${commandId} for ${commandWithSpaces}`, !flags['no-prompt'])) {
+              line = line.replace(commandId, commandWithSpaces);
             }
 
             const replacementFlags = Object.values(replacement.flags);
@@ -139,11 +126,7 @@ export default class ConvertScript extends SfCommand<void> {
             }
           }
           // bare minimum replace sfdx with sf, and -u -> --target-org, -v -> --target-dev-hub
-          line = line
-            .replace('sfdx ', 'sf ')
-            .replace(' -u ', ' --target-org ')
-            .replace(' -v ', ' --target-dev-hub')
-            .replace(/:/g, ' ');
+          line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
           data.push(line);
         } else {
           // no changes
@@ -168,16 +151,13 @@ export default class ConvertScript extends SfCommand<void> {
     return prompt ? await this.confirm(message, 18000000) : true;
   }
 
-  private findReplacement(manifest: Snapshot[], commandId: string, manifestJson: Manifest): Snapshot {
-    let result = manifest.find(
-      (c) =>
-        (c.state === 'deprecated' && c.deprecationOptions?.to && c.id === commandId) || c.aliases.includes(commandId)
-    );
-    if (result?.id === commandId) {
-      // we found ourself, can happen with force:source:deploy where we need to get the deprecationOptions.to key from the manifest
-      const replacedWithSemiColons = result.deprecationOptions.to.replace(/ /g, ':');
-      result = manifestJson.commands[replacedWithSemiColons];
-    }
-    return result;
+  private findReplacement(commandId: string): Snapshot {
+    // first find the commands's aliases that match the commandId - and get their plugin name
+    // eslint-disable-next-line no-console
+    console.log(commandId);
+
+    const pluginName = this.config.commands.find((c) => c.id === commandId)?.pluginName;
+    const plugin = this.config.plugins.find((p) => p.name === pluginName);
+    return plugin.commands.find((c) => c.id === commandId || c.aliases.includes(commandId)) as unknown as Snapshot;
   }
 }
