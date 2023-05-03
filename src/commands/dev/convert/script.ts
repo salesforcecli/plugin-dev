@@ -24,7 +24,9 @@ type Flag = {
 
 type Manifest = {
   version: string;
-  commands: Snapshot[];
+  commands: {
+    [key: string]: Snapshot;
+  };
 };
 
 type Snapshot = {
@@ -35,6 +37,7 @@ type Snapshot = {
   state?: 'deprecated';
   deprecationOptions?: {
     to: string;
+    message: string;
   };
 };
 
@@ -93,8 +96,16 @@ export default class ConvertScript extends SfCommand<void> {
           const replacement = this.findReplacement(manifest, commandId, manifestJson);
 
           // meaning it's deprecated to multiple commands and can't be replaced inline
-          if ((manifestJson.commands[commandId] as Snapshot)?.deprecationOptions?.to.includes('/')) {
+          // or if there is no "to", but there is a "message", then print the message
+          const depMessage = manifestJson.commands[commandId]?.deprecationOptions?.message;
+          const depTo = manifestJson.commands[commandId]?.deprecationOptions?.to;
+
+          if ((depTo && depTo.includes('/')) || (!depTo && depMessage)) {
             this.warn(messages.getMessage('cannotDetermine', [commandId]));
+            if (depMessage) {
+              this.warn(depMessage);
+            }
+            continue;
           }
 
           if (replacement) {
@@ -128,7 +139,11 @@ export default class ConvertScript extends SfCommand<void> {
             }
           }
           // bare minimum replace sfdx with sf, and -u -> --target-org, -v -> --target-dev-hub
-          line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
+          line = line
+            .replace('sfdx ', 'sf ')
+            .replace(' -u ', ' --target-org ')
+            .replace(' -v ', ' --target-dev-hub')
+            .replace(/:/g, ' ');
           data.push(line);
         } else {
           // no changes
@@ -161,7 +176,7 @@ export default class ConvertScript extends SfCommand<void> {
     if (result?.id === commandId) {
       // we found ourself, can happen with force:source:deploy where we need to get the deprecationOptions.to key from the manifest
       const replacedWithSemiColons = result.deprecationOptions.to.replace(/ /g, ':');
-      result = manifestJson.commands[replacedWithSemiColons] as Snapshot;
+      result = manifestJson.commands[replacedWithSemiColons];
     }
     return result;
   }

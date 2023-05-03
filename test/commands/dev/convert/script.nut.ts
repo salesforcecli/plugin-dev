@@ -32,6 +32,7 @@ describe('convert script NUTs', () => {
     );
     expect(script).to.not.contain('sfdx');
     expect(script).to.not.contain(':beta:');
+    expect(script).to.not.contain('config:set');
     expect(script).to.contain('sf');
     expect(script).to.contain('--packages');
     expect(script).to.contain('--wait');
