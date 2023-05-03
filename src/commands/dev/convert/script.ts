@@ -153,8 +153,7 @@ export default class ConvertScript extends SfCommand<void> {
 
   private findReplacement(commandId: string): Snapshot {
     // first find the commands's aliases that match the commandId - and get their plugin name
-    // eslint-disable-next-line no-console
-    console.log(commandId);
+    // from the plugin find the command that matches the commandId or the alias
 
     const pluginName = this.config.commands.find((c) => c.id === commandId)?.pluginName;
     const plugin = this.config.plugins.find((p) => p.name === pluginName);
