@@ -9,7 +9,7 @@ import * as path from 'path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
 
-describe.only('convert script NUTs', () => {
+describe('convert script NUTs', () => {
   let session: TestSession;
 
   before(async () => {
