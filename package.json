@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/plugin-dev",
   "description": "commands for sf plugin development",
-  "version": "0.7.4",
+  "version": "0.8.0-qa.0",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
