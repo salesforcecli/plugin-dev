@@ -34,6 +34,14 @@ This script assumes you've uninstalled `sf v1` and `sfdx` and are ready to use `
 
 Do you want to continue?
 
+# replaceCommand
+
+replace command "%s" with "%s"
+
+# replaceFlag
+
+replace flag "%s" with "%s"
+
 # cannotDetermine
 
 Cannot determine appropriate replacement for %s 

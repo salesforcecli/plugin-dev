@@ -98,7 +98,12 @@ export default class ConvertScript extends SfCommand<void> {
           if (replacement) {
             // we can only replace flags for commands we know about
             const commandWithSpaces = replacement.id.replace(/:/g, ' ');
-            if (await this.smartConfirm(`replace ${commandId} for ${commandWithSpaces}`, !flags['no-prompt'])) {
+            if (
+              await this.smartConfirm(
+                messages.getMessage('replaceCommand', [commandId, commandWithSpaces]),
+                !flags['no-prompt']
+              )
+            ) {
               line = line.replace(commandId, commandWithSpaces);
             }
 
@@ -119,7 +124,10 @@ export default class ConvertScript extends SfCommand<void> {
               if (
                 replacementFlag &&
                 replacementFlag !== flagName &&
-                (await this.smartConfirm(`\treplacing ${flagName} for ${replacementFlag}`, !flags['no-prompt']))
+                (await this.smartConfirm(
+                  `\t${messages.getMessage('replaceFlag', [flagName, replacementFlag])}`,
+                  !flags['no-prompt']
+                ))
               ) {
                 line = line.replace(flag, ` --${replacementFlag}${flag.includes('=') ? '=' : ''}`);
               }
@@ -135,6 +143,7 @@ export default class ConvertScript extends SfCommand<void> {
       } catch (e) {
         line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
         line = line.concat(` # ${messages.getMessage('errorComment')}`);
+        this.warn(messages.getMessage('errorComment'));
         data.push(line);
       }
     }
@@ -157,6 +166,6 @@ export default class ConvertScript extends SfCommand<void> {
 
     const pluginName = this.config.commands.find((c) => c.id === commandId)?.pluginName;
     const plugin = this.config.plugins.find((p) => p.name === pluginName);
-    return plugin.commands.find((c) => c.id === commandId || c.aliases.includes(commandId)) as unknown as Snapshot;
+    return plugin.commands.find((c) => c.id === commandId || c.aliases.includes(commandId)) as Snapshot;
   }
 }
