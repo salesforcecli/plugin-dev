@@ -19,6 +19,7 @@ export default class GenerateLibrary extends SfCommand<void> {
 
   public static readonly flags = {};
 
+  // eslint-disable-next-line class-methods-use-this
   public async run(): Promise<void> {
     await generate('library', { force: true });
   }

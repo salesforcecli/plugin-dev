@@ -144,6 +144,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
             {
               users: [flags.bot],
             };
+        // @ts-expect-error - octokit types are wrong (has a non-optional never property for `data`)
         await octokit.rest.repos.updatePullRequestReviewProtection({
           ...repoBase,
           branch: 'main',
@@ -168,6 +169,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
         this.warn('SF-CLI-BOT needs permissions to push directly to main');
       } else {
         this.log(`giving ${flags.bot} permission to push directly to main`);
+        // @ts-expect-error - octokit types are wrong (has a non-optional never property for `data`)
         await octokit.rest.repos.addUserAccessRestrictions({
           ...repoBase,
           branch: 'main',

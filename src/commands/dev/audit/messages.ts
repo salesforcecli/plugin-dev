@@ -6,6 +6,7 @@
  */
 import * as fs from 'fs';
 import { join, parse, relative, resolve } from 'path';
+import { ensureString } from '@salesforce/ts-types';
 import { Logger, Messages } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Duration, ThrottledPromiseAll } from '@salesforce/kit';
@@ -78,10 +79,13 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       aliases: ['sourcedir'],
     }),
   };
-  private flags: Interfaces.InferredFlags<typeof AuditMessages.flags>;
-  private messagesDirPath: string;
+  // set near top of run
+  private flags!: Interfaces.InferredFlags<typeof AuditMessages.flags>;
+  private logger!: Logger;
+
+  private messagesDirPath?: string;
   private bundles: string[] = [];
-  private sourceDirPath: string;
+  private sourceDirPath?: string;
   private source: Map<string, string> = new Map();
   private auditResults: AuditResults = {
     unusedBundles: [],
@@ -89,9 +93,8 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     missingBundles: [],
     missingMessages: [],
   };
-  private package: string;
-  private projectDir: string;
-  private logger: Logger;
+  private package?: string;
+  private projectDir?: string;
   private graph: MultiDirectedGraph<Node> = new MultiDirectedGraph<Node>();
 
   public async run(): Promise<AuditResults> {
@@ -119,14 +122,14 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   }
 
   private async loadMessages(): Promise<void> {
-    this.messagesDirPath = resolve(this.projectDir, this.flags['messages-dir']);
+    this.messagesDirPath = resolve(ensureString(this.projectDir), this.flags['messages-dir']);
     this.logger.debug(`Loading messages from ${this.messagesDirPath}`);
     const messagesDir = await fs.promises.readdir(this.messagesDirPath, { withFileTypes: true });
     Messages.importMessagesDirectory(this.messagesDirPath);
     this.bundles = messagesDir.filter((entry) => entry.isFile()).map((entry) => entry.name);
     this.logger.debug(`Loaded ${this.bundles.length} bundles with names ${this.bundles.toString()}`);
     const bundleMap = this.bundles.reduce((m, bundle) => {
-      const count = m.get(parse(bundle).name) || 0;
+      const count = m.get(parse(bundle).name) ?? 0;
       m.set(parse(bundle).name, count + 1);
       return m;
     }, new Map<string, number>());
@@ -139,14 +142,14 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   }
 
   private async loadSource(): Promise<void> {
-    this.sourceDirPath = resolve(this.projectDir, this.flags['source-dir']);
+    this.sourceDirPath = resolve(ensureString(this.projectDir), this.flags['source-dir']);
     this.logger.debug(`Loading source from ${this.sourceDirPath}`);
     const throttledPromise = new ThrottledPromiseAll<string, void>({ concurrency: 10, timeout: Duration.minutes(5) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const fileProducer = async (file: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
       this.logger.trace(`Loading file ${file}`);
       const fileContents = await fs.promises.readFile(file, 'utf8');
-      this.source.set(relative(this.projectDir, file), fileContents);
+      this.source.set(relative(ensureString(this.projectDir), file), fileContents);
     };
 
     const dirHandler = async (dir: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
@@ -260,7 +263,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
     this.bundles.forEach((bundleFileName) => {
       this.logger.trace(`Adding bundle ${bundleFileName} to graph`);
       // load the bundle and add its node in the graph
-      const bundle: Messages<string> = Messages.loadMessages(this.package, parse(bundleFileName).name);
+      const bundle: Messages<string> = Messages.loadMessages(ensureString(this.package), parse(bundleFileName).name);
       const bundleName = parse(bundleFileName).name;
       this.graph.addNode(bundleName, { type: 'bundle', name: bundleFileName, x: 1, y: 1 });
       // add the messages nodes and edges to the graph
@@ -371,14 +374,10 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       .filterNodes(
         (node, attrs) =>
           attrs.type === 'messageReference' &&
-          !this.graph.someOutboundNeighbor(node, (msgNode, msgAtrs) => {
-            return msgAtrs.type === 'message';
-          })
+          !this.graph.someOutboundNeighbor(node, (msgNode, msgAtrs) => msgAtrs.type === 'message')
       )
       .map((key) => {
-        const bundleRef = this.graph.findInboundNeighbor(key, (node, attrs) => {
-          return attrs.type === 'bundleReference';
-        });
+        const bundleRef = this.graph.findInboundNeighbor(key, (node, attrs) => attrs.type === 'bundleReference');
         if (!bundleRef) {
           throw new Error(`Unable to find bundle reference for ${key}`);
         }
@@ -410,9 +409,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       .filterNodes(
         (node, attrs) =>
           attrs.type === 'message' &&
-          !this.graph.someInboundNeighbor(node, (inboundNode, inboundAttrs) => {
-            return inboundAttrs.type === 'messageReference';
-          })
+          !this.graph.someInboundNeighbor(node, (inboundNode, inboundAttrs) => inboundAttrs.type === 'messageReference')
       )
       .map((key) => {
         const [Bundle, Name] = key.split(':');
@@ -420,9 +417,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       })
       // filter out messages that are part of an unused bundle
       .filter((unused) => !this.auditResults.unusedBundles.includes(unused.Bundle))
-      .sort((a, b) => {
-        return a.Bundle.localeCompare(b.Bundle) || a.Name.localeCompare(b.Name);
-      });
+      .sort((a, b) => a.Bundle.localeCompare(b.Bundle) || a.Name.localeCompare(b.Name));
 
     const snowflakeMessages = this.auditResults.unusedMessages.filter(
       (m) =>

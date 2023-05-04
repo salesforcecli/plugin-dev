@@ -33,7 +33,7 @@ type PluginAnswers = {
 
 export default class Plugin extends Generator {
   private answers!: PluginAnswers;
-  private githubUsername!: string;
+  private githubUsername?: string | null;
 
   public constructor(args: string | string[], opts: Generator.GeneratorOptions) {
     super(args, opts);

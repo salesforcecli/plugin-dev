@@ -66,11 +66,11 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const contents = ([...bundle.messages.keys()] as string[])
-            .map((key) => {
+            .map((key) =>
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
-              return convertValue(key, bundle.messages.get(key) as ValueType);
-            })
+              convertValue(key, bundle.messages.get(key) as ValueType)
+            )
             .join(skip1Line);
           const newName = filename.replace(/\.js$|\.json$/, '.md');
           await fs.promises.writeFile(newName, contents, 'utf8');

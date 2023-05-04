@@ -78,7 +78,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     await fs.writeFile(commandFilePath, updatedFile);
 
-    await this.updateMarkdownFile(answers, standardizedCommandId);
+    await updateMarkdownFile(answers, standardizedCommandId);
 
     exec(`yarn prettier --write ${commandFilePath}`);
 
@@ -88,17 +88,18 @@ export default class DevGenerateFlag extends SfCommand<void> {
   }
 
   private async askQuestions(commandFilePath: string): Promise<FlagAnswers> {
-    const existingFlags = await this.loadExistingFlags(commandFilePath);
+    const existingFlags = await loadExistingFlags(commandFilePath);
 
-    const charToFlag = Object.entries(existingFlags).reduce((acc, [key, value]) => {
-      return value.char ? { ...acc, [value.char]: key } : acc;
-    }, {} as Record<string, string>);
+    const charToFlag = Object.entries(existingFlags).reduce<Record<string, string>>(
+      (acc, [key, value]) => (value.char ? { ...acc, [value.char]: key } : acc),
+      {}
+    );
 
     const durationUnits = (Object.values(Duration.Unit).filter((unit) => typeof unit === 'string') as string[]).map(
       (unit) => unit.toLowerCase()
     );
 
-    return await this.prompt<FlagAnswers>([
+    return this.prompt<FlagAnswers>([
       {
         type: 'list',
         name: 'type',
@@ -129,7 +130,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
         message: messages.getMessage('question.FlagSummary'),
         default: (ans: FlagAnswers) => messages.getMessage('default.FlagSummary', [ans.name]),
         validate: (input: string): string | boolean => {
-          if (input[0].toLowerCase() === input[0] || input[input.length - 1] !== '.') {
+          if (input[0].toLowerCase() === input[0] || !input.endsWith('.')) {
             return messages.getMessage('error.InvalidSummary');
           }
 
@@ -186,7 +187,9 @@ export default class DevGenerateFlag extends SfCommand<void> {
         validate: (input: string, ans: FlagAnswers): string | boolean => {
           if (!input) return true;
           if (!Number.isInteger(Number(input))) return messages.getMessage('error.InvalidInteger');
-          return Number(input) > ans.durationMin ? true : messages.getMessage('error.IntegerMaxLessThanMin');
+          return !ans.durationMin || Number(input) > ans.durationMin
+            ? true
+            : messages.getMessage('error.IntegerMaxLessThanMin');
         },
       },
       {
@@ -197,7 +200,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
           if (!input) return true;
           const num = Number(input);
           if (!Number.isInteger(num)) return messages.getMessage('error.InvalidInteger');
-          return num >= ans.durationMin && num <= ans.durationMax
+          return (!ans.durationMin || num >= ans.durationMin) && (!ans.durationMax || num <= ans.durationMax)
             ? true
             : messages.getMessage('error.InvalidDefaultInteger');
         },
@@ -245,32 +248,26 @@ export default class DevGenerateFlag extends SfCommand<void> {
         validate: (input: string, ans: FlagAnswers): string | boolean => {
           if (!input) return true;
           if (!Number.isInteger(Number(input))) return messages.getMessage('error.InvalidInteger');
-          return Number(input) > ans.integerMin ? true : messages.getMessage('error.IntegerMaxLessThanMin');
+          return !ans.integerMin || Number(input) > ans.integerMin
+            ? true
+            : messages.getMessage('error.IntegerMaxLessThanMin');
         },
       },
       {
         type: 'input',
         name: 'integerDefault',
         message: messages.getMessage('question.Integer.Default'),
-        when: (ans: FlagAnswers): boolean => ans.type === 'integer' && Boolean(ans.integerMin || ans.integerMax),
+        when: (ans: FlagAnswers): boolean => ans.type === 'integer' && Boolean(ans.integerMin ?? ans.integerMax),
         validate: (input: string, ans: FlagAnswers): string | boolean => {
           if (!input) return true;
           const num = Number(input);
           if (!Number.isInteger(num)) return messages.getMessage('error.InvalidInteger');
-          return num >= ans.integerMin && num <= ans.integerMax
+          return (!ans.integerMin || num >= ans.integerMin) && (!ans.integerMax || num <= ans.integerMax)
             ? true
             : messages.getMessage('error.InvalidDefaultInteger');
         },
       },
     ]);
-  }
-
-  private async loadExistingFlags(commandId: string): Promise<Record<string, Command.Flag.Any>> {
-    const config = new Config({ root: process.cwd() });
-    config.root = config.options.root;
-    await config.load();
-    const cmd = config.commands.find((c) => c.id === commandId);
-    return cmd.flags ?? {};
   }
 
   private async findExistingCommands(): Promise<string[]> {
@@ -285,12 +282,20 @@ export default class DevGenerateFlag extends SfCommand<void> {
       })
       .sort();
   }
-
-  private async updateMarkdownFile(answers: FlagAnswers, commandName: string): Promise<void> {
-    const filePath = path.join('messages', `${commandName.split(':').join('.')}.md`);
-    await fs.appendFile(
-      filePath,
-      `${os.EOL}# flags.${answers.name}.summary${os.EOL}${os.EOL}${answers.summary}${os.EOL}`
-    );
-  }
 }
+
+const updateMarkdownFile = async (answers: FlagAnswers, commandName: string): Promise<void> => {
+  const filePath = path.join('messages', `${commandName.split(':').join('.')}.md`);
+  await fs.appendFile(
+    filePath,
+    `${os.EOL}# flags.${answers.name}.summary${os.EOL}${os.EOL}${answers.summary}${os.EOL}`
+  );
+};
+
+const loadExistingFlags = async (commandId: string): Promise<Record<string, Command.Flag.Any>> => {
+  const config = new Config({ root: process.cwd() });
+  config.root = config.options.root;
+  await config.load();
+  const cmd = config.commands.find((c) => c.id === commandId);
+  return cmd?.flags ?? {};
+};

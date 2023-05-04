@@ -61,7 +61,7 @@ export class FlagBuilder {
     if (this.answers.durationDefaultValue) flagOptions.push(`defaultValue: ${this.answers.durationDefaultValue}`);
     if (this.answers.durationMin) flagOptions.push(`min: ${this.answers.durationMin}`);
     if (this.answers.durationMax) flagOptions.push(`max: ${this.answers.durationMax}`);
-    if (['Both', '15', '18'].includes(this.answers.salesforceIdLength))
+    if (this.answers.salesforceIdLength && ['Both', '15', '18'].includes(this.answers.salesforceIdLength))
       flagOptions.push(
         `length: ${this.answers.salesforceIdLength === 'Both' ? "'both'" : this.answers.salesforceIdLength}`
       );
@@ -84,7 +84,9 @@ export class FlagBuilder {
   }
 
   public async apply(flagParts: string[]): Promise<string> {
+    // const lines = (await this.readFile()).replace(/\r\n/g, '\n').split('\n');
     const lines = (await this.readFile()).split(os.EOL);
+
     const flagsStartIndex = lines.findIndex(
       (line) => line.includes('public static flags') || line.includes('public static readonly flags')
     );
