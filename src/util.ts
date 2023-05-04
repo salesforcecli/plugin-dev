@@ -84,8 +84,7 @@ export class FlagBuilder {
   }
 
   public async apply(flagParts: string[]): Promise<string> {
-    // const lines = (await this.readFile()).replace(/\r\n/g, '\n').split('\n');
-    const lines = (await this.readFile()).split(os.EOL);
+    const lines = (await this.readFile()).replace(/\r\n/g, '\n').split('\n');
 
     const flagsStartIndex = lines.findIndex(
       (line) => line.includes('public static flags') || line.includes('public static readonly flags')
