@@ -5,11 +5,11 @@
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
-    "@oclif/core": "^2.0.7",
+    "@oclif/core": "^2.8.5",
     "@octokit/rest": "^19.0.7",
     "@salesforce/core": "^3.36.0",
     "@salesforce/kit": "^3.0.0",
-    "@salesforce/sf-plugins-core": "^2.4.0",
+    "@salesforce/sf-plugins-core": "^2.4.2",
     "@salesforce/ts-types": "^2.0.1",
     "change-case": "^4.1.2",
     "fast-glob": "^3.2.12",
