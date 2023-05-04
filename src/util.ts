@@ -98,7 +98,7 @@ export class FlagBuilder {
       lines.splice(flagsEndIndex, 0, ...flagParts);
     }
 
-    const messagesStartIndex = lines.findIndex((line) => line.includes('Messages.load('));
+    const messagesStartIndex = lines.findIndex((line) => line.includes('Messages.loadMessages('));
     if (messagesStartIndex) {
       const messagesEndIndex =
         lines.slice(messagesStartIndex).findIndex((line) => line.endsWith(';')) + messagesStartIndex;

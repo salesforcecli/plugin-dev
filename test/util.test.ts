@@ -23,13 +23,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-rosie', 'hello.world', [
-  'summary',
-  'description',
-  'examples',
-  'flags.name.summary',
-  'info.hello',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-rosie', 'hello.world');
 
 export type HelloWorldResult = {
   name: string;
@@ -74,12 +68,7 @@ import { SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-rosie', 'hello.world', [
-  'summary',
-  'description',
-  'examples',
-  'info.hello',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-rosie', 'hello.world');
 
 export type HelloWorldResult = {
   name: string;
@@ -112,13 +101,7 @@ import { SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-rosie', 'hello.world', [
-  'summary',
-  'description',
-  'examples',
-  'flags.name.summary',
-  'info.hello',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-rosie', 'hello.world');
 
 export type HelloWorldResult = {
   name: string;
@@ -164,13 +147,7 @@ import { SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-rosie', 'hello.world', [
-  'summary',
-  'description',
-  'examples',
-  'flags.name.summary',
-  'info.hello',
-]);
+const messages = Messages.loadMessages('@salesforce/plugin-rosie', 'hello.world');
 
 export type HelloWorldResult = {
   name: string;
@@ -215,7 +192,7 @@ import { SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('@salesforce/plugin-rosie', 'hello.world', ['summary', 'description', 'examples', 'info.hello']);
+const messages = Messages.loadMessages('@salesforce/plugin-rosie', 'hello.world');
 
 export type HelloWorldResult = {
   name: string;
@@ -743,9 +720,7 @@ describe('FlagBuilder', () => {
       const flag = flagBuilder.build();
       const updated = await flagBuilder.apply(flag);
 
-      expect(updated).to.include(
-        "const messages = Messages.load('@salesforce/plugin-rosie', 'hello.world', ['summary', 'description', 'examples', 'info.hello', 'flags.my-flag.summary']);"
-      );
+      expect(updated).to.include("const messages = Messages.loadMessages('@salesforce/plugin-rosie', 'hello.world');");
     });
   });
 });
