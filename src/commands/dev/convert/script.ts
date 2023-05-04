@@ -81,57 +81,10 @@ export default class ConvertScript extends SfCommand<void> {
           const commandId = line.split('sfdx ')[1]?.split(' ')[0];
 
           const replacement = this.findReplacement(commandId);
-
-          // meaning it's deprecated to multiple commands and can't be replaced inline
-          // or if there is no "to", but there is a "message", then print the message
-          const depMessage = replacement.deprecationOptions?.message;
-          const depTo = replacement.deprecationOptions?.to;
-
-          if ((depTo && depTo.includes('/')) || (!depTo && depMessage)) {
-            this.warn(messages.getMessage('cannotDetermine', [commandId]));
-            if (depMessage) {
-              this.warn(depMessage);
-            }
-            continue;
-          }
+          line = await this.replaceCommand(commandId, replacement, line, flags['no-prompt']);
 
           if (replacement) {
-            // we can only replace flags for commands we know about
-            const commandWithSpaces = replacement.id.replace(/:/g, ' ');
-            if (
-              await this.smartConfirm(
-                messages.getMessage('replaceCommand', [commandId, commandWithSpaces]),
-                !flags['no-prompt']
-              )
-            ) {
-              line = line.replace(commandId, commandWithSpaces);
-            }
-
-            const replacementFlags = Object.values(replacement.flags);
-
-            // find the flags in the line, and replace them
-            for (const flag of (line.match(/( -\w)|( --\w+)/g) ?? []).filter((f) => f)) {
-              // trim down the flag to remove '-', '--' and optionally a '='
-              const flagName =
-                flag.replace(' --', '').replace(' -', '').split(' ')[0] ??
-                flag.replace(' --', '').replace(' -', '').split('=')[0];
-
-              const replacementFlag = replacementFlags.find(
-                (f) => f.char === flagName || f.aliases?.includes(flagName)
-              ).name;
-
-              // don't prompt if the flag already matches the replacement
-              if (
-                replacementFlag &&
-                replacementFlag !== flagName &&
-                (await this.smartConfirm(
-                  `\t${messages.getMessage('replaceFlag', [flagName, replacementFlag])}`,
-                  !flags['no-prompt']
-                ))
-              ) {
-                line = line.replace(flag, ` --${replacementFlag}${flag.includes('=') ? '=' : ''}`);
-              }
-            }
+            line = await this.replaceFlag(replacement, line, flags['no-prompt']);
           }
           // bare minimum replace sfdx with sf, and -u -> --target-org, -v -> --target-dev-hub
           line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
@@ -154,6 +107,61 @@ export default class ConvertScript extends SfCommand<void> {
 
     this.log(messages.getMessage('success', [output]));
     fs.writeFileSync(output, data.join(os.EOL));
+  }
+
+  private async replaceFlag(replacement: Snapshot, line: string, prompt: boolean): Promise<string> {
+    // we can only replace flags for commands we know about
+
+    const replacementFlags = Object.values(replacement.flags);
+
+    // find the flags in the line, and replace them
+    for (const flag of (line.match(/( -\w)|( --\w+)/g) ?? []).filter((f) => f)) {
+      // trim down the flag to remove '-', '--' and optionally a '='
+      const flagName =
+        flag.replace(' --', '').replace(' -', '').split(' ')[0] ??
+        flag.replace(' --', '').replace(' -', '').split('=')[0];
+
+      const replacementFlag = replacementFlags.find((f) => f.char === flagName || f.aliases?.includes(flagName)).name;
+
+      // don't prompt if the flag already matches the replacement
+      if (
+        replacementFlag &&
+        replacementFlag !== flagName &&
+        (await this.smartConfirm(`\t${messages.getMessage('replaceFlag', [flagName, replacementFlag])}`, !prompt))
+      ) {
+        line = line.replace(flag, ` --${replacementFlag}${flag.includes('=') ? '=' : ''}`);
+      }
+    }
+    return line;
+  }
+
+  private async replaceCommand(
+    commandId: string,
+    replacement: Snapshot,
+    line: string,
+    prompt: boolean
+  ): Promise<string> {
+    // meaning it's deprecated to multiple commands and can't be replaced inline
+    // or if there is no "to", but there is a "message", then print the message
+    const depMessage = replacement.deprecationOptions?.message;
+    const depTo = replacement.deprecationOptions?.to;
+
+    if ((depTo && depTo.includes('/')) || (!depTo && depMessage)) {
+      this.warn(messages.getMessage('cannotDetermine', [commandId]));
+      if (depMessage) {
+        this.warn(depMessage);
+      }
+    }
+
+    if (replacement) {
+      // we can only replace flags for commands we know about
+      const commandWithSpaces = replacement.id.replace(/:/g, ' ');
+      if (await this.smartConfirm(messages.getMessage('replaceCommand', [commandId, commandWithSpaces]), !prompt)) {
+        line = line.replace(commandId, commandWithSpaces);
+      }
+    }
+
+    return line;
   }
 
   private async smartConfirm(message: string, prompt = true): Promise<boolean> {
