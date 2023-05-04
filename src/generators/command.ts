@@ -104,7 +104,7 @@ export default class Command extends Generator {
 
   public end(): void {
     exec('yarn format');
-    exec('yarn lint --fix');
+    exec('yarn lint -- --fix');
     exec('yarn compile');
 
     const localExecutable = process.platform === 'win32' ? path.join('bin', 'dev.cmd') : path.join('bin', 'dev');
