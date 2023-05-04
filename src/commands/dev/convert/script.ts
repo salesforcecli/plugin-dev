@@ -63,8 +63,10 @@ export default class ConvertScript extends SfCommand<void> {
     this.warn(messages.getMessage('warnSfdxToSf'));
     this.warn(messages.getMessage('warnSfV2'));
 
-    await this.smartConfirm(messages.getMessage('continue'), !flags['no-prompt']);
-
+    const agreeToTerms = await this.smartConfirm(messages.getMessage('continue'), !flags['no-prompt']);
+    if (!agreeToTerms) {
+      return;
+    }
     const contents = await fs.promises.readFile(flags.script, 'utf8');
 
     const lines = contents.split(os.EOL);
