@@ -98,23 +98,6 @@ export class FlagBuilder {
       lines.splice(flagsEndIndex, 0, ...flagParts);
     }
 
-    const messagesStartIndex = lines.findIndex((line) => line.includes('Messages.loadMessages('));
-    if (messagesStartIndex) {
-      const messagesEndIndex =
-        lines.slice(messagesStartIndex).findIndex((line) => line.endsWith(';')) + messagesStartIndex;
-
-      // if the indices are equal that means that the messages are on the same line
-      if (messagesEndIndex === messagesStartIndex) {
-        const line = lines[messagesStartIndex];
-        const endIndex = line.indexOf(']');
-        const updated =
-          line.substring(0, endIndex) + `, 'flags.${this.answers.name}.summary'` + line.substring(endIndex);
-        lines[messagesStartIndex] = updated;
-      } else {
-        lines.splice(messagesEndIndex, 0, `'flags.${this.answers.name}.summary',`);
-      }
-    }
-
     const sfPluginsCoreImport = lines.findIndex((line) => line.includes("from '@salesforce/sf-plugins-core'"));
 
     const oclifCoreImport = lines.findIndex((line) => line.includes("from '@oclif/core'"));
