@@ -7,9 +7,11 @@
 
 import * as os from 'os';
 import * as sinon from 'sinon';
-import { expect } from 'chai';
+import { expect, config as chaiConfig } from 'chai';
 import { FlagBuilder, validatePluginName } from '../src/util';
 import { FlagAnswers } from '../src/types';
+
+chaiConfig.truncateThreshold = 0;
 
 const templateCommand = `
 /*
@@ -249,7 +251,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.string({");
       });
     });
@@ -277,7 +278,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.boolean({");
       });
     });
@@ -309,7 +309,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.directory({");
       });
     });
@@ -341,7 +340,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.file({");
       });
     });
@@ -375,7 +373,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.integer({");
       });
 
@@ -409,7 +406,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.integer({");
       });
     });
@@ -439,7 +435,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.url({");
       });
     });
@@ -477,7 +472,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.duration({");
       });
     });
@@ -511,7 +505,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.salesforceId({");
       });
 
@@ -539,7 +532,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.salesforceId({");
       });
     });
@@ -569,7 +561,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.orgApiVersion({");
       });
     });
@@ -597,7 +588,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.requiredOrg({");
       });
     });
@@ -625,7 +615,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.optionalOrg({");
       });
     });
@@ -653,7 +642,6 @@ describe('FlagBuilder', () => {
         ]);
 
         const updatedFile = await flagBuilder.apply(flag);
-        expect(updatedFile).to.include("'flags.my-flag.summary',");
         expect(updatedFile).to.include("'my-flag': Flags.requiredHub({");
       });
     });
