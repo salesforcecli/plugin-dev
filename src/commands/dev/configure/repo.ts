@@ -7,7 +7,7 @@
 
 // because github api isn't camelcased
 /* eslint-disable camelcase */
-import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
+import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Octokit } from '@octokit/rest';
 import { OctokitError } from '../../../types';
@@ -144,7 +144,6 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
             {
               users: [flags.bot],
             };
-        // @ts-expect-error - octokit types are wrong (has a non-optional never property for `data`)
         await octokit.rest.repos.updatePullRequestReviewProtection({
           ...repoBase,
           branch: 'main',
@@ -169,7 +168,6 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
         this.warn('SF-CLI-BOT needs permissions to push directly to main');
       } else {
         this.log(`giving ${flags.bot} permission to push directly to main`);
-        // @ts-expect-error - octokit types are wrong (has a non-optional never property for `data`)
         await octokit.rest.repos.addUserAccessRestrictions({
           ...repoBase,
           branch: 'main',
