@@ -88,17 +88,13 @@ export default class ConvertScript extends SfCommand<void> {
           if (replacement) {
             line = await this.replaceFlag(replacement, line, flags['no-prompt']);
           }
-          // bare minimum replace sfdx with sf, and -u -> --target-org, -v -> --target-dev-hub
-          line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
-          data.push(line);
-        } else {
-          // no changes
-          data.push(line);
         }
       } catch (e) {
-        line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
         line = line.concat(` # ${messages.getMessage('errorComment')}`);
         this.warn(messages.getMessage('errorComment'));
+      } finally {
+        // bare minimum replace sfdx with sf, and -u -> --target-org, -v -> --target-dev-hub
+        line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
         data.push(line);
       }
     }
@@ -123,7 +119,9 @@ export default class ConvertScript extends SfCommand<void> {
         flag.replace(' --', '').replace(' -', '').split(' ')[0] ??
         flag.replace(' --', '').replace(' -', '').split('=')[0];
 
-      const replacementFlag = replacementFlags.find((f) => f.char === flagName || f.aliases?.includes(flagName)).name;
+      const replacementFlag = replacementFlags.find(
+        (f) => f.char === flagName || f.aliases?.includes(flagName) || f.name === flagName
+      ).name;
 
       // don't prompt if the flag already matches the replacement
       if (
