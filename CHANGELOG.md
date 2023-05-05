@@ -1,3 +1,14 @@
+## [0.7.5](https://github.com/salesforcecli/plugin-dev/compare/0.7.4...0.7.5) (2023-05-05)
+
+
+### Bug Fixes
+
+* add convert:script command, starting to clean it up ([e88ca94](https://github.com/salesforcecli/plugin-dev/commit/e88ca947fd01a6be2cb877d3480021890bf2228f))
+* edit messages for new "dev convert script" command ([674ac9a](https://github.com/salesforcecli/plugin-dev/commit/674ac9a35dcecfda34d190ba1b3c2c47834e9f10))
+* thanks Pete - loading information from 'this.config' ([0d12dd8](https://github.com/salesforcecli/plugin-dev/commit/0d12dd8d59af20f670dd56c937d24aa242017680))
+
+
+
 ## [0.7.4](https://github.com/salesforcecli/plugin-dev/compare/0.7.3...0.7.4) (2023-04-29)
 
 

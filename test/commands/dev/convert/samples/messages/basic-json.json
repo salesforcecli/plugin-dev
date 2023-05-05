@@ -2,10 +2,7 @@
   "string": "foo",
   "stringTrimmed": "foo\n\n",
   "multiline": "foo\n\nbar",
-  "array": [
-    "boof",
-    "bark"
-  ],
+  "array": ["boof", "bark"],
   "object": {
     "bink": "bunk"
   },
