@@ -42,6 +42,16 @@
         "alias": []
     },
     {
+        "command": "dev:convert:script",
+        "plugin": "@salesforce/plugin-dev",
+        "flags": [
+            "json",
+            "no-prompt",
+            "script"
+        ],
+        "alias": []
+    },
+    {
         "command": "dev:generate:command",
         "plugin": "@salesforce/plugin-dev",
         "flags": [
