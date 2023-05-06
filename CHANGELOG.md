@@ -1,3 +1,20 @@
+## [0.7.6](https://github.com/salesforcecli/plugin-dev/compare/0.7.5...0.7.6) (2023-05-06)
+
+
+### Bug Fixes
+
+* use current message loading practices ([ed6d7e5](https://github.com/salesforcecli/plugin-dev/commit/ed6d7e5f4e671e0842d779c6e3c89878035c8eb2))
+* use wireit style for yarn lint fix ([3befb2f](https://github.com/salesforcecli/plugin-dev/commit/3befb2ffa0d065788ed50975ec9e02afa33af7c4))
+* we don't import individual messages anymore ([4a92a2f](https://github.com/salesforcecli/plugin-dev/commit/4a92a2f49f237d6e6a600af4a4d2210724876d8c))
+* windows flag generation bug ([d0ddbb3](https://github.com/salesforcecli/plugin-dev/commit/d0ddbb3b4738b02769820c3fdf88dc8cb21e7140))
+
+
+### Reverts
+
+* Revert "chore: back to node16 maybe" ([8746991](https://github.com/salesforcecli/plugin-dev/commit/8746991556adc680f6be46fb21255a2d56e7065c))
+
+
+
 ## [0.7.5](https://github.com/salesforcecli/plugin-dev/compare/0.7.4...0.7.5) (2023-05-05)
 
 
