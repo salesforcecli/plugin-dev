@@ -20,6 +20,7 @@ export type NYC = {
   statements: number;
   branches: number;
   functions: number;
+  'check-coverage': boolean;
 };
 
 export type PackageJson = {

@@ -46,7 +46,7 @@ export default class Hook extends SfCommand<OclifHook.Result<unknown>> {
       // if a plugin is specified, delete the hook in all the other plugins so that
       // it doesn't run in those.
       this.config.plugins.forEach((plugin) => {
-        if ((plugin?.hooks ?? {})[args.hook]) {
+        if (plugin?.hooks?.[args.hook]) {
           if (plugin.name !== flags.plugin) delete plugin.hooks[args.hook];
         }
       });

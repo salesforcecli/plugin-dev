@@ -20,6 +20,7 @@ export default class GeneratePlugin extends SfCommand<void> {
   public static readonly deprecateAliases = true;
   public static readonly flags = {};
 
+  // eslint-disable-next-line class-methods-use-this
   public async run(): Promise<void> {
     await generate('plugin', { force: true });
   }

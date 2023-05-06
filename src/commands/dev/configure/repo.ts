@@ -7,7 +7,7 @@
 
 // because github api isn't camelcased
 /* eslint-disable camelcase */
-import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
+import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Octokit } from '@octokit/rest';
 import { OctokitError } from '../../../types';

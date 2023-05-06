@@ -83,9 +83,11 @@ export default class ConvertScript extends SfCommand<void> {
           const commandId = line.split('sfdx ')[1]?.split(' ')[0];
 
           const replacement = this.findReplacement(commandId);
+          // eslint-disable-next-line no-await-in-loop
           line = await this.replaceCommand(commandId, replacement, line, flags['no-prompt']);
 
           if (replacement) {
+            // eslint-disable-next-line no-await-in-loop
             line = await this.replaceFlag(replacement, line, flags['no-prompt']);
           }
         }
@@ -110,7 +112,7 @@ export default class ConvertScript extends SfCommand<void> {
   private async replaceFlag(replacement: Snapshot, line: string, prompt: boolean): Promise<string> {
     // we can only replace flags for commands we know about
 
-    const replacementFlags = Object.values(replacement.flags);
+    const replacementFlags = Object.values(replacement.flags ?? {});
 
     // find the flags in the line, and replace them
     for (const flag of (line.match(/( -\w)|( --\w+)/g) ?? []).filter((f) => f)) {
@@ -119,7 +121,10 @@ export default class ConvertScript extends SfCommand<void> {
         flag.replace(' --', '').replace(' -', '').split(' ')[0] ??
         flag.replace(' --', '').replace(' -', '').split('=')[0];
 
-      const replacementFlag = replacementFlags.find(
+      // possibly undefined - but ok and handled below correctly
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const replacementFlag: string | undefined = replacementFlags.find(
         (f) => f.char === flagName || f.aliases?.includes(flagName) || f.name === flagName
       ).name;
 
@@ -127,6 +132,7 @@ export default class ConvertScript extends SfCommand<void> {
       if (
         replacementFlag &&
         replacementFlag !== flagName &&
+        // eslint-disable-next-line no-await-in-loop
         (await this.smartConfirm(`\t${messages.getMessage('replaceFlag', [flagName, replacementFlag])}`, !prompt))
       ) {
         line = line.replace(flag, ` --${replacementFlag}${flag.includes('=') ? '=' : ''}`);
@@ -146,7 +152,7 @@ export default class ConvertScript extends SfCommand<void> {
     const depMessage = replacement.deprecationOptions?.message;
     const depTo = replacement.deprecationOptions?.to;
 
-    if ((depTo && depTo.includes('/')) || (!depTo && depMessage)) {
+    if (depTo?.includes('/') || (!depTo && depMessage)) {
       this.warn(messages.getMessage('cannotDetermine', [commandId]));
       if (depMessage) {
         this.warn(depMessage);
@@ -165,7 +171,7 @@ export default class ConvertScript extends SfCommand<void> {
   }
 
   private async smartConfirm(message: string, prompt = true): Promise<boolean> {
-    return prompt ? await this.confirm(message, 18000000) : true;
+    return prompt ? this.confirm(message, 18000000) : true;
   }
 
   private findReplacement(commandId: string): Snapshot {
@@ -174,6 +180,6 @@ export default class ConvertScript extends SfCommand<void> {
 
     const pluginName = this.config.commands.find((c) => c.id === commandId)?.pluginName;
     const plugin = this.config.plugins.find((p) => p.name === pluginName);
-    return plugin.commands.find((c) => c.id === commandId || c.aliases.includes(commandId)) as Snapshot;
+    return plugin?.commands.find((c) => c.id === commandId || c.aliases.includes(commandId)) as Snapshot;
   }
 }

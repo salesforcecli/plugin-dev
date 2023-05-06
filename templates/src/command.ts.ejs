@@ -11,12 +11,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.load('<%- pluginName %>', '<%- messageFile %>', [
-  'summary',
-  'description',
-  'examples',
-  'flags.name.summary',
-]);
+const messages = Messages.loadMessages('<%- pluginName %>', '<%- messageFile %>');
 
 export type <%- returnType %> = {
   path: string;
