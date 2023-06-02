@@ -31,14 +31,13 @@ export function addTopics(
 ): Record<string, Topic> {
   const updated: Record<string, Topic> = {};
 
-  const paths: string[] = [];
-  // we never want the last word since it's not a topic, it's the command name
-  const parts = newCmd.split(':').slice(0, -1);
-  while (parts.length > 0) {
-    const name = parts.join('.');
-    if (name) paths.push(name);
-    parts.pop();
-  }
+  const paths = newCmd
+    .split(':')
+    // omit last word since it's not a topic, it's the command name
+    .slice(0, -1)
+    .map((_, index, array) => array.slice(0, index + 1).join('.'))
+    // reverse to build up the object from most specific to least
+    .reverse();
 
   for (const p of paths) {
     const pDepth = p.split('.').length;

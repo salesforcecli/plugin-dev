@@ -11,10 +11,6 @@ import { Topic } from '../../src/types';
 
 describe('command generator', () => {
   describe('addTopics : external', () => {
-    // it('should not be external when no topics', () => {
-    //   const topics = addTopics('foo', {});
-    //   expect(topics).to.deep.equal({});
-    // });
     it('should return empty when top-level command (no topic)', () => {
       const sampleNoSubtopics: Record<string, Topic> = { bar: { description: 'blah' } };
       const sampleCommands = ['bar.whatever'];
