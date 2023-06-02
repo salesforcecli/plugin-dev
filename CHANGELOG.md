@@ -1,3 +1,12 @@
+## [0.7.8](https://github.com/salesforcecli/plugin-dev/compare/0.7.7...0.7.8) (2023-06-02)
+
+
+### Bug Fixes
+
+* fix NUTs because topics changed ([#330](https://github.com/salesforcecli/plugin-dev/issues/330)) ([fc792dd](https://github.com/salesforcecli/plugin-dev/commit/fc792dda0daa9bea789b00f01f033a4bd623b6e5))
+
+
+
 ## [0.7.7](https://github.com/salesforcecli/plugin-dev/compare/0.7.6...0.7.7) (2023-05-13)
 
 
