@@ -23,6 +23,7 @@ export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
   unit: boolean;
 }
 
+/** returns the modifications that need to be made for the oclif pjson topics information.  Returns an empty object for "don't change anything" */
 export function addTopics(
   newCmd: string,
   existingTopics: Record<string, Topic>,
@@ -31,6 +32,7 @@ export function addTopics(
   const updated: Record<string, Topic> = {};
 
   const paths: string[] = [];
+  // we never want the last word since it's not a topic, it's the command name
   const parts = newCmd.split(':').slice(0, -1);
   while (parts.length > 0) {
     const name = parts.join('.');

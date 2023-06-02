@@ -11,7 +11,7 @@ import { Flags } from '@salesforce/sf-plugins-core';
 export type Topic = {
   description?: string;
   external?: boolean;
-  subtopics: Topic;
+  subtopics?: Record<string, Topic>;
 };
 
 export type NYC = {
