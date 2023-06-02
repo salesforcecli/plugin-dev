@@ -23,6 +23,7 @@ export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
   unit: boolean;
 }
 
+/** returns the modifications that need to be made for the oclif pjson topics information.  Returns an empty object for "don't change anything" */
 export function addTopics(
   newCmd: string,
   existingTopics: Record<string, Topic>,
@@ -30,16 +31,19 @@ export function addTopics(
 ): Record<string, Topic> {
   const updated: Record<string, Topic> = {};
 
-  const paths: string[] = [];
-  const parts = newCmd.split(':').slice(0, -1);
-  while (parts.length > 0) {
-    const name = parts.join('.');
-    if (name) paths.push(name);
-    parts.pop();
-  }
+  const paths = newCmd
+    .split(':')
+    // omit last word since it's not a topic, it's the command name
+    .slice(0, -1)
+    .map((_, index, array) => array.slice(0, index + 1).join('.'))
+    // reverse to build up the object from most specific to least
+    .reverse();
 
   for (const p of paths) {
-    const isExternal = commands.includes(p);
+    const pDepth = p.split('.').length;
+    // if new command if foo.bar and there are any commands in the foo topic, this should be marked external.
+    // if new command if foo.bar.baz and there are any commands in the foo.bar subtopic, it should be marked external.
+    const isExternal = commands.some((c) => c.split('.').slice(0, pDepth).join('.') === p);
     const existing = get(updated, p);
     if (existing) {
       const merged = isExternal
