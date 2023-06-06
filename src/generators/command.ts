@@ -12,6 +12,7 @@ import { pascalCase } from 'change-case';
 import { set } from '@salesforce/kit';
 import { get } from '@salesforce/ts-types';
 import { exec } from 'shelljs';
+import defaultsDeep = require('lodash.defaultsdeep');
 import { PackageJson, Topic } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
@@ -89,11 +90,11 @@ export default class Command extends Generator {
       const commands = commandsJson.map((command) => command.id.replace(/:/g, '.').replace(/ /g, '.'));
 
       const newTopics = addTopics(this.options.name, this.pjson.oclif.topics, commands);
-      this.pjson.oclif.topics = { ...this.pjson.oclif.topics, ...newTopics };
+      defaultsDeep(this.pjson.oclif.topics, newTopics)
       this.internalPlugin = true;
     } else {
       const newTopics = addTopics(this.options.name, this.pjson.oclif.topics);
-      this.pjson.oclif.topics = { ...this.pjson.oclif.topics, ...newTopics };
+      defaultsDeep(this.pjson.oclif.topics, newTopics)
     }
 
     this.fs.writeJSON('package.json', this.pjson);
