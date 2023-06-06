@@ -1,3 +1,12 @@
+## [0.7.9](https://github.com/salesforcecli/plugin-dev/compare/0.7.8...0.7.9) (2023-06-06)
+
+
+### Bug Fixes
+
+* rightfully manipulate package json topics ([d3b35d0](https://github.com/salesforcecli/plugin-dev/commit/d3b35d085bd7766a9bf908f1344aa7ded85df8b5))
+
+
+
 ## [0.7.8](https://github.com/salesforcecli/plugin-dev/compare/0.7.7...0.7.8) (2023-06-02)
 
 
