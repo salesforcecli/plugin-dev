@@ -1,3 +1,12 @@
+## [0.7.11](https://github.com/salesforcecli/plugin-dev/compare/0.7.10...0.7.11) (2023-06-17)
+
+
+### Bug Fixes
+
+* **deps:** bump @octokit/rest from 19.0.7 to 19.0.13 ([10903e9](https://github.com/salesforcecli/plugin-dev/commit/10903e91652664b9ebb26f976151ab8316c0ee36))
+
+
+
 ## [0.7.10](https://github.com/salesforcecli/plugin-dev/compare/0.7.9...0.7.10) (2023-06-10)
 
 
