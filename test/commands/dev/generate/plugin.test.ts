@@ -64,7 +64,6 @@ describe('dev generate plugin', () => {
         internal: true,
         name: 'plugin-test',
         description: 'my plugin description',
-        hooks: ['sf:env:list', 'sf:env:display', 'sf:deploy', 'sf:logout'],
       });
 
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'package.json'));
@@ -72,15 +71,7 @@ describe('dev generate plugin', () => {
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'CODE_OF_CONDUCT.md'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'command-snapshot.json'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hello-world.json'));
-    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-env-list.json'));
-    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-env-display.json'));
-    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'schemas', 'hooks', 'sf-deploy.json'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', '.git2gus', 'config.json'));
-
-    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'src', 'hooks', 'envList.ts'));
-    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'src', 'hooks', 'envDisplay.ts'));
-    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'src', 'hooks', 'deploy.ts'));
-    runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'src', 'hooks', 'logout.ts'));
 
     const packageJson = readJson<PackageJson>(path.join(runResult.cwd, 'plugin-test', 'package.json'));
     expect(packageJson.name).to.equal('@salesforce/plugin-test');
@@ -89,13 +80,6 @@ describe('dev generate plugin', () => {
     expect(packageJson.bugs).to.equal('https://github.com/forcedotcom/cli/issues');
     expect(packageJson.repository).to.equal('salesforcecli/plugin-test');
     expect(packageJson.homepage).to.equal('https://github.com/salesforcecli/plugin-test');
-
-    expect(packageJson.oclif.hooks).to.deep.equal({
-      'sf:env:list': './lib/hooks/envList',
-      'sf:env:display': './lib/hooks/envDisplay',
-      'sf:deploy': './lib/hooks/deploy',
-      'sf:logout': './lib/hooks/logout',
-    });
 
     const testDependencyScripts = packageJson.wireit.test.dependencies;
     expect(testDependencyScripts).to.include('test:json-schema');
