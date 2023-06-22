@@ -25,6 +25,7 @@ export default class <%- className %> extends SfCommand<<%- returnType %>> {
   public static readonly flags = {
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),
+      description: messages.getMessage('flags.name.description'),
       char: 'n',
       required: false,
     }),
