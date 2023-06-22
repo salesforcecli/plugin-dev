@@ -1,3 +1,12 @@
+## [0.7.12](https://github.com/salesforcecli/plugin-dev/compare/0.7.11...0.7.12) (2023-06-22)
+
+
+### Bug Fixes
+
+* add flag desc ([449bdce](https://github.com/salesforcecli/plugin-dev/commit/449bdce7b7084e650473dfa5ff53e8c9409ec80f))
+
+
+
 ## [0.7.11](https://github.com/salesforcecli/plugin-dev/compare/0.7.10...0.7.11) (2023-06-17)
 
 
