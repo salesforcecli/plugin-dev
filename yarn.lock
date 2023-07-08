@@ -688,10 +688,10 @@
     supports-color "^8.1.1"
     tslib "^2"
 
-"@oclif/core@^2.8.0", "@oclif/core@^2.8.2", "@oclif/core@^2.8.4", "@oclif/core@^2.8.5":
-  version "2.8.5"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.8.5.tgz#7964057bbee5e91dae8b35e030e767f38e50a19e"
-  integrity sha512-316DLfrHQDYmWDriI4Woxk9y1wVUrPN1sZdbQLHdOdlTA9v/twe7TdHpWOriEypfl6C85NWEJKc1870yuLtjrQ==
+"@oclif/core@^2.8.0", "@oclif/core@^2.8.11", "@oclif/core@^2.8.2", "@oclif/core@^2.8.4", "@oclif/core@^2.8.5":
+  version "2.8.11"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.8.11.tgz#fbdf8b5b74a8b2012f2fcd5a30a515d327b54482"
+  integrity sha512-9wYW6KRSWfB/D+tqeyl/jxmEz/xPXkFJGVWfKaptqHz6FPWNJREjAM945MuJL2Y8NRhMe+ScRlZ3WpdToX5aVQ==
   dependencies:
     "@types/cli-progress" "^3.11.0"
     ansi-escapes "^4.3.2"
@@ -712,7 +712,7 @@
     natural-orderby "^2.0.3"
     object-treeify "^1.1.33"
     password-prompt "^1.1.2"
-    semver "^7.3.7"
+    semver "^7.5.3"
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
     supports-color "^8.1.1"
@@ -766,13 +766,13 @@
     lodash "^4.17.21"
     semver "^7.5.0"
 
-"@oclif/test@^2.3.17":
-  version "2.3.17"
-  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.3.17.tgz#adb16facb7ea21f77aa82580ca56eedfc28238ea"
-  integrity sha512-Ph3Gg1n7Sz2JHsoLHNifzwbeDs8kKlBK+JcFikkoH7Fc+FoNXOsEBY6HTF0/8P3SeVK3H3MyBEvGNsGbeClhtg==
+"@oclif/test@^2.3.26":
+  version "2.3.26"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.3.26.tgz#4ad3e6473ff8674a4d16a2f76935a9e6ab5b9207"
+  integrity sha512-oGvfgtreGcr5EIOGHv00PKO3eGpyJt2G6kqzuCH9NkJq4c/RngOmG8DEk/wXRN0gb3Y8AH+bQ6edJcW5/3jwKQ==
   dependencies:
-    "@oclif/core" "^2.8.2"
-    fancy-test "^2.0.19"
+    "@oclif/core" "^2.8.11"
+    fancy-test "^2.0.27"
 
 "@octokit/auth-token@^2.4.4":
   version "2.5.0"
@@ -3486,10 +3486,10 @@ external-editor@^3.0.3:
     iconv-lite "^0.4.24"
     tmp "^0.0.33"
 
-fancy-test@^2.0.19:
-  version "2.0.21"
-  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.21.tgz#028948d9a230e6b553e3c690cc05b66dc2229e7e"
-  integrity sha512-/0isnN5nK8ndWpPbVNxu211QT06toyGvT2bw9u+PxmXZPZLPuqkFeiiwlppunG4iKVmzS8PO05pLr0br8BZGhw==
+fancy-test@^2.0.27:
+  version "2.0.28"
+  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.28.tgz#16b9899210ce98011270cd28b87fd88e2765f3b0"
+  integrity sha512-UjTjYRlfdUEkvjIMKZlpqALjkgC3GzjUgWDg9KRv/ulxIqppvQUWMt5mOUmqlrSRlGF/Wj7HyFkWKzz5RujpFg==
   dependencies:
     "@types/chai" "*"
     "@types/lodash" "*"
@@ -6672,6 +6672,13 @@ semver@^7.1.1, semver@^7.1.3, semver@^7.2.1, semver@^7.3.2, semver@^7.3.4, semve
   version "7.5.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.1.tgz#c90c4d631cf74720e46b21c1d37ea07edfab91ec"
   integrity sha512-Wvss5ivl8TMRZXXESstBA4uR5iXgEN/VC5/sOcuXdVLzcdkz4HWetIoRfG5gb5X+ij/G9rw9YoGn3QoQ8OCSpw==
+  dependencies:
+    lru-cache "^6.0.0"
+
+semver@^7.5.3:
+  version "7.5.4"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
+  integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
   dependencies:
     lru-cache "^6.0.0"
 
