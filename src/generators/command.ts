@@ -72,8 +72,6 @@ export default class Command extends Generator {
   public declare options: CommandGeneratorOptions;
   public pjson!: PackageJson;
 
-  private internalPlugin = false;
-
   public constructor(args: string | string[], opts: CommandGeneratorOptions) {
     super(args, opts);
   }
@@ -91,7 +89,6 @@ export default class Command extends Generator {
 
       const newTopics = addTopics(this.options.name, this.pjson.oclif.topics, commands);
       defaultsDeep(this.pjson.oclif.topics, newTopics);
-      this.internalPlugin = true;
     } else {
       const newTopics = addTopics(this.options.name, this.pjson.oclif.topics);
       defaultsDeep(this.pjson.oclif.topics, newTopics);
@@ -138,7 +135,6 @@ export default class Command extends Generator {
       returnType: `${className}Result`,
       commandPath,
       year: new Date().getFullYear(),
-      copyright: this.internalPlugin,
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
     };
@@ -160,7 +156,6 @@ export default class Command extends Generator {
     const opts = {
       cmd: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
-      copyright: this.internalPlugin,
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
     };
@@ -183,7 +178,6 @@ export default class Command extends Generator {
       relativeCmdPath,
       name: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
-      copyright: this.internalPlugin,
     });
   }
 }
