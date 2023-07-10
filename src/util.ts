@@ -7,8 +7,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import { createEnv } from 'yeoman-environment';
-import { ensureArray } from '@salesforce/kit';
-import { FlagAnswers, Hook, PackageJson } from './types';
+import { FlagAnswers } from './types';
 
 export function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
   const env = createEnv();
@@ -19,17 +18,6 @@ export function generate(type: string, generatorOptions: Record<string, unknown>
 export function readJson<T>(filePath: string): T {
   const pjsonRaw = fs.readFileSync(filePath, 'utf-8');
   return JSON.parse(pjsonRaw) as T;
-}
-
-export function addHookToPackageJson(hook: Hook, filename: string, pjson: PackageJson): PackageJson {
-  pjson.oclif.hooks = pjson.oclif.hooks || {};
-  const p = `./lib/hooks/${filename}`;
-  if (pjson.oclif.hooks[hook]) {
-    pjson.oclif.hooks[hook] = [...ensureArray(pjson.oclif.hooks[hook]), p];
-  } else {
-    pjson.oclif.hooks[hook] = p;
-  }
-  return pjson;
 }
 
 export async function fileExists(file: string): Promise<boolean> {

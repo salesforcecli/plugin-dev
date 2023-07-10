@@ -20,7 +20,6 @@ describe('audit messages', () => {
         internal: true,
         name: 'plugin-test',
         description: 'my plugin description',
-        hooks: ['sf:env:list', 'sf:env:display', 'sf:deploy', 'sf:logout'],
       });
     await fs.promises.writeFile(
       path.join(runResult.cwd, 'plugin-test', 'messages', 'my.unused.md'),

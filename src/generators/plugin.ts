@@ -11,10 +11,9 @@ import * as Generator from 'yeoman-generator';
 import yosay = require('yosay');
 import { exec } from 'shelljs';
 import replace = require('replace-in-file');
-import { camelCase } from 'change-case';
 import { Messages } from '@salesforce/core';
-import { Hook, NYC, PackageJson } from '../types';
-import { addHookToPackageJson, readJson, validatePluginName } from '../util';
+import { NYC, PackageJson } from '../types';
+import { readJson, validatePluginName } from '../util';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'plugin.generator');
@@ -26,7 +25,6 @@ type PluginAnswers = {
   internal: boolean;
   name: string;
   description: string;
-  hooks?: Hook[];
   author?: string;
   codeCoverage?: string;
 };
@@ -95,13 +93,6 @@ export default class Plugin extends Generator {
         choices: ['0%', '25%', '50%', '75%', '90%', '100%'],
         when: (answers: { internal: boolean }): boolean => !answers.internal,
       },
-      {
-        type: 'checkbox',
-        name: 'hooks',
-        message: messages.getMessage('question.hooks'),
-        choices: Object.values(Hook),
-        when: (answers: { internal: boolean }): boolean => answers.internal,
-      },
     ]);
 
     const directory = path.resolve(this.answers.name);
@@ -123,20 +114,9 @@ export default class Plugin extends Generator {
   }
 
   public writing(): void {
-    let pjson = readJson<PackageJson>(path.join(this.env.cwd, 'package.json'));
+    const pjson = readJson<PackageJson>(path.join(this.env.cwd, 'package.json'));
 
     this.sourceRoot(path.join(__dirname, '../../templates'));
-    const hooks = (this.answers.hooks ?? []).map((h) => h.split(' ').join(':')) as Hook[];
-    for (const hook of hooks) {
-      const filename = camelCase(hook.replace('sf:', ''));
-      this.fs.copyTpl(
-        this.templatePath(`src/hooks/${hook.replace(/:/g, '.')}.ts.ejs`),
-        this.destinationPath(`src/hooks/${filename}.ts`),
-        { year: new Date().getFullYear() }
-      );
-
-      pjson = addHookToPackageJson(hook, filename, pjson);
-    }
 
     const updated: Partial<PackageJson> = this.answers.internal
       ? {
