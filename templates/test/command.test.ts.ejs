@@ -7,20 +7,43 @@
    */
 
 <% } %>
-import { expect, test } from '@oclif/test';
+import { TestContext } from '@salesforce/core/lib/testSetup';
+import { expect } from 'chai';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import <%- className %> from '<%- relativeCmdPath.replace(/\\/g, '\\\\') %>'
 
 describe('<%- name %>', () => {
-  test
-    .stdout()
-    .command(['<%- name %>'])
-    .it('runs hello', (ctx) => {
-      expect(ctx.stdout).to.contain('hello world');
-    });
+  const $$ = new TestContext();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .stdout()
-    .command(['<%- name %>', '--name', 'Astro'])
-    .it('runs hello --name Astro', (ctx) => {
-      expect(ctx.stdout).to.contain('hello Astro');
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it('runs hello', async () => {
+    await <%- className %>.run([])
+    const output = sfCommandStubs.log
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(output).to.include('hello world');
+  })
+
+  it('runs hello with --json and no provided name', async () => {
+    const result = await <%- className %>.run([]);
+    expect(result.path).to.equal('<%- commandPath.replace(/\\/g, '\\\\') %>');
+  });
+
+  it('runs hello world --name Astro', async () => {
+    await <%- className %>.run(['--name', 'Astro']);
+    const output = sfCommandStubs.log
+      .getCalls()
+      .flatMap((c) => c.args)
+      .join('\n');
+    expect(output).to.include('hello Astro');
+  });
 });
