@@ -56,14 +56,6 @@
     "flagAliases": ["dryrun"]
   },
   {
-    "command": "dev:generate:hook",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["event", "force"],
-    "alias": [],
-    "flagChars": [],
-    "flagAliases": []
-  },
-  {
     "command": "dev:generate:library",
     "plugin": "@salesforce/plugin-dev",
     "flags": [],
@@ -77,14 +69,6 @@
     "flags": [],
     "alias": ["plugins:generate"],
     "flagChars": [],
-    "flagAliases": []
-  },
-  {
-    "command": "dev:hook",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["json", "plugin"],
-    "alias": [],
-    "flagChars": ["p"],
     "flagAliases": []
   }
 ]

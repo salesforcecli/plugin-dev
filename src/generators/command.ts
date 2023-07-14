@@ -72,8 +72,6 @@ export default class Command extends Generator {
   public declare options: CommandGeneratorOptions;
   public pjson!: PackageJson;
 
-  private internalPlugin = false;
-
   public constructor(args: string | string[], opts: CommandGeneratorOptions) {
     super(args, opts);
   }
@@ -90,11 +88,10 @@ export default class Command extends Generator {
       const commands = commandsJson.map((command) => command.id.replace(/:/g, '.').replace(/ /g, '.'));
 
       const newTopics = addTopics(this.options.name, this.pjson.oclif.topics, commands);
-      defaultsDeep(this.pjson.oclif.topics, newTopics)
-      this.internalPlugin = true;
+      defaultsDeep(this.pjson.oclif.topics, newTopics);
     } else {
       const newTopics = addTopics(this.options.name, this.pjson.oclif.topics);
-      defaultsDeep(this.pjson.oclif.topics, newTopics)
+      defaultsDeep(this.pjson.oclif.topics, newTopics);
     }
 
     this.fs.writeJSON('package.json', this.pjson);
@@ -138,7 +135,6 @@ export default class Command extends Generator {
       returnType: `${className}Result`,
       commandPath,
       year: new Date().getFullYear(),
-      copyright: this.internalPlugin,
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
     };
@@ -156,27 +152,32 @@ export default class Command extends Generator {
     if (!this.options.nuts) return;
     this.sourceRoot(path.join(__dirname, '../../templates'));
     const cmdPath = this.options.name.split(':').join('/');
-    const nutPah = this.destinationPath(`test/commands/${cmdPath}.nut.ts`);
+    const nutPath = this.destinationPath(`test/commands/${cmdPath}.nut.ts`);
     const opts = {
       cmd: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
-      copyright: this.internalPlugin,
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
     };
-    this.fs.copyTpl(this.templatePath('test/command.nut.ts.ejs'), nutPah, opts);
+    this.fs.copyTpl(this.templatePath('test/command.nut.ts.ejs'), nutPath, opts);
   }
 
   private writeUnitTestFile(): void {
     if (!this.options.unit) return;
     this.sourceRoot(path.join(__dirname, '../../templates'));
     const cmdPath = this.options.name.split(':').join('/');
+    const commandPath = this.destinationPath(`src/commands/${cmdPath}.ts`);
+    const className = pascalCase(this.options.name);
+
     const unitPath = this.destinationPath(`test/commands/${cmdPath}.test.ts`);
+    const relativeCmdPath = path.relative(path.dirname(unitPath), commandPath).replace('.ts', '');
     this.fs.copyTpl(this.templatePath('test/command.test.ts.ejs'), unitPath, {
       ...this.options,
+      className,
+      commandPath,
+      relativeCmdPath,
       name: this.options.name.replace(/:/g, ' '),
       year: new Date().getFullYear(),
-      copyright: this.internalPlugin,
     });
   }
 }

@@ -31,7 +31,6 @@ export type PackageJson = {
   oclif: {
     bin: string;
     dirname: string;
-    hooks: Record<string, string | string[]>;
     topics: Record<string, Topic>;
   };
   repository: string;
@@ -51,13 +50,6 @@ export type PackageJson = {
     };
   };
 };
-
-export enum Hook {
-  'sf:env:list' = 'sf env list',
-  'sf:env:display' = 'sf env display',
-  'sf:deploy' = 'sf deploy',
-  'sf:logout' = 'sf logout',
-}
 
 export type FlagAnswers = {
   char?: string;
