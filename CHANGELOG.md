@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/salesforcecli/plugin-dev/compare/0.7.13...1.1.0) (2023-07-14)
+
+
+### Bug Fixes
+
+* create passing UT without oclif/test ([72b9244](https://github.com/salesforcecli/plugin-dev/commit/72b92442318830e797d345cdb17c9dbba5bfd3c9))
+
+
+### Features
+
+* remove hooks from plugin generate ([1942ed6](https://github.com/salesforcecli/plugin-dev/commit/1942ed6d908c55addef466f4e47c74bd549bd72d))
+
+
+
 ## [0.7.13](https://github.com/salesforcecli/plugin-dev/compare/0.7.12...0.7.13) (2023-06-24)
 
 
