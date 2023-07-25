@@ -11,7 +11,7 @@ import helpers = require('yeoman-test');
 import { Config } from '@oclif/core';
 import AuditMessages, { fileReader, resolveFileContents } from '../../../../src/commands/dev/audit/messages';
 
-describe.only('file reader', () => {
+describe('file reader', () => {
   const testDir = path.join(__dirname, 'tmpFileReader');
   const subDir = path.join(testDir, 'subDir');
   before(async () => {
