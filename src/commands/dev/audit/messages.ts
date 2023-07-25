@@ -473,7 +473,7 @@ const entryToPath =
   (entry: fs.Dirent): string =>
     join(parent, entry.name);
 
-const resolveFileContents = async (fro: FileReaderOutput): Promise<{ path: string; contents: string }> => ({
+export const resolveFileContents = async (fro: FileReaderOutput): Promise<{ path: string; contents: string }> => ({
   path: fro.path,
   contents: await fro.contents,
 });
