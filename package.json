@@ -8,7 +8,7 @@
     "@oclif/core": "^2.9.4",
     "@octokit/rest": "^19.0.13",
     "@salesforce/core": "^4.3.11",
-    "@salesforce/kit": "^3.0.2",
+    "@salesforce/kit": "^3.0.6",
     "@salesforce/sf-plugins-core": "^3.1.12",
     "@salesforce/ts-types": "^2.0.5",
     "change-case": "^4.1.2",
