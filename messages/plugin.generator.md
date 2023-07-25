@@ -26,9 +26,9 @@ The name must be a valid npm package name:
 - All the characters in the package name must be lowercase i.e., no uppercase or mixed case names are allowed
 - Package name can consist of hyphens
 - Package name must not contain any non-url-safe characters (since name ends up being part of a URL)
-- Package name should not start with . or _
+- Package name should not start with . or \_
 - Package name should not contain any spaces
-- Package name should not contain any of the following characters: ~)('!*
+- Package name should not contain any of the following characters: ~)('!\*
 - Package name cannot be the same as a node.js/io.js core module nor a reserved/blacklisted name
 - Package name length cannot exceed 214
 
@@ -43,7 +43,3 @@ Enter the author of the plugin:
 # question.code-coverage
 
 Select the % code coverage do you want to enforce:
-
-# question.hooks
-
-Select the existing "sf" commands you plan to extend:

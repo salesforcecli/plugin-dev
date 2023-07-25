@@ -27,7 +27,6 @@ function getLocalBin(...parts: string[]): string {
         'internal Salesforce team': Interaction.Yes,
         'name of your new plugin': ['plugin-awesome', Interaction.ENTER],
         'description for your plugin': ['a description', Interaction.ENTER],
-        'Select the existing "sf" commands you plan to extend': Interaction.ENTER,
       },
       { cwd: session.dir, ensureExitCode: 0 }
     );
