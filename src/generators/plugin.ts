@@ -29,6 +29,9 @@ type PluginAnswers = {
   codeCoverage?: string;
 };
 
+/**
+ * See https://yeoman.io/authoring/running-context.html for the overridable methods
+ */
 export default class Plugin extends Generator {
   private answers!: PluginAnswers;
   private githubUsername?: string | null;
@@ -154,13 +157,18 @@ export default class Plugin extends Generator {
     });
   }
 
+  public install(): void {
+    try {
+      exec('yarn install', { cwd: this.env.cwd });
+    } catch (e) {
+      // Run yarn install in case dev-scripts detected changes during yarn build.
+      exec('yarn install', { cwd: this.env.cwd });
+    }
+  }
   public end(): void {
-    exec('yarn', { cwd: this.env.cwd });
     exec('yarn build', { cwd: this.env.cwd });
 
     if (this.answers.internal) {
-      // Run yarn install in case dev-scripts detected changes during yarn build.
-      exec('yarn install', { cwd: this.env.cwd });
       exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
     }
   }
