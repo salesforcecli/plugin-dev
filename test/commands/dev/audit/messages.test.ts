@@ -11,7 +11,7 @@ import helpers = require('yeoman-test');
 import { Config } from '@oclif/core';
 import AuditMessages from '../../../../src/commands/dev/audit/messages';
 
-describe.skip('audit messages', () => {
+describe('audit messages', () => {
   let runResult: helpers.RunResult;
   before(async () => {
     runResult = await helpers
