@@ -1,3 +1,14 @@
+## [1.1.4](https://github.com/salesforcecli/plugin-dev/compare/1.1.3...1.1.4) (2023-07-28)
+
+
+### Bug Fixes
+
+* override yeoman installing method with devScripts try/catch ([7f64dcd](https://github.com/salesforcecli/plugin-dev/commit/7f64dcd9fea349b835083ad7f15930332babae56))
+* recursive file reader without throttledPromiseAll framework ([19e1a19](https://github.com/salesforcecli/plugin-dev/commit/19e1a197eab93d609f855bad99c04731ed396597))
+* remove unused hooks prompt ([19aa710](https://github.com/salesforcecli/plugin-dev/commit/19aa71005036f8421ca4c729480474128a4d1b2f))
+
+
+
 ## [1.1.3](https://github.com/salesforcecli/plugin-dev/compare/1.1.2...1.1.3) (2023-07-19)
 
 
