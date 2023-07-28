@@ -43,7 +43,3 @@ Enter the author of the plugin:
 # question.code-coverage
 
 Select the % code coverage do you want to enforce:
-
-# question.hooks
-
-Select the existing "sf" commands you plan to extend:

@@ -9,7 +9,6 @@ import { join, parse, relative, resolve } from 'path';
 import { ensureString } from '@salesforce/ts-types';
 import { Logger, Messages } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
-import { Duration, ThrottledPromiseAll } from '@salesforce/kit';
 import { MultiDirectedGraph } from 'graphology';
 import { Interfaces } from '@oclif/core';
 
@@ -144,31 +143,10 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   private async loadSource(): Promise<void> {
     this.sourceDirPath = resolve(ensureString(this.projectDir), this.flags['source-dir']);
     this.logger.debug(`Loading source from ${this.sourceDirPath}`);
-    const throttledPromise = new ThrottledPromiseAll<string, void>({ concurrency: 10, timeout: Duration.minutes(5) });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const fileProducer = async (file: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
-      this.logger.trace(`Loading file ${file}`);
-      const fileContents = await fs.promises.readFile(file, 'utf8');
-      this.source.set(relative(ensureString(this.projectDir), file), fileContents);
-    };
 
-    const dirHandler = async (dir: string, producer: ThrottledPromiseAll<string, void>): Promise<void> => {
-      this.logger.debug(`Loading directory ${dir}`);
-      const contents = await fs.promises.readdir(dir, { withFileTypes: true });
-      producer.add(
-        contents.filter((entry) => entry.isDirectory()).map((entry) => join(dir, entry.name)),
-        dirHandler
-      );
-
-      producer.add(
-        contents
-          .filter((entry) => entry.isFile() && entry.name.match(/\.(?:ts|js)$/))
-          .map((entry) => join(dir, entry.name)),
-        fileProducer
-      );
-    };
-    throttledPromise.add(this.sourceDirPath, dirHandler);
-    await throttledPromise.all();
+    (await Promise.all((await fileReader(this.sourceDirPath)).map(resolveFileContents))).map((i) => {
+      this.source.set(relative(ensureString(this.projectDir), i.path), i.contents);
+    });
   }
 
   private displayResults(): void {
@@ -462,3 +440,40 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       nonLiteralBundleRefs.length;
   }
 }
+
+type FileReaderOutput = { path: string; contents: Promise<string> };
+
+export const fileReader = async (dir: string): Promise<FileReaderOutput[]> => {
+  const toPath = entryToPath(dir);
+  const contents = await fs.promises.readdir(dir, { withFileTypes: true });
+
+  return contents
+    .filter((entry) => entry.isFile() && entry.name.match(/\.(?:ts|js)$/))
+    .map(toPath)
+    .map(fileHandler)
+    .concat(
+      (
+        await Promise.all(
+          contents
+            .filter((entry) => entry.isDirectory())
+            .map(toPath)
+            .map(fileReader)
+        )
+      ).flat()
+    );
+};
+
+const fileHandler = (file: string): FileReaderOutput => ({
+  path: file,
+  contents: fs.promises.readFile(file, 'utf8'),
+});
+
+const entryToPath =
+  (parent: string) =>
+  (entry: fs.Dirent): string =>
+    join(parent, entry.name);
+
+export const resolveFileContents = async (fro: FileReaderOutput): Promise<{ path: string; contents: string }> => ({
+  path: fro.path,
+  contents: await fro.contents,
+});
