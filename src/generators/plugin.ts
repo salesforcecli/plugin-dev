@@ -8,7 +8,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Generator from 'yeoman-generator';
-import yosay = require('yosay');
 import { exec } from 'shelljs';
 import replace = require('replace-in-file');
 import { Messages } from '@salesforce/core';
@@ -42,7 +41,7 @@ export default class Plugin extends Generator {
   }
 
   public async prompting(): Promise<void> {
-    this.log(yosay(messages.getMessage('info.start', [version as string])));
+    this.log(messages.getMessage('info.start', [version as string]));
 
     this.githubUsername = await this.getGitUsername();
 

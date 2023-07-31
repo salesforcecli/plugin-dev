@@ -8,7 +8,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Generator from 'yeoman-generator';
-import yosay = require('yosay');
 import { exec } from 'shelljs';
 import replace = require('replace-in-file');
 import { PackageJson } from '../types';
@@ -39,7 +38,7 @@ export default class Library extends Generator {
   public async prompting(): Promise<void> {
     const msg = 'Time to build a library!';
 
-    this.log(yosay(`${msg} Version: ${version as string}`));
+    this.log(`${msg} Version: ${version as string}`);
 
     this.answers = await this.prompt<Answers>([
       {
