@@ -1,3 +1,12 @@
+## [1.1.6](https://github.com/salesforcecli/plugin-dev/compare/1.1.5...1.1.6) (2023-08-01)
+
+
+### Bug Fixes
+
+* remove yosay dependency ([b2a6d7d](https://github.com/salesforcecli/plugin-dev/commit/b2a6d7d4063ed75e5aa0890d53eb4fa2301f224e))
+
+
+
 ## [1.1.5](https://github.com/salesforcecli/plugin-dev/compare/1.1.4...1.1.5) (2023-07-29)
 
 
