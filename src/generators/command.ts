@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import * as Generator from 'yeoman-generator';
-import yosay = require('yosay');
 import { pascalCase } from 'change-case';
 import { set } from '@salesforce/kit';
 import { get } from '@salesforce/ts-types';
@@ -79,7 +78,7 @@ export default class Command extends Generator {
   // eslint-disable-next-line @typescript-eslint/require-await
   public async prompting(): Promise<void> {
     this.pjson = this.fs.readJSON('package.json') as unknown as PackageJson;
-    this.log(yosay(`Adding a command to ${this.pjson.name} Version: ${version as string}`));
+    this.log(`Adding a command to ${this.pjson.name}! Version: ${version as string}`);
 
     if (Object.keys(this.pjson.devDependencies).includes('@salesforce/plugin-command-reference')) {
       // Get a list of all commands in `sf`. We will use this to determine if a topic is internal or external.
