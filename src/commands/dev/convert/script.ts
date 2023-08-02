@@ -100,13 +100,8 @@ export default class ConvertScript extends SfCommand<void> {
         data.push(line);
       }
     }
-    // write the new script as a new file with a `-converted` suffix
-    const output = `${flags.script.substring(0, flags.script.lastIndexOf('.'))}-converted${flags.script.substring(
-      flags.script.lastIndexOf('.')
-    )}`;
 
-    this.log(messages.getMessage('success', [output]));
-    fs.writeFileSync(output, data.join(os.EOL));
+    fs.writeFileSync(flags.script, data.join(os.EOL));
   }
 
   private async replaceFlag(replacement: Snapshot, line: string, prompt: boolean): Promise<string> {

@@ -52,10 +52,6 @@ Replace flag "%s" with "%s":
 
 Can't determine the appropriate replacement for %s.
 
-# success
-
-A converted file has been written to %s.
-
 # errorComment
 
 ERROR: Unable to convert this command; you must convert it manually. 
