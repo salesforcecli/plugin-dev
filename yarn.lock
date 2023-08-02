@@ -1578,11 +1578,6 @@
     "@types/yeoman-environment" "*"
     "@types/yeoman-generator" "*"
 
-"@types/yosay@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@types/yosay/-/yosay-2.0.1.tgz#320ff6ea4ba5d464a7c8ba1011d64fbf5562a1b0"
-  integrity sha512-MUFT7qfnt9f3yYAOLBupoChVUFmZkrLP6DlkruFJ560djzlgW5lX5JfqDwDfzuCzcyVdRQTNVr7dx/Up9PKTmw==
-
 "@typescript-eslint/eslint-plugin@^5.62.0":
   version "5.62.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.62.0.tgz#aeef0328d172b9e37d9bab6dbc13b87ed88977db"
