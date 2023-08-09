@@ -1,3 +1,12 @@
+## [1.1.9](https://github.com/salesforcecli/plugin-dev/compare/1.1.8...1.1.9) (2023-08-09)
+
+
+### Bug Fixes
+
+* **deps:** core5 ([d3e97be](https://github.com/salesforcecli/plugin-dev/commit/d3e97be2beb42cf42d9adbb0d941244d190b4e7f))
+
+
+
 ## [1.1.8](https://github.com/salesforcecli/plugin-dev/compare/1.1.7...1.1.8) (2023-08-05)
 
 
