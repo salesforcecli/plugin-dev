@@ -2,6 +2,7 @@ name: tests-cron
 on:
   schedule:
     - cron: '0 17 * * *'
+  workflow_dispatch:
 
 # Run tests daily to detect breaking changes in the plugin templates
 # - https://github.com/salesforcecli/plugin-template-sf
@@ -21,7 +22,7 @@ jobs:
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsWindows.yml@main
   nuts:
     needs: linux-unit-tests
-    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
+    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@sm/no-nut-cache
     secrets: inherit
     strategy:
       matrix:
