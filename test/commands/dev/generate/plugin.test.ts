@@ -92,7 +92,7 @@ describe('dev generate plugin', () => {
     );
 
     runResult.assertFileContent(
-      path.join(runResult.cwd, 'plugin-test', '.eslintrc.js'),
+      path.join(runResult.cwd, 'plugin-test', '.eslintrc.cjs'),
       /eslint-config-salesforce-license/g
     );
   });
