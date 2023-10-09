@@ -76,8 +76,23 @@ export default class ConvertScript extends SfCommand<void> {
     // sfdx force:package:install -p 04t1I0000000X0P -w 10 -u myorg
     // sfdx force:package:beta:version:list -p 04t1I0000000X0P -u myorg
 
-    for (let line of lines) {
+    // sfdx force:package:install \
+    //  -p 04t1I0000000X0P \
+    //  --wait 10 \
+    //  -u myorg
+
+    for (let index = 0; index < lines.length; index++) {
+      let line = lines[index];
       try {
+        if (line.endsWith('\\')) {
+          while (line.endsWith('\\')) {
+            line = line.concat(lines[index + 1]);
+            lines.splice(index + 1, 1);
+          }
+          // we'll grab the next line after the last line that ends with '\', see L82
+          line = line.concat(`${lines[index + 1]} `);
+          lines.splice(index + 1, 1);
+        }
         // if the line looks like it's a valid sfdx command
         if (line.match(/sfdx \w+/g)?.length && line.includes(':') && !line.startsWith('#')) {
           const commandId = line.split('sfdx ')[1]?.split(' ')[0];
@@ -97,7 +112,7 @@ export default class ConvertScript extends SfCommand<void> {
       } finally {
         // bare minimum replace sfdx with sf, and -u -> --target-org, -v -> --target-dev-hub
         line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
-        data.push(line);
+        data.push(line.replace(/\\ /g, `\\${os.EOL}`));
       }
     }
 

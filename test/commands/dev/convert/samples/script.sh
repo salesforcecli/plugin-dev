@@ -18,3 +18,8 @@ sfdx force:apex:test:run -u myorg -c -r=human -w 10
 
 sfdx alias:set user=myuser
 sfdx config:set defaultusername=user -g
+
+# multi line commands
+sfdx force:user:create -f config/user-def.json \
+  -a myuser \
+  -o myorg
