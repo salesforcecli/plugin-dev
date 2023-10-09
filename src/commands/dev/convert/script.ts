@@ -84,12 +84,13 @@ export default class ConvertScript extends SfCommand<void> {
     for (let index = 0; index < lines.length; index++) {
       let line = lines[index];
       try {
+        // if we have a multi line command, build it together
         if (line.endsWith('\\')) {
           while (line.endsWith('\\')) {
             line = line.concat(lines[index + 1]);
             lines.splice(index + 1, 1);
           }
-          // we'll grab the next line after the last line that ends with '\', see L82
+          // we'll grab the next line after the last line that ends with '\', see ~L82
           line = line.concat(`${lines[index + 1]} `);
           lines.splice(index + 1, 1);
         }
