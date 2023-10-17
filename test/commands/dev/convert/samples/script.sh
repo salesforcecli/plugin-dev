@@ -23,3 +23,19 @@ sfdx config:set defaultusername=user -g
 sfdx force:user:create -f config/user-def.json \
   -a myuser \
   -o myorg
+
+sfdx alias:set user=myuser
+
+sfdx force:package:beta:version:list \
+  -p 04t1I0000000X0P
+
+sfdx package version promote \
+  -p 04t1I0000000X0P \
+  --target-dev-hub1.0.0.Beta_1 \
+  --target-org myorg
+
+sf force org create \
+  --definitionfile config/project-scratch-def.json \
+  --setalias myorg \
+  --setdefaultusername \
+  --durationdays 1
