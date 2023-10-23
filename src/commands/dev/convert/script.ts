@@ -76,10 +76,31 @@ export default class ConvertScript extends SfCommand<void> {
     // sfdx force:package:install -p 04t1I0000000X0P -w 10 -u myorg
     // sfdx force:package:beta:version:list -p 04t1I0000000X0P -u myorg
 
-    for (let line of lines) {
+    // sfdx force:package:install \
+    //  -p 04t1I0000000X0P \
+    //  --wait 10 \
+    //  -u myorg
+
+    for (let index = 0; index < lines.length; index++) {
+      let line = lines[index];
       try {
         // if the line looks like it's a valid sfdx command
         if (line.match(/sfdx \w+/g)?.length && line.includes(':') && !line.startsWith('#')) {
+          // if we have a multi line command, build it together
+          if (line.endsWith('\\')) {
+            while (line.endsWith('\\')) {
+              line = line.concat(lines[index + 1]);
+              lines.splice(index + 1, 1);
+            }
+            // we'll grab the next line after the last line that ends with '\', see ~L82
+            line = line.concat(`${lines[index + 1]} `);
+            if (lines[index + 2] === '') {
+              // if there's a space to the next command, the multi-line commands will miss that, so check and grab it here
+              line = line.concat(os.EOL);
+            }
+            lines.splice(index, 1);
+          }
+
           const commandId = line.split('sfdx ')[1]?.split(' ')[0];
 
           const replacement = this.findReplacement(commandId);
@@ -92,12 +113,12 @@ export default class ConvertScript extends SfCommand<void> {
           }
         }
       } catch (e) {
-        line = line.concat(` # ${messages.getMessage('errorComment')}`);
+        line = line.concat(` # ${messages.getMessage('errorComment')}${os.EOL}`);
         this.warn(messages.getMessage('errorComment'));
       } finally {
         // bare minimum replace sfdx with sf, and -u -> --target-org, -v -> --target-dev-hub
         line = line.replace('sfdx ', 'sf ').replace(' -u ', ' --target-org ').replace(' -v ', ' --target-dev-hub');
-        data.push(line);
+        data.push(line.replace(/\\ /g, `\\${os.EOL} `));
       }
     }
 
@@ -156,7 +177,7 @@ export default class ConvertScript extends SfCommand<void> {
 
     if (replacement) {
       // we can only replace flags for commands we know about
-      const commandWithSpaces = replacement.id.replace(/:/g, ' ');
+      const commandWithSpaces = (depTo ?? replacement.id).replace(/:/g, ' ');
       if (await this.smartConfirm(messages.getMessage('replaceCommand', [commandId, commandWithSpaces]), !prompt)) {
         line = line.replace(commandId, commandWithSpaces);
       }
