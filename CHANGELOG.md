@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/salesforcecli/plugin-dev/compare/1.2.1...1.3.0) (2023-10-23)
+
+
+### Bug Fixes
+
+* qa fixes ([975a38f](https://github.com/salesforcecli/plugin-dev/commit/975a38f022dd6ac3ad65fcf2fd3fffee6c9cb425))
+
+
+### Features
+
+* handle multi line commands ([6565f39](https://github.com/salesforcecli/plugin-dev/commit/6565f394c23fcc3eaee04f10f0f36bf2c5647c3c))
+
+
+
 ## [1.2.1](https://github.com/salesforcecli/plugin-dev/compare/1.2.0...1.2.1) (2023-10-14)
 
 
