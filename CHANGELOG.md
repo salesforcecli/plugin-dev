@@ -1,3 +1,12 @@
+## [1.3.1](https://github.com/salesforcecli/plugin-dev/compare/1.3.0...1.3.1) (2023-10-28)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/core from 5.2.10 to 5.3.14 ([aa474bc](https://github.com/salesforcecli/plugin-dev/commit/aa474bca2ef48c09ac492e18ffba0030d5bfa840))
+
+
+
 # [1.3.0](https://github.com/salesforcecli/plugin-dev/compare/1.2.1...1.3.0) (2023-10-23)
 
 
