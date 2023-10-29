@@ -36,7 +36,7 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
     }),
     'file-name': Flags.file({
       exists: true,
-      summary: messages.getMessage('flags.filename.summary'),
+      summary: messages.getMessage('flags.file-name.summary'),
       char: 'f',
       required: true,
       multiple: true,
