@@ -10,7 +10,7 @@ Sets up labels and exempts the CLI bot for branch protection and PR rules.
 
 GitHub owner/repo for which you want to configure GitHub Actions.
 
-# flags.dryRun.summary
+# flags.dry-run.summary
 
 Make no changes.
 

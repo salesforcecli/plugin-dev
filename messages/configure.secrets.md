@@ -12,7 +12,7 @@ This command requires scope:admin permissions to inspect the org secrets and adm
 
 Github owner/repo.
 
-# flags.dryRun.summary
+# flags.dry-run.summary
 
 Make no changes.
 

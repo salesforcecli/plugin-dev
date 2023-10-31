@@ -6,7 +6,7 @@ Convert a .json messages file into Markdown.
 
 Preserves the filename and the original messages file, then creates a new file with the Markdown extension and standard headers for the command and flag summaries, descriptions, and so on. After you review the new Markdown file, delete the old .json file.
 
-# flags.filename.summary
+# flags.file-name.summary
 
 Filename to convert.
 
