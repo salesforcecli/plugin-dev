@@ -1,3 +1,12 @@
+## [1.3.3](https://github.com/salesforcecli/plugin-dev/compare/1.3.2...1.3.3) (2023-11-11)
+
+
+### Bug Fixes
+
+* **deps:** bump fast-glob from 3.3.1 to 3.3.2 ([d415882](https://github.com/salesforcecli/plugin-dev/commit/d415882ed92270794e05fd3532b1950f0f54c159))
+
+
+
 ## [1.3.2](https://github.com/salesforcecli/plugin-dev/compare/1.3.1...1.3.2) (2023-11-01)
 
 
