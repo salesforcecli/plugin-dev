@@ -4,13 +4,13 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as fs from 'fs';
-import * as os from 'os';
-import { createEnv } from 'yeoman-environment';
-import { FlagAnswers } from './types';
+import fs from 'node:fs';
+import os from 'node:os';
+import yeoman from 'yeoman-environment';
+import { FlagAnswers } from './types.js';
 
 export function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
-  const env = createEnv();
+  const env = yeoman.createEnv();
   env.register(require.resolve(`./generators/${type}`), `sf:${type}`);
   return env.run(`sf:${type}`, generatorOptions);
 }

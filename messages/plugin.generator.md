@@ -1,6 +1,6 @@
 # info.start
 
-Time to build an sf plugin! Version %s
+Time to build an sf plugin!
 
 # question.internal
 
@@ -26,9 +26,9 @@ The name must be a valid npm package name:
 - All the characters in the package name must be lowercase i.e., no uppercase or mixed case names are allowed
 - Package name can consist of hyphens
 - Package name must not contain any non-url-safe characters (since name ends up being part of a URL)
-- Package name should not start with . or _
+- Package name should not start with . or \_
 - Package name should not contain any spaces
-- Package name should not contain any of the following characters: ~)('!*
+- Package name should not contain any of the following characters: ~)('!\*
 - Package name cannot be the same as a node.js/io.js core module nor a reserved/blacklisted name
 - Package name length cannot exceed 214
 

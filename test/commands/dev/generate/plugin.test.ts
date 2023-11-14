@@ -5,23 +5,70 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as path from 'path';
-import helpers = require('yeoman-test');
+import { mkdir, rm } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import helpers from 'yeoman-test';
 import { expect } from 'chai';
-import { readJson } from '../../../../src/util';
-import { PackageJson } from '../../../../src/types';
+import { readJson } from '../../../../src/util.js';
+import { PackageJson } from '../../../../src/types.js';
 
 describe('dev generate plugin', () => {
+  let runResult: helpers.RunResult;
+  const testDir = path.join(process.cwd(), 'tmp');
+
+  async function cleanup(): Promise<void> {
+    try {
+      await rm(path.join(testDir, 'plugin-test'), { recursive: true, force: true });
+    } catch {
+      // do nothing
+    }
+
+    try {
+      await rm(path.join(testDir, 'my-plugin'), { recursive: true, force: true });
+    } catch {
+      // do nothing
+    }
+  }
+
+  before(async () => {
+    await cleanup();
+    await mkdir(testDir, { recursive: true });
+  });
+
+  afterEach(async () => {
+    if (runResult) {
+      runResult.restore();
+    }
+  });
+
+  after(async () => {
+    await cleanup();
+  });
+
   it('should generate a 3PP plugin', async () => {
-    const runResult = await helpers
-      .run(path.join(__dirname, '..', '..', '..', '..', 'src', 'generators', 'plugin.ts'))
+    runResult = await helpers
+      .create(
+        path.join(
+          path.dirname(fileURLToPath(import.meta.url)),
+          '..',
+          '..',
+          '..',
+          '..',
+          'src',
+          'generators',
+          'plugin.ts'
+        )
+      )
+      .cd(testDir)
       .withPrompts({
         internal: false,
         name: 'my-plugin',
         description: 'my plugin description',
         author: 'my name',
         codeCoverage: '50%',
-      });
+      })
+      .run();
 
     runResult.assertFile(path.join(runResult.cwd, 'my-plugin', 'package.json'));
     runResult.assertFile(path.join(runResult.cwd, 'my-plugin', 'src', 'commands', 'hello', 'world.ts'));
@@ -52,19 +99,32 @@ describe('dev generate plugin', () => {
     );
 
     runResult.assertNoFileContent(
-      path.join(runResult.cwd, 'my-plugin', '.eslintrc.js'),
+      path.join(runResult.cwd, 'my-plugin', '.eslintrc.cjs'),
       /eslint-config-salesforce-license/g
     );
   });
 
   it('should generate a 2PP plugin', async () => {
-    const runResult = await helpers
-      .run(path.join(__dirname, '..', '..', '..', '..', 'src', 'generators', 'plugin.ts'))
+    runResult = await helpers
+      .create(
+        path.join(
+          path.dirname(fileURLToPath(import.meta.url)),
+          '..',
+          '..',
+          '..',
+          '..',
+          'src',
+          'generators',
+          'plugin.ts'
+        )
+      )
+      .cd(testDir)
       .withPrompts({
         internal: true,
         name: 'plugin-test',
         description: 'my plugin description',
-      });
+      })
+      .run();
 
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'package.json'));
     runResult.assertFile(path.join(runResult.cwd, 'plugin-test', 'src', 'commands', 'hello', 'world.ts'));

@@ -8,18 +8,20 @@
 // because github api isn't camelcased
 /* eslint-disable camelcase */
 
-import * as fs from 'fs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
 import { ux } from '@oclif/core';
 
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import { Octokit } from '@octokit/rest';
-import { exec } from 'shelljs';
-import * as yaml from 'js-yaml';
-import { OctokitError } from '../../../types';
+import shelljs from 'shelljs';
+import yaml from 'js-yaml';
+import { OctokitError } from '../../../types.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectory(dirname(fileURLToPath(import.meta.url)));
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'configure.secrets');
 
 type SecretClassification =
@@ -83,10 +85,10 @@ export default class ConfigureSecrets extends SfCommand<SecretsResult> {
       repo: flags.repository.split('/')[1],
     };
     // make sure repo got removed from previous attempt
-    exec(`rm -rf ${repoBase.repo}`);
+    shelljs.exec(`rm -rf ${repoBase.repo}`);
 
     // clone repo so we can review its yaml
-    exec(`git clone https://github.com/${flags.repository} --depth 1`);
+    shelljs.exec(`git clone https://github.com/${flags.repository} --depth 1`);
 
     // part 1: what secrets does this repo need?
     const publish = yaml.load(
@@ -150,7 +152,7 @@ export default class ConfigureSecrets extends SfCommand<SecretsResult> {
 
     this.styledJSON(output);
 
-    exec(`rm -rf ${repoBase.repo}`);
+    shelljs.exec(`rm -rf ${repoBase.repo}`);
     return output;
   }
 }

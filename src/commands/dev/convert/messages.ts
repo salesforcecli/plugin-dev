@@ -4,14 +4,14 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as fs from 'fs';
-import { EOL } from 'os';
-import * as path from 'path';
-import { resolve } from 'path';
+import fs from 'node:fs';
+import { EOL } from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectory(path.dirname(fileURLToPath(import.meta.url)));
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.convert.messages');
 
 export type DevConvertMessagesResult = {
@@ -46,9 +46,9 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
 
   public async run(): Promise<DevConvertMessagesResult[]> {
     const { flags } = await this.parse(DevConvertMessages);
-    const projectDir = resolve(flags['project-dir']);
+    const projectDir = path.resolve(flags['project-dir']);
     const { name: pluginName } = JSON.parse(
-      await fs.promises.readFile(resolve(projectDir, 'package.json'), 'utf8')
+      await fs.promises.readFile(path.resolve(projectDir, 'package.json'), 'utf8')
     ) as {
       name: string;
     };

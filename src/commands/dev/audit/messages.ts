@@ -4,12 +4,13 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as fs from 'fs';
-import { join, parse, relative, resolve } from 'path';
+import fs from 'node:fs';
+import { dirname, join, parse, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ensureString } from '@salesforce/ts-types';
 import { Logger, Messages } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
-import { MultiDirectedGraph } from 'graphology';
+import graphology from 'graphology';
 import { Interfaces } from '@oclif/core';
 
 export type AuditResults = {
@@ -49,7 +50,7 @@ type MessageRefNode = NodeType & {
 
 type Node = FileNode | BundleNode | MessageNode | MessageRefNode | BundleRefNode;
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectory(dirname(fileURLToPath(import.meta.url)));
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'audit.messages');
 
 export default class AuditMessages extends SfCommand<AuditResults> {
@@ -94,7 +95,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   };
   private package?: string;
   private projectDir?: string;
-  private graph: MultiDirectedGraph<Node> = new MultiDirectedGraph<Node>();
+  private graph: graphology.MultiDirectedGraph<Node> = new graphology.MultiDirectedGraph<Node>();
 
   public async run(): Promise<AuditResults> {
     this.logger = Logger.childFromRoot(this.constructor.name);

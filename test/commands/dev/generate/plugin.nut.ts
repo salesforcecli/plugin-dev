@@ -4,11 +4,11 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as path from 'path';
+import path from 'node:path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
-import { fileExists, readJson } from '../../../../src/util';
-import { NYC, PackageJson } from '../../../../src/types';
+import { fileExists, readJson } from '../../../../src/util.js';
+import { NYC, PackageJson } from '../../../../src/types.js';
 
 describe('dev generate plugin NUTs', () => {
   let session: TestSession;

@@ -5,20 +5,20 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as Generator from 'yeoman-generator';
-import { exec } from 'shelljs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import Generator from 'yeoman-generator';
+import shelljs from 'shelljs';
 import replace = require('replace-in-file');
 import { Messages } from '@salesforce/core';
-import { NYC, PackageJson } from '../types';
-import { readJson, validatePluginName } from '../util';
+import { NYC, PackageJson } from '../types.js';
+import { readJson, validatePluginName } from '../util.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectory(path.dirname(fileURLToPath(import.meta.url)));
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'plugin.generator');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
-const { version } = require('../../package.json');
+const TEMPLATES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../templates');
 
 type PluginAnswers = {
   internal: boolean;
@@ -27,6 +27,14 @@ type PluginAnswers = {
   author?: string;
   codeCoverage?: string;
 };
+
+function rm(filepath: string, options: { recursive?: boolean }): void {
+  try {
+    fs.rmSync(filepath, options);
+  } catch {
+    // do nothing
+  }
+}
 
 /**
  * See https://yeoman.io/authoring/running-context.html for the overridable methods
@@ -41,7 +49,7 @@ export default class Plugin extends Generator {
   }
 
   public async prompting(): Promise<void> {
-    this.log(messages.getMessage('info.start', [version as string]));
+    this.log(messages.getMessage('info.start'));
 
     this.githubUsername = await this.getGitUsername();
 
@@ -102,7 +110,7 @@ export default class Plugin extends Generator {
     const templateRepo = this.answers.internal
       ? 'git clone https://github.com/salesforcecli/plugin-template-sf.git'
       : 'git clone https://github.com/salesforcecli/plugin-template-sf-external.git';
-    exec(`${templateRepo} ${directory}`);
+    shelljs.exec(`${templateRepo} ${directory}`);
     try {
       fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
     } catch {
@@ -112,13 +120,13 @@ export default class Plugin extends Generator {
     this.destinationRoot(directory);
     this.env.cwd = this.destinationPath();
 
-    exec('git init', { cwd: this.env.cwd });
+    shelljs.exec('git init', { cwd: this.env.cwd });
   }
 
   public writing(): void {
     const pjson = readJson<PackageJson>(path.join(this.env.cwd, 'package.json'));
 
-    this.sourceRoot(path.join(__dirname, '../../templates'));
+    this.sourceRoot(TEMPLATES_DIR);
 
     const updated: Partial<PackageJson> = this.answers.internal
       ? {
@@ -154,21 +162,26 @@ export default class Plugin extends Generator {
       from: this.answers.internal ? /plugin-template-sf/g : /plugin-template-sf-external/g,
       to: this.answers.name,
     });
+
+    if (!this.answers.internal) {
+      rm(path.join(this.env.cwd, 'CODE_OF_CONDUCT.md'), { recursive: true });
+      rm(path.join(this.env.cwd, 'LICENSE.txt'), { recursive: true });
+    }
   }
 
   public install(): void {
     try {
-      exec('yarn install', { cwd: this.env.cwd });
+      shelljs.exec('yarn install', { cwd: this.env.cwd });
     } catch (e) {
       // Run yarn install in case dev-scripts detected changes during yarn build.
-      exec('yarn install', { cwd: this.env.cwd });
+      shelljs.exec('yarn install', { cwd: this.env.cwd });
     }
   }
   public end(): void {
-    exec('yarn build', { cwd: this.env.cwd });
+    shelljs.exec('yarn build', { cwd: this.env.cwd });
 
     if (this.answers.internal) {
-      exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
+      shelljs.exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev')} schema generate`, { cwd: this.env.cwd });
     }
   }
 
