@@ -6,12 +6,13 @@
  */
 import fs from 'node:fs';
 import os from 'node:os';
+import { createRequire } from 'node:module';
 import yeoman from 'yeoman-environment';
 import { FlagAnswers } from './types.js';
 
 export function generate(type: string, generatorOptions: Record<string, unknown> = {}): Promise<void> {
   const env = yeoman.createEnv();
-  env.register(require.resolve(`./generators/${type}`), `sf:${type}`);
+  env.register(createRequire(import.meta.url).resolve(`./generators/${type}`), `sf:${type}`);
   return env.run(`sf:${type}`, generatorOptions);
 }
 
