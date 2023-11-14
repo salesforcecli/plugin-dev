@@ -10,7 +10,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Generator from 'yeoman-generator';
 import shelljs from 'shelljs';
-import replace = require('replace-in-file');
+import replace from 'replace-in-file';
 import { Messages } from '@salesforce/core';
 import { NYC, PackageJson } from '../types.js';
 import { readJson, validatePluginName } from '../util.js';

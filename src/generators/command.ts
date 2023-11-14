@@ -12,7 +12,7 @@ import { pascalCase } from 'change-case';
 import { set } from '@salesforce/kit';
 import { get } from '@salesforce/ts-types';
 import shelljs from 'shelljs';
-import defaultsDeep = require('lodash.defaultsdeep');
+import defaultsDeep from 'lodash.defaultsdeep';
 import { PackageJson, Topic } from '../types.js';
 
 export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
