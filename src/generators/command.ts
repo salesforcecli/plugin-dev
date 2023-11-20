@@ -108,7 +108,7 @@ export default class Command extends Generator {
     shelljs.exec('yarn lint -- --fix');
     shelljs.exec('yarn compile');
 
-    const localExecutable = process.platform === 'win32' ? path.join('bin', 'dev.cmd') : path.join('bin', 'dev');
+    const localExecutable = process.platform === 'win32' ? path.join('bin', 'dev.cmd') : path.join('bin', 'dev.js');
 
     if (this.pjson.scripts['test:deprecation-policy']) {
       shelljs.exec(`${localExecutable} snapshot:generate`);

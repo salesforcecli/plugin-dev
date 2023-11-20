@@ -11,7 +11,7 @@ import shelljs from 'shelljs';
 import { expect } from 'chai';
 
 function getLocalBin(...parts: string[]): string {
-  return path.join(...parts, 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev');
+  return path.join(...parts, 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev.js');
 }
 
 // Flag generator doesn't work on Windows (W-11823784)
