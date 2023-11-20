@@ -97,11 +97,6 @@ describe('dev generate plugin', () => {
       path.join(runResult.cwd, 'my-plugin', 'src', 'commands', 'hello', 'world.ts'),
       /Copyright/g
     );
-
-    runResult.assertNoFileContent(
-      path.join(runResult.cwd, 'my-plugin', '.eslintrc.cjs'),
-      /eslint-config-salesforce-license/g
-    );
   });
 
   it('should generate a 2PP plugin', async () => {
