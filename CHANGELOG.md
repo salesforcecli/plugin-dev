@@ -1,3 +1,18 @@
+## [2.0.1](https://github.com/salesforcecli/plugin-dev/compare/1.3.3...2.0.1) (2023-11-21)
+
+
+### Bug Fixes
+
+* dev.js ([150bee6](https://github.com/salesforcecli/plugin-dev/commit/150bee645e793acdd96f587caf5c23fe1de98b20))
+* esm and cjs command test templates ([dbb4678](https://github.com/salesforcecli/plugin-dev/commit/dbb4678dfdc2e57b2ad03bf5a9ab08bc67b6da80))
+* no windows sep in imports ([a00812c](https://github.com/salesforcecli/plugin-dev/commit/a00812c6af491420cb2c1172c11d561b7041ee1c))
+* remove all requires ([63c8b2b](https://github.com/salesforcecli/plugin-dev/commit/63c8b2b10781105e1f601517661bbb33d02306e4))
+* replace require.resolve ([00ff1cc](https://github.com/salesforcecli/plugin-dev/commit/00ff1cc0fc2b14b50848d3f3499aaba2348d5491))
+* use proper bin script for running schema generate on 2pp ([0195029](https://github.com/salesforcecli/plugin-dev/commit/019502922888aed1bfe93e45a850a5ec87b05f7a))
+* use replaceAll ([d2585f2](https://github.com/salesforcecli/plugin-dev/commit/d2585f2de6c147e4688490ffeadcec52085add60))
+
+
+
 ## [1.3.3](https://github.com/salesforcecli/plugin-dev/compare/1.3.2...1.3.3) (2023-11-11)
 
 
