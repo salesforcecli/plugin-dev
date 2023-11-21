@@ -21,7 +21,10 @@ describe('2PP', () => {
 
   before(async () => {
     session = await setup('https://github.com/salesforcecli/plugin-template-sf.git');
-    pluginExecutable = path.join(session.project.dir, 'bin', 'dev.js');
+    pluginExecutable =
+      process.platform === 'win32'
+        ? path.join(session.project.dir, 'bin', 'dev.cmd')
+        : path.join(session.project.dir, 'bin', 'dev.js');
   });
 
   after(async () => {
