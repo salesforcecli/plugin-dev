@@ -1,3 +1,12 @@
+## [2.0.2](https://github.com/salesforcecli/plugin-dev/compare/2.0.1...2.0.2) (2023-11-21)
+
+
+### Bug Fixes
+
+* **deps:** bump yeoman-generator and @types/yeoman-generator ([cf3717e](https://github.com/salesforcecli/plugin-dev/commit/cf3717ebddcd602d70a4ba156d40f0813c30650f))
+
+
+
 ## [2.0.1](https://github.com/salesforcecli/plugin-dev/compare/1.3.3...2.0.1) (2023-11-21)
 
 
