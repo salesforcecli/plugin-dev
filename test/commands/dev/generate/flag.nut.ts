@@ -5,13 +5,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as path from 'path';
+import path from 'node:path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
-import { exec } from 'shelljs';
+import shelljs from 'shelljs';
 import { expect } from 'chai';
 
 function getLocalBin(...parts: string[]): string {
-  return path.join(...parts, 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev');
+  return path.join(...parts, 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev.js');
 }
 
 // Flag generator doesn't work on Windows (W-11823784)
@@ -51,7 +51,7 @@ function getLocalBin(...parts: string[]): string {
     );
 
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
-    const helpOutput = exec(`${localBin} hello world --help`, { silent: false });
+    const helpOutput = shelljs.exec(`${localBin} hello world --help`, { silent: false });
     expect(helpOutput.stdout).to.contain('-m, --my-boolean-flag');
   });
 
@@ -74,7 +74,7 @@ function getLocalBin(...parts: string[]): string {
     );
 
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
-    const helpOutput = exec(`${localBin} hello world --help`, { silent: false });
+    const helpOutput = shelljs.exec(`${localBin} hello world --help`, { silent: false });
     expect(helpOutput.stdout).to.contain('-i, --my-integer-flag=<value>...');
   });
 });

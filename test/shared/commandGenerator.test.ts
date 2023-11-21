@@ -6,8 +6,8 @@
  */
 
 import { expect } from 'chai';
-import { addTopics } from '../../src/generators/command';
-import { Topic } from '../../src/types';
+import { addTopics } from '../../src/generators/command.js';
+import { Topic } from '../../src/types.js';
 
 describe('command generator', () => {
   describe('addTopics : external', () => {

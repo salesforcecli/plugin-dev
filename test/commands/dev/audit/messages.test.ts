@@ -4,15 +4,16 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as path from 'path';
-import * as fs from 'fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
 import { expect } from 'chai';
-import helpers = require('yeoman-test');
+import helpers from 'yeoman-test';
 import { Config } from '@oclif/core';
-import AuditMessages, { fileReader, resolveFileContents } from '../../../../src/commands/dev/audit/messages';
+import AuditMessages, { fileReader, resolveFileContents } from '../../../../src/commands/dev/audit/messages.js';
 
 describe('file reader', () => {
-  const testDir = path.join(__dirname, 'tmpFileReader');
+  const testDir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'tmpFileReader');
   const subDir = path.join(testDir, 'subDir');
   before(async () => {
     await fs.promises.mkdir(testDir, { recursive: true });
@@ -49,16 +50,40 @@ describe('file reader', () => {
     await fs.promises.rm(testDir, { recursive: true, force: true });
   });
 });
+
 describe('audit messages', () => {
   let runResult: helpers.RunResult;
+  const testDir = path.join(process.cwd(), 'tmp');
   before(async () => {
+    try {
+      await fs.promises.rm(path.join(testDir, 'plugin-test'), { recursive: true, force: true });
+    } catch {
+      // do nothing
+    }
+
+    await fs.promises.mkdir(testDir, { recursive: true });
+
     runResult = await helpers
-      .run(path.join(__dirname, '..', '..', '..', '..', 'src', 'generators', 'plugin.ts'))
+      .create(
+        path.join(
+          path.dirname(fileURLToPath(import.meta.url)),
+          '..',
+          '..',
+          '..',
+          '..',
+          'src',
+          'generators',
+          'plugin.ts'
+        )
+      )
+      .cd(testDir)
       .withPrompts({
         internal: true,
         name: 'plugin-test',
         description: 'my plugin description',
-      });
+      })
+      .run();
+
     await fs.promises.writeFile(
       path.join(runResult.cwd, 'plugin-test', 'messages', 'my.unused.md'),
       '# unusedMessageInUnusedBundle\nunused message\n'
@@ -83,6 +108,16 @@ describe('audit messages', () => {
 }`;
     helloWorld[helloWorld.length - 1] = checkMessageFunction;
     await fs.promises.writeFile(helloWorldPath, helloWorld.join('\n'), 'utf8');
+  });
+
+  after(async () => {
+    runResult.restore();
+
+    try {
+      await fs.promises.rm(path.join(testDir, 'plugin-test'), { recursive: true, force: true });
+    } catch {
+      // do nothing
+    }
   });
 
   it('should audit messages', async () => {

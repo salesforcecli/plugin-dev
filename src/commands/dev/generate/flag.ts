@@ -5,21 +5,22 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as path from 'path';
-import * as os from 'os';
-import * as fs from 'fs/promises';
-import { exec } from 'shelljs';
+import path from 'node:path';
+import os from 'node:os';
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import shelljs from 'shelljs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Duration } from '@salesforce/kit';
 
 // eslint-disable-next-line sf-plugin/no-oclif-flags-command-import
 import { Config, Command, toStandardizedId } from '@oclif/core';
-import * as fg from 'fast-glob';
-import { fileExists, FlagBuilder } from '../../../util';
-import { FlagAnswers } from '../../../types';
+import fg from 'fast-glob';
+import { fileExists, FlagBuilder } from '../../../util.js';
+import { FlagAnswers } from '../../../types.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectory(path.dirname(fileURLToPath(import.meta.url)));
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.flag');
 
 const toLowerKebabCase = (str: string): string =>
@@ -80,9 +81,9 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     await updateMarkdownFile(answers, standardizedCommandId);
 
-    exec(`yarn prettier --write ${commandFilePath}`);
+    shelljs.exec(`yarn prettier --write ${commandFilePath}`);
 
-    exec('yarn compile');
+    shelljs.exec('yarn compile');
 
     this.log(`Added ${answers.name} flag to ${commandFilePath}`);
   }

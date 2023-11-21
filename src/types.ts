@@ -49,6 +49,7 @@ export type PackageJson = {
       dependencies: string;
     };
   };
+  type?: string;
 };
 
 export type FlagAnswers = {

@@ -5,16 +5,14 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as Generator from 'yeoman-generator';
-import { exec } from 'shelljs';
-import replace = require('replace-in-file');
-import { PackageJson } from '../types';
-import { readJson } from '../util';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
-const { version } = require('../../package.json');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import Generator from 'yeoman-generator';
+import shelljs from 'shelljs';
+import replace from 'replace-in-file';
+import { PackageJson } from '../types.js';
+import { readJson } from '../util.js';
 
 type Answers = {
   name: string;
@@ -27,6 +25,8 @@ function containsInvalidChars(input: string): boolean {
   return input.split('').some((i) => '!#$%^&*() ?/\\,.";\':|{}[]~`'.includes(i));
 }
 
+const TEMPLATES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../templates');
+
 export default class Library extends Generator {
   private answers!: Answers;
 
@@ -36,9 +36,7 @@ export default class Library extends Generator {
   }
 
   public async prompting(): Promise<void> {
-    const msg = 'Time to build a library!';
-
-    this.log(`${msg} Version: ${version as string}`);
+    this.log('Time to build a library!');
 
     this.answers = await this.prompt<Answers>([
       {
@@ -83,7 +81,7 @@ export default class Library extends Generator {
     ]);
 
     const directory = path.resolve(this.answers.name);
-    exec(`git clone git@github.com:forcedotcom/library-template.git ${directory}`);
+    shelljs.exec(`git clone git@github.com:forcedotcom/library-template.git ${directory}`);
     fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
     this.destinationRoot(directory);
     this.env.cwd = this.destinationPath();
@@ -92,7 +90,7 @@ export default class Library extends Generator {
   public writing(): void {
     const pjson = readJson<PackageJson>(path.join(this.env.cwd, 'package.json'));
 
-    this.sourceRoot(path.join(__dirname, '../../templates'));
+    this.sourceRoot(TEMPLATES_DIR);
 
     const updated = {
       name: `${this.answers.scope}/${this.answers.name}`,
@@ -123,6 +121,6 @@ export default class Library extends Generator {
   }
 
   public end(): void {
-    exec('yarn build', { cwd: this.env.cwd });
+    shelljs.exec('yarn build', { cwd: this.env.cwd });
   }
 }

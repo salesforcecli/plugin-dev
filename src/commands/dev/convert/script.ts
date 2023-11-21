@@ -4,12 +4,14 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as fs from 'fs';
-import * as os from 'os';
+import fs from 'node:fs';
+import os from 'node:os';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectory(dirname(fileURLToPath(import.meta.url)));
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.convert.script');
 
 type Flag = {
@@ -168,7 +170,7 @@ export default class ConvertScript extends SfCommand<void> {
     const depMessage = replacement.deprecationOptions?.message;
     const depTo = replacement.deprecationOptions?.to;
 
-    if (depTo?.includes('/') || (!depTo && depMessage)) {
+    if (depTo?.includes('/') ?? (!depTo && depMessage)) {
       this.warn(messages.getMessage('cannotDetermine', [commandId]));
       if (depMessage) {
         this.warn(depMessage);
@@ -195,7 +197,7 @@ export default class ConvertScript extends SfCommand<void> {
     // from the plugin find the command that matches the commandId or the alias
 
     const pluginName = this.config.commands.find((c) => c.id === commandId)?.pluginName;
-    const plugin = this.config.plugins.find((p) => p.name === pluginName);
+    const plugin = this.config.plugins.get(pluginName ?? '');
     return plugin?.commands.find((c) => c.id === commandId || c.aliases.includes(commandId)) as Snapshot;
   }
 }

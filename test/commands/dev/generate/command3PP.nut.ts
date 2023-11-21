@@ -5,13 +5,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as path from 'path';
+import path from 'node:path';
 import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
 import { expect, config } from 'chai';
-import { exec } from 'shelljs';
-import { PackageJson } from '../../../../src/types';
-import { readJson, fileExists } from '../../../../src/util';
-import { setup } from './pluginGenerateSetup';
+import shelljs from 'shelljs';
+import { PackageJson } from '../../../../src/types.js';
+import { readJson, fileExists } from '../../../../src/util.js';
+import { setup } from './pluginGenerateSetup.js';
 
 config.truncateThreshold = 0;
 
@@ -21,7 +21,10 @@ describe('3PP', () => {
 
   before(async () => {
     session = await setup('https://github.com/salesforcecli/plugin-template-sf-external.git');
-    pluginExecutable = path.join(session.project.dir, 'bin', 'dev');
+    pluginExecutable =
+      process.platform === 'win32'
+        ? path.join(session.project.dir, 'bin', 'dev.cmd')
+        : path.join(session.project.dir, 'bin', 'dev.js');
   });
 
   after(async () => {
@@ -37,7 +40,7 @@ describe('3PP', () => {
     });
 
     it('should generate a command that can be executed', () => {
-      const result = exec(`${pluginExecutable} do awesome stuff --name Astro`, { silent: true });
+      const result = shelljs.exec(`${pluginExecutable} do awesome stuff --name Astro`, { silent: true });
       expect(result.code).to.equal(0);
       expect(result.stdout).to.contain('hello Astro');
     });
@@ -53,7 +56,7 @@ describe('3PP', () => {
       const nutFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.nut.ts`);
       expect(await fileExists(nutFile)).to.be.true;
 
-      const result = exec('yarn test:nuts', {
+      const result = shelljs.exec('yarn test:nuts', {
         cwd: session.project.dir,
         silent: true,
         env: {
@@ -70,7 +73,7 @@ describe('3PP', () => {
       const cmd = parts.pop();
       const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
       expect(await fileExists(unitTestFile)).to.be.true;
-      const result = exec('yarn test:only', { cwd: session.project.dir });
+      const result = shelljs.exec('yarn test:only', { cwd: session.project.dir });
       expect(result.code).to.equal(0);
       expect(result.stdout).include(name.replace(/:/g, ' '));
     });

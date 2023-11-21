@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import { TestSession } from '@salesforce/cli-plugins-testkit';
-import { exec } from 'shelljs';
+import shelljs from 'shelljs';
 
 export async function setup(repo: string): Promise<TestSession> {
   const session = await TestSession.create({
@@ -13,7 +13,7 @@ export async function setup(repo: string): Promise<TestSession> {
       gitClone: repo,
     },
   });
-  exec('yarn', { cwd: session.project.dir, silent: true });
-  exec('yarn build', { cwd: session.project.dir, silent: true });
+  shelljs.exec('yarn', { cwd: session.project.dir, silent: true });
+  shelljs.exec('yarn build', { cwd: session.project.dir, silent: true });
   return session;
 }

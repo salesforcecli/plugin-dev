@@ -5,23 +5,23 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as path from 'path';
-import * as Generator from 'yeoman-generator';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import Generator from 'yeoman-generator';
 import { pascalCase } from 'change-case';
 import { set } from '@salesforce/kit';
 import { get } from '@salesforce/ts-types';
-import { exec } from 'shelljs';
-import defaultsDeep = require('lodash.defaultsdeep');
-import { PackageJson, Topic } from '../types';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
-const { version } = require('../../package.json');
+import shelljs from 'shelljs';
+import defaultsDeep from 'lodash.defaultsdeep';
+import { PackageJson, Topic } from '../types.js';
 
 export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
   name: string;
   nuts: boolean;
   unit: boolean;
 }
+
+const TEMPLATES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../templates');
 
 /** returns the modifications that need to be made for the oclif pjson topics information.  Returns an empty object for "don't change anything" */
 export function addTopics(
@@ -78,11 +78,11 @@ export default class Command extends Generator {
   // eslint-disable-next-line @typescript-eslint/require-await
   public async prompting(): Promise<void> {
     this.pjson = this.fs.readJSON('package.json') as unknown as PackageJson;
-    this.log(`Adding a command to ${this.pjson.name}! Version: ${version as string}`);
+    this.log(`Adding a command to ${this.pjson.name}!`);
 
     if (Object.keys(this.pjson.devDependencies).includes('@salesforce/plugin-command-reference')) {
       // Get a list of all commands in `sf`. We will use this to determine if a topic is internal or external.
-      const sfCommandsStdout = exec('sf commands --json', { silent: true }).stdout;
+      const sfCommandsStdout = shelljs.exec('sf commands --json', { silent: true }).stdout;
       const commandsJson = JSON.parse(sfCommandsStdout) as Array<{ id: string }>;
       const commands = commandsJson.map((command) => command.id.replace(/:/g, '.').replace(/ /g, '.'));
 
@@ -104,18 +104,18 @@ export default class Command extends Generator {
   }
 
   public end(): void {
-    exec('yarn format');
-    exec('yarn lint -- --fix');
-    exec('yarn compile');
+    shelljs.exec('yarn format');
+    shelljs.exec('yarn lint -- --fix');
+    shelljs.exec('yarn compile');
 
-    const localExecutable = process.platform === 'win32' ? path.join('bin', 'dev.cmd') : path.join('bin', 'dev');
+    const localExecutable = process.platform === 'win32' ? path.join('bin', 'dev.cmd') : path.join('bin', 'dev.js');
 
     if (this.pjson.scripts['test:deprecation-policy']) {
-      exec(`${localExecutable} snapshot:generate`);
+      shelljs.exec(`${localExecutable} snapshot:generate`);
     }
 
     if (this.pjson.scripts['test:json-schema']) {
-      exec(`${localExecutable} schema:generate`);
+      shelljs.exec(`${localExecutable} schema:generate`);
     }
   }
 
@@ -124,7 +124,7 @@ export default class Command extends Generator {
   }
 
   private writeCmdFile(): void {
-    this.sourceRoot(path.join(__dirname, '../../templates'));
+    this.sourceRoot(TEMPLATES_DIR);
     const cmdPath = this.options.name.split(':').join('/');
     const commandPath = this.destinationPath(`src/commands/${cmdPath}.ts`);
     const className = pascalCase(this.options.name);
@@ -137,11 +137,15 @@ export default class Command extends Generator {
       pluginName: this.pjson.name,
       messageFile: this.getMessageFileName(),
     };
-    this.fs.copyTpl(this.templatePath('src/command.ts.ejs'), commandPath, opts);
+    this.fs.copyTpl(
+      this.templatePath(this.pjson.type === 'module' ? 'src/esm-command.ts.ejs' : 'src/cjs-command.ts.ejs'),
+      commandPath,
+      opts
+    );
   }
 
   private writeMessageFile(): void {
-    this.sourceRoot(path.join(__dirname, '../../templates'));
+    this.sourceRoot(TEMPLATES_DIR);
     const filename = this.getMessageFileName();
     const messagePath = this.destinationPath(`messages/${filename}.md`);
     this.fs.copyTpl(this.templatePath('messages/message.md.ejs'), messagePath, this.options);
@@ -149,7 +153,7 @@ export default class Command extends Generator {
 
   private writeNutFile(): void {
     if (!this.options.nuts) return;
-    this.sourceRoot(path.join(__dirname, '../../templates'));
+    this.sourceRoot(TEMPLATES_DIR);
     const cmdPath = this.options.name.split(':').join('/');
     const nutPath = this.destinationPath(`test/commands/${cmdPath}.nut.ts`);
     const opts = {
@@ -163,20 +167,27 @@ export default class Command extends Generator {
 
   private writeUnitTestFile(): void {
     if (!this.options.unit) return;
-    this.sourceRoot(path.join(__dirname, '../../templates'));
+    this.sourceRoot(TEMPLATES_DIR);
     const cmdPath = this.options.name.split(':').join('/');
     const commandPath = this.destinationPath(`src/commands/${cmdPath}.ts`);
     const className = pascalCase(this.options.name);
 
     const unitPath = this.destinationPath(`test/commands/${cmdPath}.test.ts`);
-    const relativeCmdPath = path.relative(path.dirname(unitPath), commandPath).replace('.ts', '');
-    this.fs.copyTpl(this.templatePath('test/command.test.ts.ejs'), unitPath, {
-      ...this.options,
-      className,
-      commandPath,
-      relativeCmdPath,
-      name: this.options.name.replace(/:/g, ' '),
-      year: new Date().getFullYear(),
-    });
+    const relativeCmdPath = path
+      .relative(path.dirname(unitPath), commandPath)
+      .replace('.ts', '')
+      .replaceAll(path.sep, '/');
+    this.fs.copyTpl(
+      this.templatePath(this.pjson.type === 'module' ? 'test/esm-command.test.ts.ejs' : 'test/cjs-command.test.ts.ejs'),
+      unitPath,
+      {
+        ...this.options,
+        className,
+        commandPath,
+        relativeCmdPath,
+        name: this.options.name.replace(/:/g, ' '),
+        year: new Date().getFullYear(),
+      }
+    );
   }
 }
