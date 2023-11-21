@@ -181,7 +181,8 @@ export default class Plugin extends Generator {
     shelljs.exec('yarn build', { cwd: this.env.cwd });
 
     if (this.answers.internal) {
-      shelljs.exec(`${path.join(path.resolve(this.env.cwd), 'bin', 'dev.js')} schema generate`, { cwd: this.env.cwd });
+      const dev = process.platform === 'win32' ? 'dev.cmd' : 'dev.js';
+      shelljs.exec(`${path.join(path.resolve(this.env.cwd), 'bin', dev)} schema generate`, { cwd: this.env.cwd });
     }
   }
 
