@@ -173,7 +173,10 @@ export default class Command extends Generator {
     const className = pascalCase(this.options.name);
 
     const unitPath = this.destinationPath(`test/commands/${cmdPath}.test.ts`);
-    const relativeCmdPath = path.relative(path.dirname(unitPath), commandPath).replace('.ts', '');
+    const relativeCmdPath = path
+      .relative(path.dirname(unitPath), commandPath)
+      .replace('.ts', '')
+      .replace(path.sep, '/');
     this.fs.copyTpl(
       this.templatePath(this.pjson.type === 'module' ? 'test/esm-command.test.ts.ejs' : 'test/cjs-command.test.ts.ejs'),
       unitPath,

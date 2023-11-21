@@ -1,7 +1,7 @@
 import { TestContext } from '@salesforce/core/lib/testSetup.js';
 import { expect } from 'chai';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
-import <%- className %> from '<%- relativeCmdPath.replace(/\\/g, '\\\\') %>.js'
+import <%- className %> from '<%- relativeCmdPath %>.js'
 
 describe('<%- name %>', () => {
   const $$ = new TestContext();
