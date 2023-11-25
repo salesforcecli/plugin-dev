@@ -13,7 +13,7 @@
     "@salesforce/ts-types": "^2.0.9",
     "change-case": "^5.2.0",
     "fast-glob": "^3.3.2",
-    "graphology": "^0.25.1",
+    "graphology": "^0.25.4",
     "graphology-types": "^0.24.7",
     "js-yaml": "^4.1.0",
     "lodash.defaultsdeep": "^4.6.1",

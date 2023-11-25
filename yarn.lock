@@ -4053,10 +4053,10 @@ graphology-types@^0.24.7:
   resolved "https://registry.yarnpkg.com/graphology-types/-/graphology-types-0.24.7.tgz#7d630a800061666bfa70066310f56612e08b7bee"
   integrity sha512-tdcqOOpwArNjEr0gNQKCXwaNCWnQJrog14nJNQPeemcLnXQUUGrsCWpWkVKt46zLjcS6/KGoayeJfHHyPDlvwA==
 
-graphology@^0.25.1:
-  version "0.25.1"
-  resolved "https://registry.yarnpkg.com/graphology/-/graphology-0.25.1.tgz#f92b86294782522d3898ce4480e4a577c0c2568a"
-  integrity sha512-yYA7BJCcXN2DrKNQQ9Qf22zBHm/yTbyBR71T1MYBbGtywNHsv0QZtk8zaR6zxNcp2hCCZayUkHp9DyMSZCpoxQ==
+graphology@^0.25.4:
+  version "0.25.4"
+  resolved "https://registry.yarnpkg.com/graphology/-/graphology-0.25.4.tgz#e528a64555ac1f392a9d965321ada5b2b843efe1"
+  integrity sha512-33g0Ol9nkWdD6ulw687viS8YJQBxqG5LWII6FI6nul0pq6iM2t5EKquOTFDbyTblRB3O9I+7KX4xI8u5ffekAQ==
   dependencies:
     events "^3.3.0"
     obliterator "^2.0.2"
