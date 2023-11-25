@@ -1,3 +1,12 @@
+## [2.0.4](https://github.com/salesforcecli/plugin-dev/compare/2.0.3...2.0.4) (2023-11-25)
+
+
+### Bug Fixes
+
+* **deps:** bump graphology from 0.25.1 to 0.25.4 ([9004d77](https://github.com/salesforcecli/plugin-dev/commit/9004d77ed5261c731513e73570eed27f4ceb751e))
+
+
+
 ## [2.0.3](https://github.com/salesforcecli/plugin-dev/compare/2.0.2...2.0.3) (2023-11-25)
 
 
