@@ -1463,10 +1463,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash.defaultsdeep@^4.6.7":
-  version "4.6.7"
-  resolved "https://registry.yarnpkg.com/@types/lodash.defaultsdeep/-/lodash.defaultsdeep-4.6.7.tgz#1a4f96d6d95815bbb16ac6f639fe0617bb71cd7c"
-  integrity sha512-D+AUxs64qehDMkbfFoskG0XsIOh2CHBGqYfcQcubLbZSFCGKJKS885su3a97huqBNHj+p9of9UZ/uUIP46wUGQ==
+"@types/lodash.defaultsdeep@^4.6.9":
+  version "4.6.9"
+  resolved "https://registry.yarnpkg.com/@types/lodash.defaultsdeep/-/lodash.defaultsdeep-4.6.9.tgz#050fbe389a7a6e245b15da9ee83a8a62f047a1c4"
+  integrity sha512-pLtCFK0YkHfGtGLYLNMTbFB5/G5+RsmQCIbbHH8GOAXjv+gDkVilY98kILfe8JH2Kev0OCReYxp1AjxEjP8ixA==
   dependencies:
     "@types/lodash" "*"
 
