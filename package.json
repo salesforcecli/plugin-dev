@@ -25,7 +25,7 @@
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.0.2",
     "@salesforce/cli-plugins-testkit": "^5.0.4",
-    "@salesforce/dev-scripts": "^7.1.1",
+    "@salesforce/dev-scripts": "^8.1.1",
     "@salesforce/plugin-command-reference": "^3.0.48",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash.defaultsdeep": "^4.6.9",
