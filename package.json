@@ -109,6 +109,7 @@
     "lint": "wireit",
     "postpack": "shx rm -f oclif.manifest.json oclif.lock",
     "prepack": "sf-prepack",
+    "prepare": "sf-install",
     "test": "wireit",
     "test:nuts": "nyc mocha \"test/**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel --jobs 10",
     "test:only": "wireit",
