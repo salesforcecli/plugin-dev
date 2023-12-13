@@ -32,7 +32,7 @@
     "@types/shelljs": "^0.8.14",
     "@types/yeoman-generator": "^5.2.14",
     "@types/yeoman-test": "^4.0.3",
-    "eslint-plugin-sf-plugin": "^1.16.5",
+    "eslint-plugin-sf-plugin": "^1.16.15",
     "oclif": "^4.0.4",
     "shx": "^0.3.3",
     "ts-node": "^10.9.2",
@@ -105,6 +105,7 @@
     "compile": "wireit",
     "docs": "sf-docs",
     "format": "wireit",
+    "link-check": "wireit",
     "lint": "wireit",
     "postpack": "shx rm -f oclif.manifest.json oclif.lock",
     "prepack": "sf-prepack",
@@ -173,7 +174,8 @@
         "test:command-reference",
         "test:deprecation-policy",
         "lint",
-        "test:json-schema"
+        "test:json-schema",
+        "link-check"
       ]
     },
     "test:only": {
@@ -192,7 +194,7 @@
       "output": []
     },
     "test:command-reference": {
-      "command": "ts-node \"./bin/dev.js\" commandreference:generate --erroronwarnings",
+      "command": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" commandreference:generate --erroronwarnings",
       "files": [
         "src/**/*.ts",
         "messages/**",
@@ -203,7 +205,7 @@
       ]
     },
     "test:deprecation-policy": {
-      "command": "ts-node \"./bin/dev.js\" snapshot:compare",
+      "command": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" snapshot:compare",
       "files": [
         "src/**/*.ts"
       ],
@@ -213,10 +215,19 @@
       ]
     },
     "test:json-schema": {
-      "command": "ts-node \"./bin/dev.js\" schema:compare",
+      "command": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" schema:compare",
       "files": [
         "src/**/*.ts",
         "schemas"
+      ],
+      "output": []
+    },
+    "link-check": {
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "files": [
+        "./*.md",
+        "./!(CHANGELOG).md",
+        "messages/**/*.md"
       ],
       "output": []
     }
