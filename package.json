@@ -27,7 +27,7 @@
     "@salesforce/cli-plugins-testkit": "^5.0.4",
     "@salesforce/dev-scripts": "^8.1.2",
     "@salesforce/plugin-command-reference": "^3.0.54",
-    "@types/js-yaml": "^4.0.5",
+    "@types/js-yaml": "^4.0.9",
     "@types/lodash.defaultsdeep": "^4.6.9",
     "@types/shelljs": "^0.8.14",
     "@types/yeoman-generator": "^5.2.14",
