@@ -23,7 +23,7 @@
     "yeoman-generator": "^5.10.0"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^5.0.2",
+    "@oclif/plugin-command-snapshot": "^5.0.5",
     "@salesforce/cli-plugins-testkit": "^5.1.1",
     "@salesforce/dev-scripts": "^8.1.2",
     "@salesforce/plugin-command-reference": "^3.0.54",
