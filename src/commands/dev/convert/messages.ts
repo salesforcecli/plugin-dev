@@ -7,11 +7,11 @@
 import fs from 'node:fs';
 import { EOL } from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
-Messages.importMessagesDirectory(path.dirname(fileURLToPath(import.meta.url)));
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.convert.messages');
 
 export type DevConvertMessagesResult = {

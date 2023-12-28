@@ -7,14 +7,14 @@
 
 // because github api isn't camelcased
 /* eslint-disable camelcase */
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+
+
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Octokit } from '@octokit/rest';
 import { OctokitError } from '../../../types.js';
 
-Messages.importMessagesDirectory(dirname(fileURLToPath(import.meta.url)));
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'configure.repo');
 
 export type ConfigureRepoResult = {

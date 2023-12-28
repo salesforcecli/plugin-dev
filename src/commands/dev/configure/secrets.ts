@@ -8,8 +8,8 @@
 // because github api isn't camelcased
 /* eslint-disable camelcase */
 
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+
+
 import fs from 'node:fs';
 import { ux } from '@oclif/core';
 
@@ -21,7 +21,7 @@ import shelljs from 'shelljs';
 import yaml from 'js-yaml';
 import { OctokitError } from '../../../types.js';
 
-Messages.importMessagesDirectory(dirname(fileURLToPath(import.meta.url)));
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'configure.secrets');
 
 type SecretClassification =
