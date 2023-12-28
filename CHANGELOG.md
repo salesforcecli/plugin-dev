@@ -1,3 +1,9 @@
+## [2.1.2](https://github.com/salesforcecli/plugin-dev/compare/2.1.1...2.1.2) (2023-12-28)
+
+### Bug Fixes
+
+- **deps:** bump change-case from 5.2.0 to 5.3.0 ([aa1879d](https://github.com/salesforcecli/plugin-dev/commit/aa1879d5c020d281be88cbbe782b7f46607bfbf8))
+
 ## [2.1.1](https://github.com/salesforcecli/plugin-dev/compare/2.1.0...2.1.1) (2023-12-16)
 
 ### Bug Fixes
