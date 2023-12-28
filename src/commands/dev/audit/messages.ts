@@ -5,8 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import fs from 'node:fs';
-import { dirname, join, parse, relative, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, parse, relative, resolve } from 'node:path';
+
 import { ensureString } from '@salesforce/ts-types';
 import { Logger, Messages } from '@salesforce/core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
@@ -50,7 +50,7 @@ type MessageRefNode = NodeType & {
 
 type Node = FileNode | BundleNode | MessageNode | MessageRefNode | BundleRefNode;
 
-Messages.importMessagesDirectory(dirname(fileURLToPath(import.meta.url)));
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'audit.messages');
 
 export default class AuditMessages extends SfCommand<AuditResults> {

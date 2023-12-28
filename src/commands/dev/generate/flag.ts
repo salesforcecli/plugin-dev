@@ -8,7 +8,7 @@
 import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+
 import shelljs from 'shelljs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
@@ -20,7 +20,7 @@ import fg from 'fast-glob';
 import { fileExists, FlagBuilder } from '../../../util.js';
 import { FlagAnswers } from '../../../types.js';
 
-Messages.importMessagesDirectory(path.dirname(fileURLToPath(import.meta.url)));
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.flag');
 
 const toLowerKebabCase = (str: string): string =>

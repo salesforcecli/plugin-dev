@@ -15,7 +15,7 @@ import { Messages } from '@salesforce/core';
 import { NYC, PackageJson } from '../types.js';
 import { readJson, validatePluginName } from '../util.js';
 
-Messages.importMessagesDirectory(path.dirname(fileURLToPath(import.meta.url)));
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'plugin.generator');
 
 const TEMPLATES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../templates');
