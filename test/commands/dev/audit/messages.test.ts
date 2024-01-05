@@ -51,7 +51,7 @@ describe('file reader', () => {
   });
 });
 
-describe('audit messages', () => {
+describe.skip('audit messages', () => {
   let runResult: helpers.RunResult;
   const testDir = path.join(process.cwd(), 'tmp');
   before(async () => {

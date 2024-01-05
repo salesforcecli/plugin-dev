@@ -8,13 +8,12 @@
 // because github api isn't camelcased
 /* eslint-disable camelcase */
 
-
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { Octokit } from '@octokit/rest';
 import { OctokitError } from '../../../types.js';
 
-Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'configure.repo');
 
 export type ConfigureRepoResult = {
@@ -28,7 +27,7 @@ export default class ConfigureRepo extends SfCommand<ConfigureRepoResult> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
-
+  public static readonly hidden = true;
   public static readonly flags = {
     repository: Flags.string({
       summary: messages.getMessage('flags.repository.summary'),
