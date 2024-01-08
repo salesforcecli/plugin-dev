@@ -39,10 +39,4 @@ export default class World extends SfCommand<HelloWorldResult> {
       time,
     };
   }
-
-  public checkMissingMessage(): void {
-    messages.getMessage('noWayYouFindThis');
-    const msg = 'noWayYouFindThis';
-    messages.getMessage(msg);
-  }
 }

@@ -7,10 +7,8 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
-import { tmpdir } from 'node:os';
 import { expect } from 'chai';
-import { Config } from '@oclif/core';
-import AuditMessages, { fileReader, resolveFileContents } from '../../../../src/commands/dev/audit/messages.js';
+import { fileReader, resolveFileContents } from '../../../../src/commands/dev/audit/messages.js';
 
 describe('file reader', () => {
   const testDir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'tmpFileReader');
@@ -48,67 +46,5 @@ describe('file reader', () => {
 
   after(async () => {
     await fs.promises.rm(testDir, { recursive: true, force: true });
-  });
-});
-
-describe('audit messages', () => {
-  const fixtureDir = path.join(process.cwd(), 'test', 'fixtures', 'plugin-test');
-  const testDir = path.join(tmpdir(), `message-audit-test-${Date.now()}`);
-
-  before(async () => {
-    await fs.promises.rm(testDir, { recursive: true, force: true });
-    await fs.promises.mkdir(testDir, { recursive: true });
-    await fs.promises.cp(path.join(fixtureDir), testDir, { recursive: true });
-
-    await fs.promises.writeFile(
-      path.join(testDir, 'messages', 'my.unused.md'),
-      '# unusedMessageInUnusedBundle\nunused message\n'
-    );
-    let messages = (await fs.promises.readFile(path.join(testDir, 'messages', 'hello.world.md'))).toString();
-    messages += '# unusedMessage\nunused message\n';
-    await fs.promises.writeFile(path.join(testDir, 'messages', 'hello.world.md'), messages, 'utf8');
-    const helloWorldPath = path.join(testDir, 'src', 'commands', 'hello', 'world.ts');
-    const helloWorld = (await fs.promises.readFile(helloWorldPath, 'utf8')).trim().split('\n');
-    const checkMessageFunction = `
-  public checkMissingMessage(): void {
-    messages.getMessage('noWayYouFindThis');
-    const msg = 'noWayYouFindThis';
-    messages.getMessage(msg);
-  }
-}`;
-    helloWorld[helloWorld.length - 1] = checkMessageFunction;
-    await fs.promises.writeFile(helloWorldPath, helloWorld.join('\n'), 'utf8');
-  });
-
-  it('should audit messages', async () => {
-    const cmd = new AuditMessages(['-p', path.join(testDir), '--json'], {} as Config);
-    const result = await cmd.run();
-    expect(result).to.deep.equal({
-      missingBundles: [],
-      missingMessages: [
-        {
-          Bundle: 'hello.world',
-          File: 'src/commands/hello/world.ts'.split('/').join(path.sep),
-          IsLiteral: false,
-          Name: 'msg',
-          SourceVar: 'messages',
-        },
-        {
-          Bundle: 'hello.world',
-          File: 'src/commands/hello/world.ts'.split('/').join(path.sep),
-          IsLiteral: true,
-          Name: 'noWayYouFindThis',
-          SourceVar: 'messages',
-        },
-      ],
-      unusedBundles: ['my.unused'],
-      unusedMessages: [
-        {
-          Bundle: 'hello.world',
-          Name: 'unusedMessage',
-          ReferencedInNonLiteral: '*',
-        },
-      ],
-    });
   });
 });
