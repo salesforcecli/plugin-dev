@@ -50,7 +50,7 @@ type MessageRefNode = NodeType & {
 
 type Node = FileNode | BundleNode | MessageNode | MessageRefNode | BundleRefNode;
 
-Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'audit.messages');
 
 export default class AuditMessages extends SfCommand<AuditResults> {
@@ -83,9 +83,7 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   private flags!: Interfaces.InferredFlags<typeof AuditMessages.flags>;
   private logger!: Logger;
 
-  private messagesDirPath?: string;
   private bundles: string[] = [];
-  private sourceDirPath?: string;
   private source: Map<string, string> = new Map();
   private auditResults: AuditResults = {
     unusedBundles: [],
@@ -122,10 +120,10 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   }
 
   private async loadMessages(): Promise<void> {
-    this.messagesDirPath = resolve(ensureString(this.projectDir), this.flags['messages-dir']);
-    this.logger.debug(`Loading messages from ${this.messagesDirPath}`);
-    const messagesDir = await fs.promises.readdir(this.messagesDirPath, { withFileTypes: true });
-    Messages.importMessagesDirectory(this.messagesDirPath);
+    const messagesDirPath = resolve(ensureString(this.projectDir), this.flags['messages-dir']);
+    this.logger.debug(`Loading messages from ${messagesDirPath}`);
+    const messagesDir = await fs.promises.readdir(messagesDirPath, { withFileTypes: true });
+    Messages.importMessagesDirectory(messagesDirPath);
     this.bundles = messagesDir.filter((entry) => entry.isFile()).map((entry) => entry.name);
     this.logger.debug(`Loaded ${this.bundles.length} bundles with names ${this.bundles.toString()}`);
     const bundleMap = this.bundles.reduce((m, bundle) => {
@@ -142,10 +140,10 @@ export default class AuditMessages extends SfCommand<AuditResults> {
   }
 
   private async loadSource(): Promise<void> {
-    this.sourceDirPath = resolve(ensureString(this.projectDir), this.flags['source-dir']);
-    this.logger.debug(`Loading source from ${this.sourceDirPath}`);
+    const sourceDirPath = resolve(ensureString(this.projectDir), this.flags['source-dir']);
+    this.logger.debug(`Loading source from ${sourceDirPath}`);
 
-    (await Promise.all((await fileReader(this.sourceDirPath)).map(resolveFileContents))).map((i) => {
+    (await Promise.all((await fileReader(sourceDirPath)).map(resolveFileContents))).map((i) => {
       this.source.set(relative(ensureString(this.projectDir), i.path), i.contents);
     });
   }
@@ -449,7 +447,7 @@ export const fileReader = async (dir: string): Promise<FileReaderOutput[]> => {
   const contents = await fs.promises.readdir(dir, { withFileTypes: true });
 
   return contents
-    .filter((entry) => entry.isFile() && entry.name.match(/\.(?:ts|js)$/))
+    .filter(isJsOrTs)
     .map(toPath)
     .map(fileHandler)
     .concat(
@@ -463,6 +461,8 @@ export const fileReader = async (dir: string): Promise<FileReaderOutput[]> => {
       ).flat()
     );
 };
+
+const isJsOrTs = (file: fs.Dirent): boolean => file.isFile() && Boolean(file.name.match(/\.(?:ts|js)$/));
 
 const fileHandler = (file: string): FileReaderOutput => ({
   path: file,
