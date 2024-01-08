@@ -57,29 +57,33 @@ export default class Plugin extends Generator {
 
     this.githubUsername = await this.getGitUsername();
 
-    this.answers.internal = await confirm({ message: messages.getMessage('question.internal') });
+    const internal = await confirm({ message: messages.getMessage('question.internal') });
+    this.answers = {
+      internal,
+      name: await input({
+        message: messages.getMessage(internal ? 'question.internal.name' : 'question.external.name'),
+        validate: (i: string): boolean | string => {
+          const result = validatePluginName(i, internal ? '2PP' : '3PP');
+          if (result) return true;
 
-    this.answers.name = await input({
-      message: messages.getMessage(this.answers.internal ? 'question.internal.name' : 'question.external.name'),
-      validate: (i: string): boolean | string => {
-        const result = validatePluginName(i, this.answers.internal ? '2PP' : '3PP');
-        if (result) return true;
-
-        return messages.getMessage(this.answers.internal ? 'error.Invalid2ppName' : 'error.Invalid3ppName');
-      },
-    });
-    this.answers.description = await input({ message: messages.getMessage('question.description') });
-    if (!this.answers.internal) {
-      this.answers.author = await input({
-        message: messages.getMessage('question.author'),
-        default: this.githubUsername,
-      });
-      this.answers.codeCoverage = await select({
-        message: messages.getMessage('question.code-coverage'),
-        default: '50%',
-        choices: ['0%', '25%', '50%', '75%', '90%', '100%'].map(stringToChoice),
-      });
-    }
+          return messages.getMessage(internal ? 'error.Invalid2ppName' : 'error.Invalid3ppName');
+        },
+      }),
+      description: await input({ message: messages.getMessage('question.description') }),
+      ...(!internal
+        ? {
+            author: await input({
+              message: messages.getMessage('question.author'),
+              default: this.githubUsername,
+            }),
+            codeCoverage: await select({
+              message: messages.getMessage('question.code-coverage'),
+              default: '50%',
+              choices: ['0%', '25%', '50%', '75%', '90%', '100%'].map(stringToChoice),
+            }),
+          }
+        : {}),
+    };
 
     const directory = path.resolve(this.answers.name);
 
