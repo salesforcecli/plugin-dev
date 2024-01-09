@@ -8,7 +8,7 @@ You must run this command from within a plugin directory, such as the directory 
 
 This command is interactive. It first discovers all the commands currently implemented in the plugin, and asks you which you want to create a new flag for. It then prompts for other flag properties, such as its long name, optional short name, type, whether it's required, and so on. Long flag names must be kebab-case and not camelCase. The command doesn't let you use an existing long or short flag name. When the command completes, the Typescript file for the command is updated with the code for the new flag.
 
-Use the --dry-run flag to review new code for the command file without actually udpating it.
+Use the --dry-run flag to review new code for the command file without actually updating it.
 
 # flags.dry-run.summary
 
@@ -147,3 +147,7 @@ Enter the maximum integer value (optional):
 # question.Integer.Default
 
 Enter the default integer value (required if setting a minimum or maximum):
+
+# question.Options
+
+Enter an option, or hit enter if you are done entering options
