@@ -35,7 +35,10 @@ export const integerPrompts = async (): Promise<Pick<FlagAnswers, 'integerMin' |
     await input({
       message: messages.getMessage('question.Integer.Default'),
       validate: (i: string): string | boolean => {
-        if (!i) return true;
+        if (!i)
+          return typeof integerMax === 'number' || typeof integerMin === 'number'
+            ? messages.getMessage('error.RequiredIntegerDefault')
+            : true;
         const num = Number(i);
         if (!Number.isInteger(num)) return messages.getMessage('error.InvalidInteger');
         return (!integerMin || num >= integerMin) && (!integerMax || num <= integerMax)

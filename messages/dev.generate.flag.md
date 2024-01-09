@@ -88,6 +88,10 @@ Must be an integer.
 
 Maximum must be greater than minimum.
 
+# error.RequiredIntegerDefault
+
+An integer flag requires a default when it has a min and/or max value.
+
 # error.InvalidDefaultInteger
 
 Default integer must be between the specified minimum and maximum.
