@@ -170,7 +170,7 @@ export default class Plugin extends Generator {
     try {
       return await this.user.github.username();
     } catch {
-      return undefined;
+      return;
     }
   }
 }
