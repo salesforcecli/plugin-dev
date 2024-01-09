@@ -38,37 +38,37 @@ export default class Library extends Generator {
   public async prompting(): Promise<void> {
     this.log('Time to build a library!');
 
-    this.answers.scope = await input({
-      message: 'Npm Scope',
-      default: '@salesforce',
-      validate: (i: string): boolean | string => {
-        if (!i) return 'You must provide a scope.';
-        if (!i.startsWith('@')) return 'Scope must start with @.';
-        if (containsInvalidChars(i)) return 'Scope must not contain invalid characters.';
-        if (i.length < 2) return 'Scope length must be greater than one';
-        return true;
-      },
-    });
-
-    this.answers.name = await input({
-      message: 'Name',
-      validate: (i: string): boolean | string => {
-        if (!i) return 'You must provide a package name.';
-        if (containsInvalidChars(i)) return 'Name must not contain invalid characters.';
-        else return true;
-      },
-    });
-
-    this.answers.description = await input({ message: 'Description' });
-    this.answers.org = await input({
-      message: 'Github Org',
-      default: 'forcedotcom',
-      validate: (i: string): boolean | string => {
-        if (!i) return 'You must provide a Github Org.';
-        if (containsInvalidChars(i)) return 'Github Org must not contain invalid characters.';
-        else return true;
-      },
-    });
+    this.answers = {
+      scope: await input({
+        message: 'Npm Scope (should start with @)',
+        default: '@salesforce',
+        validate: (i: string): boolean | string => {
+          if (!i) return 'You must provide a scope.';
+          if (!i.startsWith('@')) return 'Scope must start with @.';
+          if (containsInvalidChars(i)) return 'Scope must not contain invalid characters.';
+          if (i.length < 2) return 'Scope length must be greater than one';
+          return true;
+        },
+      }),
+      name: await input({
+        message: 'Name',
+        validate: (i: string): boolean | string => {
+          if (!i) return 'You must provide a package name.';
+          if (containsInvalidChars(i)) return 'Name must not contain invalid characters.';
+          else return true;
+        },
+      }),
+      description: await input({ message: 'Description' }),
+      org: await input({
+        message: 'Github Org',
+        default: 'forcedotcom',
+        validate: (i: string): boolean | string => {
+          if (!i) return 'You must provide a Github Org.';
+          if (containsInvalidChars(i)) return 'Github Org must not contain invalid characters.';
+          else return true;
+        },
+      }),
+    };
 
     const directory = path.resolve(this.answers.name);
     shelljs.exec(`git clone git@github.com:forcedotcom/library-template.git ${directory}`);
