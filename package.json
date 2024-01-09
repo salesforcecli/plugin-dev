@@ -12,7 +12,7 @@
     "@octokit/rest": "^19.0.13",
     "@salesforce/core": "^6.4.4",
     "@salesforce/kit": "^3.0.15",
-    "@salesforce/sf-plugins-core": "5.0.14-dev.0",
+    "@salesforce/sf-plugins-core": "^7.0.0",
     "@salesforce/ts-types": "^2.0.9",
     "change-case": "^5.3.0",
     "fast-glob": "^3.3.2",
@@ -34,13 +34,11 @@
     "@types/lodash.defaultsdeep": "^4.6.9",
     "@types/shelljs": "^0.8.14",
     "@types/yeoman-generator": "^5.2.14",
-    "@types/yeoman-test": "^4.0.3",
     "eslint-plugin-sf-plugin": "^1.17.0",
     "oclif": "^4.1.4",
     "shx": "^0.3.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "yeoman-test": "^6.3.0"
+    "typescript": "^5.3.3"
   },
   "config": {
     "commitizen": {
@@ -114,7 +112,7 @@
     "prepack": "sf-prepack",
     "prepare": "sf-install",
     "test": "wireit",
-    "test:nuts": "nyc mocha \"test/**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel --jobs 10",
+    "test:nuts": "nyc mocha \"test/**/*.nut.ts\" --exclude \"test/fixtures/**\" --slow 4500 --timeout 600000 --parallel --jobs 10",
     "test:only": "wireit",
     "version": "oclif readme"
   },
