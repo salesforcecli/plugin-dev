@@ -96,7 +96,7 @@ export const askQuestions = async (commandFilePath: string): Promise<FlagAnswers
           }),
         }
       : {}),
-    ...(type === 'duration' ? durationPrompts : {}),
+    ...(type === 'duration' ? await durationPrompts() : {}),
     ...(type === 'salesforceId' ? await salesforceIdPrompts() : {}),
     ...(type === 'file' || type === 'directory'
       ? {
