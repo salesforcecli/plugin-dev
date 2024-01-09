@@ -68,8 +68,8 @@ export class FlagBuilder {
     const newFlag = [
       `    ${flagName}: Flags.${this.answers.type}({`,
       ...flagOptions.map((o) => `      ${o},`),
-      // custom has function invocation
-      this.answers.type === 'custom' ? '    })(),' : '    }),',
+      // custom, option have function invocation
+      ['custom', 'option'].includes(this.answers.type) ? '    })(),' : '    }),',
     ];
     return newFlag;
   }

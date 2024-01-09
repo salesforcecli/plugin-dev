@@ -671,6 +671,32 @@ describe('FlagBuilder', () => {
         expect(updatedFile).to.include("'my-flag': Flags.custom({");
       });
     });
+    describe('option', () => {
+      it('should build a flag with all the options and fn invocation', async () => {
+        const answers: FlagAnswers = {
+          type: 'option',
+          name: 'my-flag',
+          summary: 'Summary of flag.',
+          char: 's',
+          required: true,
+        };
+
+        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
+        const flagBuilder = new FlagBuilder(answers, 'test.ts');
+        const flag = flagBuilder.build();
+
+        expect(flag).to.deep.equal([
+          "    'my-flag': Flags.option({",
+          "      summary: messages.getMessage('flags.my-flag.summary'),",
+          "      char: 's',",
+          '      required: true,',
+          '    })(),',
+        ]);
+
+        const updatedFile = await flagBuilder.apply(flag);
+        expect(updatedFile).to.include("'my-flag': Flags.option({");
+      });
+    });
   });
 
   describe('apply', () => {
