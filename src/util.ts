@@ -40,6 +40,7 @@ export function validatePluginName(name: string, type: '2PP' | '3PP'): boolean {
 export class FlagBuilder {
   public constructor(private answers: FlagAnswers, private commandFilePath: string) {}
 
+  // eslint-disable-next-line complexity
   public build(): string[] {
     const flagOptions = [`summary: messages.getMessage('flags.${this.answers.name}.summary')`];
 
@@ -67,7 +68,8 @@ export class FlagBuilder {
     const newFlag = [
       `    ${flagName}: Flags.${this.answers.type}({`,
       ...flagOptions.map((o) => `      ${o},`),
-      '    }),',
+      // custom has function invocation
+      this.answers.type === 'custom' ? '    })(),' : '    }),',
     ];
     return newFlag;
   }
