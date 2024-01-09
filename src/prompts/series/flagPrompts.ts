@@ -17,6 +17,7 @@ import { FlagAnswers } from '../../types.js';
 import { durationPrompts } from '../durationPrompts.js';
 import { stringToChoice } from '../functions.js';
 import { integerPrompts } from '../integerPrompts.js';
+import { optionsPrompt } from '../optionsPrompt.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 export const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.flag');
@@ -104,6 +105,7 @@ export const askQuestions = async (commandFilePath: string): Promise<FlagAnswers
         }
       : {}),
     ...(type === 'integer' ? await integerPrompts() : {}),
+    ...(type === 'option' || type === 'custom' ? { optionChoices: await optionsPrompt() } : {}),
   };
 };
 
