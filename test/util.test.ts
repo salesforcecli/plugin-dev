@@ -537,10 +537,10 @@ describe('FlagBuilder', () => {
         };
         const flag = build(answers);
 
-        expect(flag).to.deep.equal(["    'my-flag': Flags.orgApiVersion,"]);
+        expect(flag).to.deep.equal(["    'my-flag': Flags.orgApiVersion(),"]);
 
         const updatedFile = apply({ flagParts: flag, existing: templateCommand });
-        expect(updatedFile).to.include("'my-flag': Flags.orgApiVersion,");
+        expect(updatedFile).to.include("'my-flag': Flags.orgApiVersion(),");
       });
     });
 
@@ -575,10 +575,10 @@ describe('FlagBuilder', () => {
         };
         const flag = build(answers);
 
-        expect(flag).to.deep.equal(["    'my-flag': Flags.requiredOrg,"]);
+        expect(flag).to.deep.equal(["    'my-flag': Flags.requiredOrg(),"]);
 
         const updatedFile = apply({ flagParts: flag, existing: templateCommand });
-        expect(updatedFile).to.include("'my-flag': Flags.requiredOrg,");
+        expect(updatedFile).to.include("'my-flag': Flags.requiredOrg(),");
       });
     });
 

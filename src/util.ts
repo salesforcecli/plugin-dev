@@ -71,7 +71,7 @@ export const build = (answers: FlagAnswers): string[] => {
         ['custom', 'option'].includes(answers.type) ? '    })(),' : '    }),',
       ]
     : // single line "direct from import" with no invocation
-      [`    ${flagName}: Flags.${answers.type},`];
+      [`    ${flagName}: Flags.${answers.type}(),`];
 };
 
 export const apply = ({ flagParts, existing }: { flagParts: string[]; existing: string }): string => {
