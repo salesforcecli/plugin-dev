@@ -673,7 +673,7 @@ describe('FlagBuilder', () => {
           "      summary: messages.getMessage('flags.my-flag.summary'),",
           "      char: 's',",
           '      required: true,',
-          "      options: ['a','b','c'],",
+          "      options: ['a','b','c'] as const,",
           '    })(),',
         ]);
 

@@ -58,7 +58,7 @@ export const build = (answers: FlagAnswers): string[] => {
     ...(answers.integerDefault && !answers.multiple ? [`default: ${answers.integerDefault}`] : []),
     ...(answers.integerDefault && answers.multiple ? [`default: [${answers.integerDefault}]`] : []),
     ...(answers.options && answers.options.length > 0
-      ? [`options: [${answers.options.map((o) => `'${o}'`).join(',')}]`]
+      ? [`options: [${answers.options.map((o) => `'${o}'`).join(',')}] as const`]
       : []),
   ];
 

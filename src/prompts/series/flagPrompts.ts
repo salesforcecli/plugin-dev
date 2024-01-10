@@ -158,6 +158,7 @@ const standardFlagDefaultNames = new Map<keyof typeof Flags, string>([
   ['optionalHub', 'target-dev-hub'],
 ]);
 
+// verbose, put prevents missing messages at runtime
 const flagDescriptions = new Map<keyof typeof Flags, string>([
   ['duration', messages.getMessage('flagDescriptions.duration')],
   ['option', messages.getMessage('flagDescriptions.option')],
