@@ -56,7 +56,7 @@ export type FlagAnswers = {
   char?: string;
   type: keyof typeof Flags;
   name: string;
-  summary: string;
+  summary?: string;
   required?: boolean;
   multiple?: boolean;
   durationUnit?: Lowercase<keyof typeof Duration.Unit>;
@@ -69,6 +69,7 @@ export type FlagAnswers = {
   integerMin?: number;
   integerMax?: number;
   integerDefault?: number;
+  options?: string[];
 };
 
 export type OctokitError = {
