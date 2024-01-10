@@ -15,7 +15,7 @@ import { Messages } from '@salesforce/core';
 import { toStandardizedId } from '@oclif/core';
 import fg from 'fast-glob';
 import { askQuestions } from '../../../prompts/series/flagPrompts.js';
-import { fileExists, FlagBuilder } from '../../../util.js';
+import { fileExists, build, apply } from '../../../util.js';
 import { FlagAnswers } from '../../../types.js';
 import { stringToChoice } from '../../../prompts/functions.js';
 
@@ -52,17 +52,15 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     const commandFilePath = `${path.join('.', 'src', 'commands', ...standardizedCommandId.split(':'))}.ts`;
 
-    const flagBuilder = new FlagBuilder(answers, commandFilePath);
-
-    const newFlag = flagBuilder.build();
+    const newFlag = build(answers);
 
     if (flags['dry-run']) {
       this.styledHeader('New flag:');
       this.log(newFlag.join(os.EOL));
       return;
     }
-
-    const updatedFile = await flagBuilder.apply(newFlag);
+    const existing = await fs.readFile(commandFilePath, 'utf-8');
+    const updatedFile = apply({ flagParts: newFlag, existing });
 
     await fs.writeFile(commandFilePath, updatedFile);
 
