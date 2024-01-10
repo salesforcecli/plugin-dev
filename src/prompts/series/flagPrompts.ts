@@ -171,4 +171,7 @@ const flagDescriptions = new Map<keyof typeof Flags, string>([
   ['requiredHub', messages.getMessage('flagDescriptions.requiredHub')],
   ['optionalOrg', messages.getMessage('flagDescriptions.optionalOrg')],
   ['optionalHub', messages.getMessage('flagDescriptions.optionalHub')],
+  ['url', messages.getMessage('flagDescriptions.url')],
+  ['boolean', messages.getMessage('flagDescriptions.boolean')],
+  ['string', messages.getMessage('flagDescriptions.string')],
 ]);

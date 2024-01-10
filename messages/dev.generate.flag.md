@@ -203,3 +203,15 @@ a Salesforce org, entered by username/alias and aware of default dev hub. Must b
 # flagDescriptions.optionalHub
 
 a Salesforce org, entered by username/alias and aware of default dev hub. Must be a dev hub.
+
+# flagDescriptions.url
+
+Validates that input matches URL spec. Returns the NodeJS Url class for simplified parsing.
+
+# flagDescriptions.string
+
+Any valid string
+
+# flagDescriptions.boolean
+
+Take no value, has value of `true` if provided and `false` otherwise
