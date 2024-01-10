@@ -151,3 +151,55 @@ Enter the default integer value (required if setting a minimum or maximum):
 # question.Options
 
 Enter an option, or hit enter if you are done entering options
+
+# question.UseStandard
+
+Do you want to use the standard definition (character, summary, description, default) for this flag type
+
+# flagDescriptions.duration
+
+a unit and quantity of time (example: X minutes, 4 days). You can specify min/max/default.
+
+# flagDescriptions.option
+
+a choice from a defined list of string options. You can set the allowed values.
+
+# flagDescriptions.integer
+
+an integer with built-in validation of optional min/max/default values.
+
+# flagDescriptions.custom
+
+a flag with a custom typescript type. You'll need to add some code after the scaffolding is complete.
+
+# flagDescriptions.salesforceId
+
+a valid salesforce record ID. You can specify the 3-character prefix and/or the length of the ID.
+
+# flagDescriptions.file
+
+a local file path. You can specify whether the file must exist.
+
+# flagDescriptions.directory
+
+a local directory path. You can specify whether the file must exist.
+
+# flagDescriptions.orgApiVersion
+
+a valid salesforce API version number. The code checks for minimal non-retired values.
+
+# flagDescriptions.requiredOrg
+
+a Salesforce org, entered by username/alias and aware of default org.
+
+# flagDescriptions.optionalOrg
+
+a Salesforce org, entered by username/alias and aware of default org.
+
+# flagDescriptions.requiredHub
+
+a Salesforce org, entered by username/alias and aware of default dev hub. Must be a dev hub.
+
+# flagDescriptions.optionalHub
+
+a Salesforce org, entered by username/alias and aware of default dev hub. Must be a dev hub.
