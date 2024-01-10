@@ -98,7 +98,7 @@ export const askQuestions = async (commandFilePath: string): Promise<FlagAnswers
             default: false,
           }),
         }),
-    ...(type !== 'boolean'
+    ...(type !== 'boolean' && !useStandard
       ? {
           multiple: await confirm({
             message: messages.getMessage('question.AllowMultiple'),
