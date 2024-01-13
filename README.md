@@ -158,7 +158,7 @@ FLAG DESCRIPTIONS
     The default is the "src" directory in the current working directory.
 ```
 
-_See code: [lib/commands/dev/audit/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/audit/messages.ts)_
+_See code: [lib/commands/dev/audit/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/audit/messages.ts)_
 
 ## `sf dev configure repo`
 
@@ -187,7 +187,7 @@ EXAMPLES
     $ sf dev configure repo --repository salesforcecli/testPackageRelease
 ```
 
-_See code: [lib/commands/dev/configure/repo.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/configure/repo.ts)_
+_See code: [lib/commands/dev/configure/repo.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/configure/repo.ts)_
 
 ## `sf dev configure secrets`
 
@@ -219,7 +219,7 @@ EXAMPLES
   $ sf dev configure secrets --repository salesforcecli/testPackageRelease
 ```
 
-_See code: [lib/commands/dev/configure/secrets.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/configure/secrets.ts)_
+_See code: [lib/commands/dev/configure/secrets.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/configure/secrets.ts)_
 
 ## `sf dev convert messages`
 
@@ -253,7 +253,7 @@ EXAMPLES
   $ sf dev convert messages --project-dir ./path/to/plugin --filename my-command.json
 ```
 
-_See code: [lib/commands/dev/convert/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/convert/messages.ts)_
+_See code: [lib/commands/dev/convert/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/convert/messages.ts)_
 
 ## `sf dev convert script`
 
@@ -296,7 +296,7 @@ EXAMPLES
     $ sf dev convert script --script ./myScript.yml
 ```
 
-_See code: [lib/commands/dev/convert/script.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/convert/script.ts)_
+_See code: [lib/commands/dev/convert/script.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/convert/script.ts)_
 
 ## `sf dev generate command`
 
@@ -333,7 +333,7 @@ EXAMPLES
     $ sf dev generate command --name my:exciting:command
 ```
 
-_See code: [lib/commands/dev/generate/command.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/generate/command.ts)_
+_See code: [lib/commands/dev/generate/command.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/generate/command.ts)_
 
 ## `sf dev generate flag`
 
@@ -370,7 +370,7 @@ EXAMPLES
     $ sf dev generate flag --dry-run
 ```
 
-_See code: [lib/commands/dev/generate/flag.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/generate/flag.ts)_
+_See code: [lib/commands/dev/generate/flag.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/generate/flag.ts)_
 
 ## `sf dev generate library`
 
@@ -394,7 +394,7 @@ EXAMPLES
   $ sf dev generate library
 ```
 
-_See code: [lib/commands/dev/generate/library.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/generate/library.ts)_
+_See code: [lib/commands/dev/generate/library.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/generate/library.ts)_
 
 ## `sf dev generate plugin`
 
@@ -422,6 +422,6 @@ EXAMPLES
   $ sf dev generate plugin
 ```
 
-_See code: [lib/commands/dev/generate/plugin.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/lib/commands/dev/generate/plugin.ts)_
+_See code: [lib/commands/dev/generate/plugin.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/generate/plugin.ts)_
 
 <!-- commandsstop -->
