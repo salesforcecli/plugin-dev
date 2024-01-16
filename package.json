@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/plugin-dev",
   "description": "commands for sf plugin development",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
@@ -14,7 +14,7 @@
     "@salesforce/kit": "^3.0.15",
     "@salesforce/sf-plugins-core": "^7.0.0",
     "@salesforce/ts-types": "^2.0.9",
-    "change-case": "^5.3.0",
+    "change-case": "^5.4.1",
     "fast-glob": "^3.3.2",
     "graphology": "^0.25.4",
     "graphology-types": "^0.24.7",
@@ -28,14 +28,14 @@
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.0.5",
     "@salesforce/cli-plugins-testkit": "^5.1.5",
-    "@salesforce/dev-scripts": "^8.2.0",
+    "@salesforce/dev-scripts": "^8.3.0",
     "@salesforce/plugin-command-reference": "^3.0.59",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash.defaultsdeep": "^4.6.9",
     "@types/shelljs": "^0.8.14",
     "@types/yeoman-generator": "^5.2.14",
     "eslint-plugin-sf-plugin": "^1.17.0",
-    "oclif": "^4.1.4",
+    "oclif": "^4.3.2",
     "shx": "^0.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

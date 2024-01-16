@@ -158,6 +158,67 @@ FLAG DESCRIPTIONS
 
 _See code: [src/commands/dev/audit/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.4/src/commands/dev/audit/messages.ts)_
 
+## `sf dev configure repo`
+
+Configure a GitHub repo for the GitHub Actions pipeline.
+
+```
+USAGE
+  $ sf dev configure repo -r <value> [--json] [-d] [-b <value>]
+
+FLAGS
+  -b, --bot=<value>         [default: SF-CLI-BOT] GitHub login/username for the bot.
+  -d, --dry-run             Make no changes.
+  -r, --repository=<value>  (required) GitHub owner/repo for which you want to configure GitHub Actions.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Configure a GitHub repo for the GitHub Actions pipeline.
+
+  Sets up labels and exempts the CLI bot for branch protection and PR rules.
+
+EXAMPLES
+  Configure the repo "testPackageRelease", with owner "salesforcecli", for GitHub Actions.
+
+    $ sf dev configure repo --repository salesforcecli/testPackageRelease
+```
+
+_See code: [lib/commands/dev/configure/repo.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/configure/repo.ts)_
+
+## `sf dev configure secrets`
+
+Ensures a GitHub repo has correct access to secrets based on its workflows.
+
+```
+USAGE
+  $ sf dev configure secrets -r <value> [--json] [-d]
+
+FLAGS
+  -d, --dry-run             Make no changes.
+  -r, --repository=<value>  (required) Github owner/repo.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Ensures a GitHub repo has correct access to secrets based on its workflows.
+
+  Inspects a repo's yaml files and verifies that secrets required are available for the repo (either set at the repo
+  level or shared via organization-level secrets).
+
+  This command requires scope:admin permissions to inspect the org secrets and admin access to the repo to inspect the
+  repo secrets.
+
+EXAMPLES
+  Ensure secrets access for the repo "testPackageRelease", with owner "salesforcecli":
+
+  $ sf dev configure secrets --repository salesforcecli/testPackageRelease
+```
+
+_See code: [lib/commands/dev/configure/secrets.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.5/lib/commands/dev/configure/secrets.ts)_
+
 ## `sf dev convert messages`
 
 Convert a .json messages file into Markdown.
