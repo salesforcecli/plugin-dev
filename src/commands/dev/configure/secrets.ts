@@ -8,8 +8,6 @@
 // because github api isn't camelcased
 /* eslint-disable camelcase */
 
-
-
 import fs from 'node:fs';
 import { ux } from '@oclif/core';
 
@@ -21,7 +19,7 @@ import shelljs from 'shelljs';
 import yaml from 'js-yaml';
 import { OctokitError } from '../../../types.js';
 
-Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'configure.secrets');
 
 type SecretClassification =
@@ -52,6 +50,7 @@ export default class ConfigureSecrets extends SfCommand<SecretsResult> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
+  public static readonly hidden = true;
 
   public static readonly flags = {
     repository: Flags.string({

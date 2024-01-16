@@ -12,10 +12,14 @@ import Generator from 'yeoman-generator';
 import shelljs from 'shelljs';
 import replace from 'replace-in-file';
 import { Messages } from '@salesforce/core';
+import confirm from '@inquirer/confirm';
+import input from '@inquirer/input';
+import select from '@inquirer/select';
+import { stringToChoice } from '../prompts/functions.js';
 import { NYC, PackageJson } from '../types.js';
 import { readJson, validatePluginName } from '../util.js';
 
-Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'plugin.generator');
 
 const TEMPLATES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../templates');
@@ -41,7 +45,7 @@ function rm(filepath: string, options: { recursive?: boolean }): void {
  */
 export default class Plugin extends Generator {
   private answers!: PluginAnswers;
-  private githubUsername?: string | null;
+  private githubUsername?: string;
 
   public constructor(args: string | string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
@@ -53,57 +57,33 @@ export default class Plugin extends Generator {
 
     this.githubUsername = await this.getGitUsername();
 
-    this.answers = await this.prompt<PluginAnswers>([
-      {
-        type: 'confirm',
-        name: 'internal',
-        message: messages.getMessage('question.internal'),
-      },
-      {
-        type: 'input',
-        name: 'name',
-        message: messages.getMessage('question.internal.name'),
-        validate: (input: string): boolean | string => {
-          const result = validatePluginName(input, '2PP');
+    const internal = await confirm({ message: messages.getMessage('question.internal') });
+    this.answers = {
+      internal,
+      name: await input({
+        message: messages.getMessage(internal ? 'question.internal.name' : 'question.external.name'),
+        validate: (i: string): boolean | string => {
+          const result = validatePluginName(i, internal ? '2PP' : '3PP');
           if (result) return true;
 
-          return messages.getMessage('error.Invalid2ppName');
+          return messages.getMessage(internal ? 'error.Invalid2ppName' : 'error.Invalid3ppName');
         },
-        when: (answers: { internal: boolean }): boolean => answers.internal,
-      },
-      {
-        type: 'input',
-        name: 'name',
-        message: messages.getMessage('question.external.name'),
-        validate: (input: string): string | boolean => {
-          const result = validatePluginName(input, '3PP');
-          if (result) return true;
-
-          return messages.getMessage('error.Invalid3ppName');
-        },
-        when: (answers: { internal: boolean }): boolean => !answers.internal,
-      },
-      {
-        type: 'input',
-        name: 'description',
-        message: messages.getMessage('question.description'),
-      },
-      {
-        type: 'input',
-        name: 'author',
-        message: messages.getMessage('question.author'),
-        default: this.githubUsername,
-        when: (answers: { internal: boolean }): boolean => !answers.internal,
-      },
-      {
-        type: 'list',
-        name: 'codeCoverage',
-        message: messages.getMessage('question.code-coverage'),
-        default: '50%',
-        choices: ['0%', '25%', '50%', '75%', '90%', '100%'],
-        when: (answers: { internal: boolean }): boolean => !answers.internal,
-      },
-    ]);
+      }),
+      description: await input({ message: messages.getMessage('question.description') }),
+      ...(!internal
+        ? {
+            author: await input({
+              message: messages.getMessage('question.author'),
+              default: this.githubUsername,
+            }),
+            codeCoverage: await select({
+              message: messages.getMessage('question.code-coverage'),
+              default: '50%',
+              choices: ['0%', '25%', '50%', '75%', '90%', '100%'].map(stringToChoice),
+            }),
+          }
+        : {}),
+    };
 
     const directory = path.resolve(this.answers.name);
 
@@ -186,11 +166,11 @@ export default class Plugin extends Generator {
     }
   }
 
-  private async getGitUsername(): Promise<string | null> {
+  private async getGitUsername(): Promise<string | undefined> {
     try {
       return await this.user.github.username();
     } catch {
-      return null;
+      return;
     }
   }
 }

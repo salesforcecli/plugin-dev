@@ -37,80 +37,77 @@ export function validatePluginName(name: string, type: '2PP' | '3PP'): boolean {
   return type === '2PP' ? validNpmPackageName.test(name) && valid2PPName.test(name) : validNpmPackageName.test(name);
 }
 
-export class FlagBuilder {
-  public constructor(private answers: FlagAnswers, private commandFilePath: string) {}
+// eslint-disable-next-line complexity
+export const build = (answers: FlagAnswers): string[] => {
+  const flagOptions = [
+    ...(answers.summary ? [`summary: messages.getMessage('flags.${answers.name}.summary')`] : []),
+    ...(answers.char ? [`char: '${answers.char}'`] : []),
+    ...(answers.required ? ['required: true'] : []),
+    ...(answers.multiple ? ['multiple: true'] : []),
+    ...(answers.durationUnit ? [`unit: '${answers.durationUnit}'`] : []),
+    ...(answers.durationDefaultValue ? [`defaultValue: ${answers.durationDefaultValue}`] : []),
+    ...(answers.durationMin ? [`min: ${answers.durationMin}`] : []),
+    ...(answers.durationMax ? [`max: ${answers.durationMax}`] : []),
+    ...(answers.salesforceIdLength && ['Both', '15', '18'].includes(answers.salesforceIdLength)
+      ? [`length: ${answers.salesforceIdLength === 'Both' ? "'both'" : answers.salesforceIdLength}`]
+      : []),
+    ...(answers.salesforceIdStartsWith ? [`startsWith: '${answers.salesforceIdStartsWith}'`] : []),
+    ...(answers.fileOrDirExists ? ['exists: true'] : []),
+    ...(answers.integerMin ? [`min: ${answers.integerMin}`] : []),
+    ...(answers.integerMax ? [`max: ${answers.integerMax}`] : []),
+    ...(answers.integerDefault && !answers.multiple ? [`default: ${answers.integerDefault}`] : []),
+    ...(answers.integerDefault && answers.multiple ? [`default: [${answers.integerDefault}]`] : []),
+    ...(answers.options && answers.options.length > 0
+      ? [`options: [${answers.options.map((o) => `'${o}'`).join(',')}] as const`]
+      : []),
+  ];
 
-  public build(): string[] {
-    const flagOptions = [`summary: messages.getMessage('flags.${this.answers.name}.summary')`];
+  const flagName = answers.name.includes('-') ? `'${answers.name}'` : answers.name;
+  return flagOptions.length > 0
+    ? [
+        `    ${flagName}: Flags.${answers.type}({`,
+        ...flagOptions.map((o) => `      ${o},`),
+        // custom, option have function invocation
+        ['custom', 'option'].includes(answers.type) ? '    })(),' : '    }),',
+      ]
+    : // single line "direct from import" with no invocation
+      [`    ${flagName}: Flags.${answers.type}(),`];
+};
 
-    if (this.answers.char) flagOptions.push(`char: '${this.answers.char}'`);
-    if (this.answers.required) flagOptions.push('required: true');
-    if (this.answers.multiple) flagOptions.push('multiple: true');
-    if (this.answers.durationUnit) flagOptions.push(`unit: '${this.answers.durationUnit}'`);
-    if (this.answers.durationDefaultValue) flagOptions.push(`defaultValue: ${this.answers.durationDefaultValue}`);
-    if (this.answers.durationMin) flagOptions.push(`min: ${this.answers.durationMin}`);
-    if (this.answers.durationMax) flagOptions.push(`max: ${this.answers.durationMax}`);
-    if (this.answers.salesforceIdLength && ['Both', '15', '18'].includes(this.answers.salesforceIdLength))
-      flagOptions.push(
-        `length: ${this.answers.salesforceIdLength === 'Both' ? "'both'" : this.answers.salesforceIdLength}`
-      );
-    if (this.answers.salesforceIdStartsWith) flagOptions.push(`startsWith: '${this.answers.salesforceIdStartsWith}'`);
-    if (this.answers.fileOrDirExists) flagOptions.push('exists: true');
-    if (this.answers.integerMin) flagOptions.push(`min: ${this.answers.integerMin}`);
-    if (this.answers.integerMax) flagOptions.push(`max: ${this.answers.integerMax}`);
-    if (this.answers.integerDefault && !this.answers.multiple)
-      flagOptions.push(`default: ${this.answers.integerDefault}`);
-    if (this.answers.integerDefault && this.answers.multiple)
-      flagOptions.push(`default: [${this.answers.integerDefault}]`);
+export const apply = ({ flagParts, existing }: { flagParts: string[]; existing: string }): string => {
+  const lines = existing.replace(/\r\n/g, '\n').split('\n');
 
-    const flagName = this.answers.name.includes('-') ? `'${this.answers.name}'` : this.answers.name;
-    const newFlag = [
-      `    ${flagName}: Flags.${this.answers.type}({`,
-      ...flagOptions.map((o) => `      ${o},`),
-      '    }),',
-    ];
-    return newFlag;
+  const flagsStartIndex = lines.findIndex(
+    (line) => line.includes('public static flags') || line.includes('public static readonly flags')
+  );
+
+  // If index isn't found, that means that no flags are defined yet
+  if (flagsStartIndex === -1) {
+    const altFlagsStartIndex = lines.findIndex((line) => line.includes('public async run')) - 1;
+    lines.splice(altFlagsStartIndex, 0, `public static readonly flags = {${flagParts.join(os.EOL)}};${os.EOL}`);
+  } else {
+    const flagsEndIndex = lines.slice(flagsStartIndex).findIndex((line) => line.endsWith('};')) + flagsStartIndex;
+    lines.splice(flagsEndIndex, 0, ...flagParts);
   }
 
-  public async apply(flagParts: string[]): Promise<string> {
-    const lines = (await this.readFile()).replace(/\r\n/g, '\n').split('\n');
+  const sfPluginsCoreImport = lines.findIndex((line) => line.includes("from '@salesforce/sf-plugins-core'"));
 
-    const flagsStartIndex = lines.findIndex(
-      (line) => line.includes('public static flags') || line.includes('public static readonly flags')
-    );
+  const oclifCoreImport = lines.findIndex((line) => line.includes("from '@oclif/core'"));
 
-    // If index isn't found, that means that no flags are defined yet
-    if (flagsStartIndex === -1) {
-      const altFlagsStartIndex = lines.findIndex((line) => line.includes('public async run')) - 1;
-      lines.splice(altFlagsStartIndex, 0, `public static readonly flags = {${flagParts.join(os.EOL)}};${os.EOL}`);
-    } else {
-      const flagsEndIndex = lines.slice(flagsStartIndex).findIndex((line) => line.endsWith('};')) + flagsStartIndex;
-      lines.splice(flagsEndIndex, 0, ...flagParts);
-    }
-
-    const sfPluginsCoreImport = lines.findIndex((line) => line.includes("from '@salesforce/sf-plugins-core'"));
-
-    const oclifCoreImport = lines.findIndex((line) => line.includes("from '@oclif/core'"));
-
-    // add the Flags import from @salesforce/sf-plugins-core if it doesn't exist already
-    if (!lines[sfPluginsCoreImport].includes('Flags')) {
-      const line = lines[sfPluginsCoreImport];
-      const endIndex = line.indexOf('}');
-      lines[sfPluginsCoreImport] = line.substring(0, endIndex) + ', Flags' + line.substring(endIndex);
-    }
-
-    // ensure the Flags import is from @salesforce/sf-plugins-core
-    if (oclifCoreImport !== -1 && lines[oclifCoreImport].includes('Flags')) {
-      if (lines[oclifCoreImport] === "import { Flags } from '@oclif/core';") lines.splice(oclifCoreImport, 1);
-      else {
-        lines[oclifCoreImport] = lines[oclifCoreImport].replace('Flags,', '').replace(', Flags', '');
-      }
-    }
-
-    return lines.join(os.EOL);
+  // add the Flags import from @salesforce/sf-plugins-core if it doesn't exist already
+  if (!lines[sfPluginsCoreImport].includes('Flags')) {
+    const line = lines[sfPluginsCoreImport];
+    const endIndex = line.indexOf('}');
+    lines[sfPluginsCoreImport] = line.substring(0, endIndex) + ', Flags' + line.substring(endIndex);
   }
 
-  public async readFile(): Promise<string> {
-    return fs.promises.readFile(this.commandFilePath, 'utf8');
+  // ensure the Flags import is from @salesforce/sf-plugins-core
+  if (oclifCoreImport !== -1 && lines[oclifCoreImport].includes('Flags')) {
+    if (lines[oclifCoreImport] === "import { Flags } from '@oclif/core';") lines.splice(oclifCoreImport, 1);
+    else {
+      lines[oclifCoreImport] = lines[oclifCoreImport].replace('Flags,', '').replace(', Flags', '');
+    }
   }
-}
+
+  return lines.join(os.EOL);
+};

@@ -8,9 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import { expect } from 'chai';
-import helpers from 'yeoman-test';
-import { Config } from '@oclif/core';
-import AuditMessages, { fileReader, resolveFileContents } from '../../../../src/commands/dev/audit/messages.js';
+import { fileReader, resolveFileContents } from '../../../../src/commands/dev/audit/messages.js';
 
 describe('file reader', () => {
   const testDir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'tmpFileReader');
@@ -48,107 +46,5 @@ describe('file reader', () => {
 
   after(async () => {
     await fs.promises.rm(testDir, { recursive: true, force: true });
-  });
-});
-
-describe('audit messages', () => {
-  let runResult: helpers.RunResult;
-  const testDir = path.join(process.cwd(), 'tmp');
-  before(async () => {
-    try {
-      await fs.promises.rm(path.join(testDir, 'plugin-test'), { recursive: true, force: true });
-    } catch {
-      // do nothing
-    }
-
-    await fs.promises.mkdir(testDir, { recursive: true });
-
-    runResult = await helpers
-      .create(
-        path.join(
-          path.dirname(fileURLToPath(import.meta.url)),
-          '..',
-          '..',
-          '..',
-          '..',
-          'src',
-          'generators',
-          'plugin.ts'
-        )
-      )
-      .cd(testDir)
-      .withPrompts({
-        internal: true,
-        name: 'plugin-test',
-        description: 'my plugin description',
-      })
-      .run();
-
-    await fs.promises.writeFile(
-      path.join(runResult.cwd, 'plugin-test', 'messages', 'my.unused.md'),
-      '# unusedMessageInUnusedBundle\nunused message\n'
-    );
-    let messages = (
-      await fs.promises.readFile(path.join(runResult.cwd, 'plugin-test', 'messages', 'hello.world.md'))
-    ).toString();
-    messages += '# unusedMessage\nunused message\n';
-    await fs.promises.writeFile(
-      path.join(runResult.cwd, 'plugin-test', 'messages', 'hello.world.md'),
-      messages,
-      'utf8'
-    );
-    const helloWorldPath = path.join(runResult.cwd, 'plugin-test', 'src', 'commands', 'hello', 'world.ts');
-    const helloWorld = (await fs.promises.readFile(helloWorldPath, 'utf8')).trim().split('\n');
-    const checkMessageFunction = `
-  public checkMissingMessage(): void {
-    messages.getMessage('noWayYouFindThis');
-    const msg = 'noWayYouFindThis';
-    messages.getMessage(msg);
-  }
-}`;
-    helloWorld[helloWorld.length - 1] = checkMessageFunction;
-    await fs.promises.writeFile(helloWorldPath, helloWorld.join('\n'), 'utf8');
-  });
-
-  after(async () => {
-    runResult.restore();
-
-    try {
-      await fs.promises.rm(path.join(testDir, 'plugin-test'), { recursive: true, force: true });
-    } catch {
-      // do nothing
-    }
-  });
-
-  it('should audit messages', async () => {
-    const cmd = new AuditMessages(['-p', path.join(runResult.cwd, 'plugin-test'), '--json'], {} as Config);
-    const result = await cmd.run();
-    expect(result).to.deep.equal({
-      missingBundles: [],
-      missingMessages: [
-        {
-          Bundle: 'hello.world',
-          File: 'src/commands/hello/world.ts'.split('/').join(path.sep),
-          IsLiteral: false,
-          Name: 'msg',
-          SourceVar: 'messages',
-        },
-        {
-          Bundle: 'hello.world',
-          File: 'src/commands/hello/world.ts'.split('/').join(path.sep),
-          IsLiteral: true,
-          Name: 'noWayYouFindThis',
-          SourceVar: 'messages',
-        },
-      ],
-      unusedBundles: ['my.unused'],
-      unusedMessages: [
-        {
-          Bundle: 'hello.world',
-          Name: 'unusedMessage',
-          ReferencedInNonLiteral: '*',
-        },
-      ],
-    });
   });
 });

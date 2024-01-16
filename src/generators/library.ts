@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import Generator from 'yeoman-generator';
 import shelljs from 'shelljs';
 import replace from 'replace-in-file';
+import input from '@inquirer/input';
 import { PackageJson } from '../types.js';
 import { readJson } from '../util.js';
 
@@ -21,9 +22,8 @@ type Answers = {
   scope: string;
 };
 
-function containsInvalidChars(input: string): boolean {
-  return input.split('').some((i) => '!#$%^&*() ?/\\,.";\':|{}[]~`'.includes(i));
-}
+const containsInvalidChars = (i: string): boolean =>
+  i.split('').some((part) => '!#$%^&*() ?/\\,.";\':|{}[]~`'.includes(part));
 
 const TEMPLATES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../templates');
 
@@ -38,47 +38,37 @@ export default class Library extends Generator {
   public async prompting(): Promise<void> {
     this.log('Time to build a library!');
 
-    this.answers = await this.prompt<Answers>([
-      {
-        type: 'input',
-        name: 'scope',
-        message: 'Npm Scope',
+    this.answers = {
+      scope: await input({
+        message: 'Npm Scope (should start with @)',
         default: '@salesforce',
-        validate: (input: string): boolean | string => {
-          if (!input) return 'You must provide a scope.';
-          if (!input.startsWith('@')) return 'Scope must start with @.';
-          if (containsInvalidChars(input)) return 'Scope must not contain invalid characters.';
-          if (input.length < 2) return 'Scope length must be greater than one';
+        validate: (i: string): boolean | string => {
+          if (!i) return 'You must provide a scope.';
+          if (!i.startsWith('@')) return 'Scope must start with @.';
+          if (containsInvalidChars(i)) return 'Scope must not contain invalid characters.';
+          if (i.length < 2) return 'Scope length must be greater than one';
           return true;
         },
-      },
-      {
-        type: 'input',
-        name: 'name',
+      }),
+      name: await input({
         message: 'Name',
-        validate: (input: string): boolean | string => {
-          if (!input) return 'You must provide a package name.';
-          if (containsInvalidChars(input)) return 'Name must not contain invalid characters.';
+        validate: (i: string): boolean | string => {
+          if (!i) return 'You must provide a package name.';
+          if (containsInvalidChars(i)) return 'Name must not contain invalid characters.';
           else return true;
         },
-      },
-      {
-        type: 'input',
-        name: 'description',
-        message: 'Description',
-      },
-      {
-        type: 'input',
-        name: 'org',
+      }),
+      description: await input({ message: 'Description' }),
+      org: await input({
         message: 'Github Org',
         default: 'forcedotcom',
-        validate: (input: string): boolean | string => {
-          if (!input) return 'You must provide a Github Org.';
-          if (containsInvalidChars(input)) return 'Github Org must not contain invalid characters.';
+        validate: (i: string): boolean | string => {
+          if (!i) return 'You must provide a Github Org.';
+          if (containsInvalidChars(i)) return 'Github Org must not contain invalid characters.';
           else return true;
         },
-      },
-    ]);
+      }),
+    };
 
     const directory = path.resolve(this.answers.name);
     shelljs.exec(`git clone git@github.com:forcedotcom/library-template.git ${directory}`);

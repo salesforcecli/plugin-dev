@@ -7,11 +7,10 @@
 import fs from 'node:fs';
 import os from 'node:os';
 
-
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
-Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.convert.script');
 
 type Flag = {
@@ -189,7 +188,7 @@ export default class ConvertScript extends SfCommand<void> {
   }
 
   private async smartConfirm(message: string, prompt = true): Promise<boolean> {
-    return prompt ? this.confirm(message, 18000000) : true;
+    return prompt ? this.confirm({ message, ms: 18_000_000 }) : true;
   }
 
   private findReplacement(commandId: string): Snapshot {

@@ -8,7 +8,7 @@ You must run this command from within a plugin directory, such as the directory 
 
 This command is interactive. It first discovers all the commands currently implemented in the plugin, and asks you which you want to create a new flag for. It then prompts for other flag properties, such as its long name, optional short name, type, whether it's required, and so on. Long flag names must be kebab-case and not camelCase. The command doesn't let you use an existing long or short flag name. When the command completes, the Typescript file for the command is updated with the code for the new flag.
 
-Use the --dry-run flag to review new code for the command file without actually udpating it.
+Use the --dry-run flag to review new code for the command file without actually updating it.
 
 # flags.dry-run.summary
 
@@ -88,6 +88,10 @@ Must be an integer.
 
 Maximum must be greater than minimum.
 
+# error.RequiredIntegerDefault
+
+An integer flag requires a default when it has a min and/or max value.
+
 # error.InvalidDefaultInteger
 
 Default integer must be between the specified minimum and maximum.
@@ -143,3 +147,71 @@ Enter the maximum integer value (optional):
 # question.Integer.Default
 
 Enter the default integer value (required if setting a minimum or maximum):
+
+# question.Options
+
+Enter an option, or hit enter if you are done entering options
+
+# question.UseStandard
+
+Do you want to use the standard definition (character, summary, description, default) for this flag type
+
+# flagDescriptions.duration
+
+a unit and quantity of time (example: X minutes, 4 days). You can specify min/max/default.
+
+# flagDescriptions.option
+
+a choice from a defined list of string options. You can set the allowed values.
+
+# flagDescriptions.integer
+
+an integer with built-in validation of optional min/max/default values.
+
+# flagDescriptions.custom
+
+a flag with a custom typescript type. You'll need to add some code after the scaffolding is complete.
+
+# flagDescriptions.salesforceId
+
+a valid salesforce record ID. You can specify the 3-character prefix and/or the length of the ID.
+
+# flagDescriptions.file
+
+a local file path. You can specify whether the file must exist.
+
+# flagDescriptions.directory
+
+a local directory path. You can specify whether the file must exist.
+
+# flagDescriptions.orgApiVersion
+
+a valid salesforce API version number. The code checks for minimal non-retired values.
+
+# flagDescriptions.requiredOrg
+
+a Salesforce org, entered by username/alias and aware of default org.
+
+# flagDescriptions.optionalOrg
+
+a Salesforce org, entered by username/alias and aware of default org.
+
+# flagDescriptions.requiredHub
+
+a Salesforce org, entered by username/alias and aware of default dev hub. Must be a dev hub.
+
+# flagDescriptions.optionalHub
+
+a Salesforce org, entered by username/alias and aware of default dev hub. Must be a dev hub.
+
+# flagDescriptions.url
+
+Validates that input matches URL spec. Returns the NodeJS Url class for simplified parsing.
+
+# flagDescriptions.string
+
+Any valid string
+
+# flagDescriptions.boolean
+
+Take no value, has value of `true` if provided and `false` otherwise

@@ -6,9 +6,8 @@
  */
 
 import os from 'node:os';
-import sinon from 'sinon';
 import { expect, config as chaiConfig } from 'chai';
-import { FlagBuilder, validatePluginName } from '../src/util.js';
+import { build, apply, validatePluginName } from '../src/util.js';
 import { FlagAnswers } from '../src/types.js';
 
 chaiConfig.truncateThreshold = 0;
@@ -215,16 +214,6 @@ export default class World extends SfCommand<HelloWorldResult> {
 `.replace(/\n/g, os.EOL);
 
 describe('FlagBuilder', () => {
-  let sandbox: sinon.SinonSandbox;
-
-  beforeEach(() => {
-    sandbox = sinon.createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   describe('build', () => {
     describe('string', () => {
       it('should build a flag with all the options', async () => {
@@ -237,9 +226,7 @@ describe('FlagBuilder', () => {
           multiple: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.string({",
@@ -250,7 +237,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.string({");
       });
     });
@@ -265,9 +252,7 @@ describe('FlagBuilder', () => {
           required: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.boolean({",
@@ -277,7 +262,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.boolean({");
       });
     });
@@ -294,9 +279,7 @@ describe('FlagBuilder', () => {
           fileOrDirExists: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.directory({",
@@ -308,7 +291,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.directory({");
       });
     });
@@ -325,9 +308,7 @@ describe('FlagBuilder', () => {
           fileOrDirExists: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.file({",
@@ -339,7 +320,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.file({");
       });
     });
@@ -357,9 +338,7 @@ describe('FlagBuilder', () => {
           integerDefault: 5,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.integer({",
@@ -372,7 +351,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.integer({");
       });
 
@@ -389,9 +368,7 @@ describe('FlagBuilder', () => {
           integerDefault: 5,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.integer({",
@@ -405,7 +382,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.integer({");
       });
     });
@@ -421,9 +398,7 @@ describe('FlagBuilder', () => {
           multiple: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.url({",
@@ -434,7 +409,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.url({");
       });
     });
@@ -454,9 +429,7 @@ describe('FlagBuilder', () => {
           durationMin: 1,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.duration({",
@@ -471,7 +444,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.duration({");
       });
     });
@@ -489,9 +462,7 @@ describe('FlagBuilder', () => {
           salesforceIdLength: '18',
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.salesforceId({",
@@ -504,7 +475,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.salesforceId({");
       });
 
@@ -518,9 +489,7 @@ describe('FlagBuilder', () => {
           salesforceIdStartsWith: '00D',
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.salesforceId({",
@@ -531,7 +500,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.salesforceId({");
       });
     });
@@ -547,9 +516,7 @@ describe('FlagBuilder', () => {
           multiple: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.orgApiVersion({",
@@ -560,8 +527,20 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.orgApiVersion({");
+      });
+      it('with no options', async () => {
+        const answers: FlagAnswers = {
+          type: 'orgApiVersion',
+          name: 'my-flag',
+        };
+        const flag = build(answers);
+
+        expect(flag).to.deep.equal(["    'my-flag': Flags.orgApiVersion(),"]);
+
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
+        expect(updatedFile).to.include("'my-flag': Flags.orgApiVersion(),");
       });
     });
 
@@ -575,9 +554,7 @@ describe('FlagBuilder', () => {
           required: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.requiredOrg({",
@@ -587,8 +564,21 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.requiredOrg({");
+      });
+
+      it('with no options', async () => {
+        const answers: FlagAnswers = {
+          type: 'requiredOrg',
+          name: 'my-flag',
+        };
+        const flag = build(answers);
+
+        expect(flag).to.deep.equal(["    'my-flag': Flags.requiredOrg(),"]);
+
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
+        expect(updatedFile).to.include("'my-flag': Flags.requiredOrg(),");
       });
     });
 
@@ -602,9 +592,7 @@ describe('FlagBuilder', () => {
           required: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.optionalOrg({",
@@ -614,7 +602,7 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.optionalOrg({");
       });
     });
@@ -629,9 +617,7 @@ describe('FlagBuilder', () => {
           required: true,
         };
 
-        sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommand);
-        const flagBuilder = new FlagBuilder(answers, 'test.ts');
-        const flag = flagBuilder.build();
+        const flag = build(answers);
 
         expect(flag).to.deep.equal([
           "    'my-flag': Flags.requiredHub({",
@@ -641,8 +627,58 @@ describe('FlagBuilder', () => {
           '    }),',
         ]);
 
-        const updatedFile = await flagBuilder.apply(flag);
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
         expect(updatedFile).to.include("'my-flag': Flags.requiredHub({");
+      });
+    });
+    describe('custom', () => {
+      it('should build a flag with all the options and fn invocation', async () => {
+        const answers: FlagAnswers = {
+          type: 'custom',
+          name: 'my-flag',
+          summary: 'Summary of flag.',
+          char: 's',
+          required: true,
+        };
+
+        const flag = build(answers);
+
+        expect(flag).to.deep.equal([
+          "    'my-flag': Flags.custom({",
+          "      summary: messages.getMessage('flags.my-flag.summary'),",
+          "      char: 's',",
+          '      required: true,',
+          '    })(),',
+        ]);
+
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
+        expect(updatedFile).to.include("'my-flag': Flags.custom({");
+      });
+    });
+    describe('option with some options', () => {
+      it('should build a flag with all the options and fn invocation', async () => {
+        const answers: FlagAnswers = {
+          type: 'option',
+          name: 'my-flag',
+          options: ['a', 'b', 'c'],
+          summary: 'Summary of flag.',
+          char: 's',
+          required: true,
+        };
+
+        const flag = build(answers);
+
+        expect(flag).to.deep.equal([
+          "    'my-flag': Flags.option({",
+          "      summary: messages.getMessage('flags.my-flag.summary'),",
+          "      char: 's',",
+          '      required: true,',
+          "      options: ['a','b','c'] as const,",
+          '    })(),',
+        ]);
+
+        const updatedFile = apply({ flagParts: flag, existing: templateCommand });
+        expect(updatedFile).to.include("'my-flag': Flags.option({");
       });
     });
   });
@@ -655,10 +691,8 @@ describe('FlagBuilder', () => {
         summary: 'Summary of string flag.',
       };
 
-      sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommandNoFlags);
-      const flagBuilder = new FlagBuilder(answers, 'test.ts');
-      const flag = flagBuilder.build();
-      const updated = await flagBuilder.apply(flag);
+      const flag = build(answers);
+      const updated = apply({ flagParts: flag, existing: templateCommandNoFlags });
 
       expect(updated).to.include("import { SfCommand , Flags} from '@salesforce/sf-plugins-core';");
       expect(updated).to.include('public static readonly flags = {');
@@ -671,10 +705,8 @@ describe('FlagBuilder', () => {
         summary: 'Summary of string flag.',
       };
 
-      sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommandOclifFlags);
-      const flagBuilder = new FlagBuilder(answers, 'test.ts');
-      const flag = flagBuilder.build();
-      const updated = await flagBuilder.apply(flag);
+      const flag = build(answers);
+      const updated = apply({ flagParts: flag, existing: templateCommandOclifFlags });
 
       expect(updated).to.not.include('@oclif/core');
       expect(updated).to.include("import { SfCommand , Flags} from '@salesforce/sf-plugins-core';");
@@ -687,10 +719,8 @@ describe('FlagBuilder', () => {
         summary: 'Summary of string flag.',
       };
 
-      sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommandOclifFlagsWithMultipleImports);
-      const flagBuilder = new FlagBuilder(answers, 'test.ts');
-      const flag = flagBuilder.build();
-      const updated = await flagBuilder.apply(flag);
+      const flag = build(answers);
+      const updated = apply({ flagParts: flag, existing: templateCommandOclifFlagsWithMultipleImports });
 
       expect(updated).to.include("import {  Interfaces } from '@oclif/core';");
       expect(updated).to.include("import { SfCommand , Flags} from '@salesforce/sf-plugins-core';");
@@ -703,10 +733,8 @@ describe('FlagBuilder', () => {
         summary: 'Summary of string flag.',
       };
 
-      sandbox.stub(FlagBuilder.prototype, 'readFile').resolves(templateCommandSingleLineMessages);
-      const flagBuilder = new FlagBuilder(answers, 'test.ts');
-      const flag = flagBuilder.build();
-      const updated = await flagBuilder.apply(flag);
+      const flag = build(answers);
+      const updated = apply({ flagParts: flag, existing: templateCommandSingleLineMessages });
 
       expect(updated).to.include("const messages = Messages.loadMessages('@salesforce/plugin-rosie', 'hello.world');");
     });
