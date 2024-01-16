@@ -1,3 +1,9 @@
+## [2.1.6](https://github.com/salesforcecli/plugin-dev/compare/2.1.5...2.1.6) (2024-01-16)
+
+### Bug Fixes
+
+- **deps:** use new inquirer ([#456](https://github.com/salesforcecli/plugin-dev/issues/456)) ([6a674ee](https://github.com/salesforcecli/plugin-dev/commit/6a674ee0a654c02d8c866496f9e718696a75370e))
+
 ## [2.1.5](https://github.com/salesforcecli/plugin-dev/compare/2.1.4...2.1.5) (2024-01-13)
 
 ### Bug Fixes
