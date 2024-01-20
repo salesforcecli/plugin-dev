@@ -35,7 +35,7 @@
     "@types/shelljs": "^0.8.14",
     "@types/yeoman-generator": "^5.2.14",
     "eslint-plugin-sf-plugin": "^1.17.0",
-    "oclif": "^4.3.2",
+    "oclif": "^4.3.6",
     "shx": "^0.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
