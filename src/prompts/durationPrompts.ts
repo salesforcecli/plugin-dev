@@ -9,6 +9,7 @@ import input from '@inquirer/input';
 import { Duration } from '@salesforce/kit';
 import { Messages } from '@salesforce/core';
 import { FlagAnswers } from '../types.js';
+import { integerMinMaxValidation, toOptionalNumber } from './validations.js';
 import { stringToChoice } from './functions.js';
 
 export const durationPrompts = async (): Promise<
@@ -26,35 +27,30 @@ export const durationPrompts = async (): Promise<
     choices: durationUnits.map(stringToChoice),
   })) as FlagAnswers['durationUnit'];
 
-  const durationMin = Number(
+  const durationMin = toOptionalNumber(
     await input({
       message: messages.getMessage('question.Duration.Minimum'),
       validate: (i: string): string | boolean => {
         if (!i) return true;
-        return Number.isInteger(Number(i)) ? true : messages.getMessage('error.InvalidInteger');
+        return integerMinMaxValidation(Number(i));
       },
     })
   );
-  const durationMax = Number(
+  const durationMax = toOptionalNumber(
     await input({
       message: messages.getMessage('question.Duration.Maximum'),
       validate: (i: string): string | boolean => {
         if (!i) return true;
-        if (!Number.isInteger(Number(i))) return messages.getMessage('error.InvalidInteger');
-        return !durationMin || Number(i) > durationMin ? true : messages.getMessage('error.IntegerMaxLessThanMin');
+        return integerMinMaxValidation(Number(i), durationMin);
       },
     })
   );
-  const durationDefaultValue = Number(
+  const durationDefaultValue = toOptionalNumber(
     await input({
       message: messages.getMessage('question.Duration.DefaultValue'),
       validate: (i: string): string | boolean => {
         if (!i) return true;
-        const num = Number(i);
-        if (!Number.isInteger(num)) return messages.getMessage('error.InvalidInteger');
-        return (!durationMin || num >= durationMin) && (!durationMax || num <= durationMax)
-          ? true
-          : messages.getMessage('error.InvalidDefaultInteger');
+        return integerMinMaxValidation(Number(i), durationMin, durationMax);
       },
     })
   );

@@ -7,31 +7,31 @@
 import input from '@inquirer/input';
 import { Messages } from '@salesforce/core';
 import { FlagAnswers } from '../types.js';
+import { integerMinMaxValidation, toOptionalNumber } from './validations.js';
 
 export const integerPrompts = async (): Promise<Pick<FlagAnswers, 'integerMin' | 'integerMax' | 'integerDefault'>> => {
   Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
   const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.flag');
 
-  const integerMin = Number(
+  const integerMin = toOptionalNumber(
     await input({
       message: messages.getMessage('question.Integer.Minimum'),
       validate: (i: string): string | boolean => {
         if (!i) return true;
-        return Number.isInteger(Number(i)) ? true : messages.getMessage('error.InvalidInteger');
+        return integerMinMaxValidation(Number(i));
       },
     })
   );
-  const integerMax = Number(
+  const integerMax = toOptionalNumber(
     await input({
       message: messages.getMessage('question.Integer.Maximum'),
       validate: (i: string): string | boolean => {
         if (!i) return true;
-        if (!Number.isInteger(Number(i))) return messages.getMessage('error.InvalidInteger');
-        return !integerMin || Number(i) > integerMin ? true : messages.getMessage('error.IntegerMaxLessThanMin');
+        return integerMinMaxValidation(Number(i), integerMin);
       },
     })
   );
-  const integerDefault = Number(
+  const integerDefault = toOptionalNumber(
     await input({
       message: messages.getMessage('question.Integer.Default'),
       validate: (i: string): string | boolean => {
@@ -39,11 +39,7 @@ export const integerPrompts = async (): Promise<Pick<FlagAnswers, 'integerMin' |
           return typeof integerMax === 'number' || typeof integerMin === 'number'
             ? messages.getMessage('error.RequiredIntegerDefault')
             : true;
-        const num = Number(i);
-        if (!Number.isInteger(num)) return messages.getMessage('error.InvalidInteger');
-        return (!integerMin || num >= integerMin) && (!integerMax || num <= integerMax)
-          ? true
-          : messages.getMessage('error.InvalidDefaultInteger');
+        return integerMinMaxValidation(Number(i), integerMin, integerMax);
       },
     })
   );
