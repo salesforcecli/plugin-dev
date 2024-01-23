@@ -186,7 +186,7 @@ A local directory path. You can specify whether the directory must already exist
 
 # flagDescriptions.orgApiVersion
 
-A valid Salesforce API version number. The code checks for minimal non-retired values. You can optionally use the standard CLI API version flag ("--api-version").
+A valid Salesforce API version number. The code checks for minimal non-retired values. You can optionally mimic the standard CLI API version flag ("--api-version").
 
 # flagDescriptions.requiredOrg
 
