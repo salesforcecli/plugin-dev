@@ -194,15 +194,15 @@ A required Salesforce org, which a user specifies with either a Salesforce usern
 
 # flagDescriptions.optionalOrg
 
-An optional Salesforce org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target org flag ("--target-org"). Flag respects the user's default org if it's set. 
+An optional Salesforce org, which a user specifies with either a Salesforce username or an alias. You can optionally mimic the standard CLI target org flag ("--target-org"). Flag respects the user's default org if it's set. 
 
 # flagDescriptions.requiredHub
 
-A required Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target Dev Hub flag ("--target-dev-hub"). Flag respects the user's default Dev Hub org if it's set.
+A required Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally mimic the standard CLI target Dev Hub flag ("--target-dev-hub"). Flag respects the user's default Dev Hub org if it's set.
 
 # flagDescriptions.optionalHub
 
-An optional Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target Dev Hub flag ("--target-dev-hub"). Flag respects the user's default Dev Hub org if it's set.
+An optional Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally mimic the standard CLI target Dev Hub flag ("--target-dev-hub"). Flag respects the user's default Dev Hub org if it's set.
 
 # flagDescriptions.url
 
