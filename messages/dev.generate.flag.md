@@ -162,7 +162,7 @@ A unit and quantity of time, such as "10 minutes" or "4 days". You can optionall
 
 # flagDescriptions.option
 
-Value is a single choice out of a pre-defined list of string values. You will then be asked for the list of allowed values.
+Value is a choice out of a pre-defined list of string values. You will then be asked for the list of allowed values.
 
 # flagDescriptions.integer 
 
@@ -178,11 +178,11 @@ A valid Salesforce record ID. You can specify the 3-character prefix and the len
 
 # flagDescriptions.file
 
-A local file. You can specify whether the file must already exist, or if the command will create it if necessary.
+A local file. You can specify whether the file must already exist.
 
 # flagDescriptions.directory
 
-A local directory path. You can specify whether the directory must already exist, or if the command will create it if necessary.
+A local directory path. You can specify whether the directory must already exist.
 
 # flagDescriptions.orgApiVersion
 
@@ -190,19 +190,19 @@ A valid Salesforce API version number. The code checks for minimal non-retired v
 
 # flagDescriptions.requiredOrg
 
-A required Salesforce org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target org flag ("--target-org").
+A required Salesforce org, which a user specifies with either a Salesforce username or an alias. You can optionally mimic the standard CLI target org flag ("--target-org").  Flag respects the user's default org if it's set. 
 
 # flagDescriptions.optionalOrg
 
-An optional Salesforce org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target org flag ("--target-org").
+An optional Salesforce org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target org flag ("--target-org"). Flag respects the user's default org if it's set. 
 
 # flagDescriptions.requiredHub
 
-A required Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target Dev Hub flag ("--target-dev-hub").
+A required Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target Dev Hub flag ("--target-dev-hub"). Flag respects the user's default Dev Hub org if it's set.
 
 # flagDescriptions.optionalHub
 
-An optional Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target Dev Hub flag ("--target-dev-hub").
+An optional Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally use the standard CLI target Dev Hub flag ("--target-dev-hub"). Flag respects the user's default Dev Hub org if it's set.
 
 # flagDescriptions.url
 
@@ -214,4 +214,4 @@ Any valid string.
 
 # flagDescriptions.boolean
 
-Value is either "true" (if the user specifies it when executing the command) or "false" (user doesn't specify it.)
+Value is either `true` (if the user specifies it when executing the command) or `false` (user doesn't specify it.)
