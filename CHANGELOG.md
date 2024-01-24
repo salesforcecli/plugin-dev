@@ -1,3 +1,9 @@
+## [2.1.9](https://github.com/salesforcecli/plugin-dev/compare/2.1.8...2.1.9) (2024-01-24)
+
+### Bug Fixes
+
+- handle empty strings to prevent unintended conversion to `0` ([#469](https://github.com/salesforcecli/plugin-dev/issues/469)) ([38b1a09](https://github.com/salesforcecli/plugin-dev/commit/38b1a09d070092c5db0afb3f5d07b9c704a489f0))
+
 ## [2.1.8](https://github.com/salesforcecli/plugin-dev/compare/2.1.7...2.1.8) (2024-01-24)
 
 ### Bug Fixes
