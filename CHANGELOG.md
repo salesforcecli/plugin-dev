@@ -1,3 +1,9 @@
+## [2.1.8](https://github.com/salesforcecli/plugin-dev/compare/2.1.7...2.1.8) (2024-01-24)
+
+### Bug Fixes
+
+- edit new flag-value messages ([c930e08](https://github.com/salesforcecli/plugin-dev/commit/c930e085cd935ffc131e6d99473b0bead3468576))
+
 ## [2.1.7](https://github.com/salesforcecli/plugin-dev/compare/2.1.6...2.1.7) (2024-01-20)
 
 ### Bug Fixes
