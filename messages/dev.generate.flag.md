@@ -158,60 +158,60 @@ Do you want to use the standard definition (character, summary, description, def
 
 # flagDescriptions.duration
 
-a unit and quantity of time (example: X minutes, 4 days). You can specify min/max/default.
+A unit and quantity of time, such as "10 minutes" or "4 days". You can optionally specify the minimum, maximum, or default values to take advantage of the built-in CLI validation rules.
 
 # flagDescriptions.option
 
-a choice from a defined list of string options. You can set the allowed values.
+Value is a choice out of a pre-defined list of string values. You will then be asked for the list of allowed values.
 
-# flagDescriptions.integer
+# flagDescriptions.integer 
 
-an integer with built-in validation of optional min/max/default values.
+An integer. You can optionally specify the minimum, maximum, or default values to take advantage of the built-in CLI validation rules.
 
 # flagDescriptions.custom
 
-a flag with a custom typescript type. You'll need to add some code after the scaffolding is complete.
+Flag with a custom typescript type. You must add some code after the scaffolding is complete.
 
-# flagDescriptions.salesforceId
+# flagDescriptions.salesforceId 
 
-a valid salesforce record ID. You can specify the 3-character prefix and/or the length of the ID.
+A valid Salesforce record ID. You can specify the 3-character prefix and the length of the ID.
 
 # flagDescriptions.file
 
-a local file path. You can specify whether the file must exist.
+A local file. You can specify whether the file must already exist.
 
 # flagDescriptions.directory
 
-a local directory path. You can specify whether the file must exist.
+A local directory path. You can specify whether the directory must already exist.
 
 # flagDescriptions.orgApiVersion
 
-a valid salesforce API version number. The code checks for minimal non-retired values.
+A valid Salesforce API version number. The code checks for minimal non-retired values. You can optionally mimic the standard CLI API version flag ("--api-version").
 
 # flagDescriptions.requiredOrg
 
-a Salesforce org, entered by username/alias and aware of default org.
+A required Salesforce org, which a user specifies with either a Salesforce username or an alias. You can optionally mimic the standard CLI target org flag ("--target-org").  Flag respects the user's default org if it's set. 
 
 # flagDescriptions.optionalOrg
 
-a Salesforce org, entered by username/alias and aware of default org.
+An optional Salesforce org, which a user specifies with either a Salesforce username or an alias. You can optionally mimic the standard CLI target org flag ("--target-org"). Flag respects the user's default org if it's set. 
 
 # flagDescriptions.requiredHub
 
-a Salesforce org, entered by username/alias and aware of default dev hub. Must be a dev hub.
+A required Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally mimic the standard CLI target Dev Hub flag ("--target-dev-hub"). Flag respects the user's default Dev Hub org if it's set.
 
 # flagDescriptions.optionalHub
 
-a Salesforce org, entered by username/alias and aware of default dev hub. Must be a dev hub.
+An optional Salesforce Dev Hub org, which a user specifies with either a Salesforce username or an alias. You can optionally mimic the standard CLI target Dev Hub flag ("--target-dev-hub"). Flag respects the user's default Dev Hub org if it's set.
 
 # flagDescriptions.url
 
-Validates that input matches URL spec. Returns the NodeJS Url class for simplified parsing.
+A valid URL. The code checks that the input matches the official W3C URL specification. Returns the NodeJS Url class for simplified parsing.
 
 # flagDescriptions.string
 
-Any valid string
+Any valid string.
 
 # flagDescriptions.boolean
 
-Take no value, has value of `true` if provided and `false` otherwise
+Value is either `true` (if the user specifies it when executing the command) or `false` (user doesn't specify it.)
