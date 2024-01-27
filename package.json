@@ -34,7 +34,7 @@
     "@types/lodash.defaultsdeep": "^4.6.9",
     "@types/shelljs": "^0.8.14",
     "@types/yeoman-generator": "^5.2.14",
-    "eslint-plugin-sf-plugin": "^1.17.0",
+    "eslint-plugin-sf-plugin": "^1.17.2",
     "oclif": "^4.3.9",
     "shx": "^0.3.3",
     "ts-node": "^10.9.2",
