@@ -1,3 +1,9 @@
+## [2.1.10](https://github.com/salesforcecli/plugin-dev/compare/2.1.9...2.1.10) (2024-01-27)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 6.5.0 to 6.5.1 ([740e6c9](https://github.com/salesforcecli/plugin-dev/commit/740e6c96ff7d866e4b550b33296d69b82ef21a7f))
+
 ## [2.1.9](https://github.com/salesforcecli/plugin-dev/compare/2.1.8...2.1.9) (2024-01-24)
 
 ### Bug Fixes
