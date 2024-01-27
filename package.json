@@ -14,7 +14,7 @@
     "@salesforce/kit": "^3.0.15",
     "@salesforce/sf-plugins-core": "^7.1.4",
     "@salesforce/ts-types": "^2.0.9",
-    "change-case": "^5.4.1",
+    "change-case": "^5.4.2",
     "fast-glob": "^3.3.2",
     "graphology": "^0.25.4",
     "graphology-types": "^0.24.7",
