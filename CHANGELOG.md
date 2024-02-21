@@ -1,3 +1,9 @@
+## [2.1.13](https://github.com/salesforcecli/plugin-dev/compare/2.1.12...2.1.13) (2024-02-21)
+
+### Bug Fixes
+
+- **deps:** bump ip from 2.0.0 to 2.0.1 ([169d49c](https://github.com/salesforcecli/plugin-dev/commit/169d49c22d7bdab9f864a111d47bcccada4158e7))
+
 ## [2.1.12](https://github.com/salesforcecli/plugin-dev/compare/2.1.11...2.1.12) (2024-02-03)
 
 ### Bug Fixes
