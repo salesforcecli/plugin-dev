@@ -69,6 +69,6 @@ describe('toOptionalNumber', () => {
     expect(toOptionalNumber('1')).to.equal(1);
     expect(toOptionalNumber('0')).to.equal(0);
     expect(toOptionalNumber('-1')).to.equal(-1);
-    expect(toOptionalNumber('9007199254740991')).to.equal(9007199254740991);
+    expect(toOptionalNumber('9007199254740991')).to.equal(9_007_199_254_740_991);
   });
 });
