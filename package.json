@@ -28,7 +28,7 @@
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.0.6",
     "@salesforce/cli-plugins-testkit": "^5.1.7",
-    "@salesforce/dev-scripts": "^8.4.0",
+    "@salesforce/dev-scripts": "^8.4.2",
     "@salesforce/plugin-command-reference": "^3.0.63",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash.defaultsdeep": "^4.6.9",
@@ -107,7 +107,7 @@
     "format": "wireit",
     "link-check": "wireit",
     "lint": "wireit",
-    "postpack": "sf-clean",
+    "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "sf-prepack",
     "prepare": "sf-install",
     "test": "wireit",
