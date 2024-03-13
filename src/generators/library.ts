@@ -71,7 +71,7 @@ export default class Library extends Generator {
     };
 
     const directory = path.resolve(this.answers.name);
-    shelljs.exec(`git clone git@github.com:forcedotcom/library-template.git ${directory}`);
+    shelljs.exec(`git clone -b ew/update-template git@github.com:forcedotcom/library-template.git ${directory}`);
     fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
     this.destinationRoot(directory);
     this.env.cwd = this.destinationPath();
@@ -87,9 +87,17 @@ export default class Library extends Generator {
       repository: `${this.answers.org}/${this.answers.name}`,
       homepage: `https://github.com/${this.answers.org}/${this.answers.name}`,
       description: this.answers.description,
+      bugs: { url: `https://github.com/${this.answers.org}/${this.answers.name}/issues` },
     };
     const final = Object.assign({}, pjson, updated);
     this.fs.writeJSON(this.destinationPath('./package.json'), final);
+
+    // Replace the message import
+    replace.sync({
+      files: `${this.env.cwd}/src/hello.ts`,
+      from: /@salesforce\/library-template/g,
+      to: `${this.answers.scope}/${this.answers.name}`,
+    });
 
     replace.sync({
       files: `${this.env.cwd}/**/*`,
