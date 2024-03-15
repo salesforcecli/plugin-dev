@@ -1,3 +1,9 @@
+## [2.1.15](https://github.com/salesforcecli/plugin-dev/compare/2.1.14...2.1.15) (2024-03-15)
+
+### Bug Fixes
+
+- update generate library command ([fbefe01](https://github.com/salesforcecli/plugin-dev/commit/fbefe01975900207994d6d21d8922799c7a54bd0))
+
 ## [2.1.14](https://github.com/salesforcecli/plugin-dev/compare/2.1.13...2.1.14) (2024-03-02)
 
 ### Bug Fixes

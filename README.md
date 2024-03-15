@@ -117,7 +117,6 @@ sf plugins
 - [`sf dev convert script`](#sf-dev-convert-script)
 - [`sf dev generate command`](#sf-dev-generate-command)
 - [`sf dev generate flag`](#sf-dev-generate-flag)
-- [`sf dev generate library`](#sf-dev-generate-library)
 - [`sf dev generate plugin`](#sf-dev-generate-plugin)
 
 ## `sf dev audit messages`
@@ -156,7 +155,7 @@ FLAG DESCRIPTIONS
     The default is the "src" directory in the current working directory.
 ```
 
-_See code: [src/commands/dev/audit/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.14/src/commands/dev/audit/messages.ts)_
+_See code: [src/commands/dev/audit/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.15/src/commands/dev/audit/messages.ts)_
 
 ## `sf dev convert messages`
 
@@ -190,7 +189,7 @@ EXAMPLES
   $ sf dev convert messages --project-dir ./path/to/plugin --filename my-command.json
 ```
 
-_See code: [src/commands/dev/convert/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.14/src/commands/dev/convert/messages.ts)_
+_See code: [src/commands/dev/convert/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.15/src/commands/dev/convert/messages.ts)_
 
 ## `sf dev convert script`
 
@@ -233,7 +232,7 @@ EXAMPLES
     $ sf dev convert script --script ./myScript.yml
 ```
 
-_See code: [src/commands/dev/convert/script.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.14/src/commands/dev/convert/script.ts)_
+_See code: [src/commands/dev/convert/script.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.15/src/commands/dev/convert/script.ts)_
 
 ## `sf dev generate command`
 
@@ -270,7 +269,7 @@ EXAMPLES
     $ sf dev generate command --name my:exciting:command
 ```
 
-_See code: [src/commands/dev/generate/command.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.14/src/commands/dev/generate/command.ts)_
+_See code: [src/commands/dev/generate/command.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.15/src/commands/dev/generate/command.ts)_
 
 ## `sf dev generate flag`
 
@@ -307,31 +306,7 @@ EXAMPLES
     $ sf dev generate flag --dry-run
 ```
 
-_See code: [src/commands/dev/generate/flag.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.14/src/commands/dev/generate/flag.ts)_
-
-## `sf dev generate library`
-
-Generate a new library.
-
-```
-USAGE
-  $ sf dev generate library
-
-DESCRIPTION
-  Generate a new library.
-
-  This command is interactive. You're prompted for information to populate the new library, such as the npm scope (which
-  must start with "@"), the name and description of the library, and its GitHub organization. The command clones the
-  'forcedotcom/library-template' GitHub repository, installs the library's npm package dependencies using yarn install,
-  and updates the package properties.
-
-  When the command completes, your new library contains a few sample source and test files to get you started.
-
-EXAMPLES
-  $ sf dev generate library
-```
-
-_See code: [src/commands/dev/generate/library.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.14/src/commands/dev/generate/library.ts)_
+_See code: [src/commands/dev/generate/flag.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.15/src/commands/dev/generate/flag.ts)_
 
 ## `sf dev generate plugin`
 
@@ -359,6 +334,6 @@ EXAMPLES
   $ sf dev generate plugin
 ```
 
-_See code: [src/commands/dev/generate/plugin.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.14/src/commands/dev/generate/plugin.ts)_
+_See code: [src/commands/dev/generate/plugin.ts](https://github.com/salesforcecli/plugin-dev/blob/2.1.15/src/commands/dev/generate/plugin.ts)_
 
 <!-- commandsstop -->
