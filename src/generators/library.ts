@@ -87,9 +87,17 @@ export default class Library extends Generator {
       repository: `${this.answers.org}/${this.answers.name}`,
       homepage: `https://github.com/${this.answers.org}/${this.answers.name}`,
       description: this.answers.description,
+      bugs: { url: `https://github.com/${this.answers.org}/${this.answers.name}/issues` },
     };
     const final = Object.assign({}, pjson, updated);
     this.fs.writeJSON(this.destinationPath('./package.json'), final);
+
+    // Replace the message import
+    replace.sync({
+      files: `${this.env.cwd}/src/hello.ts`,
+      from: /@salesforce\/library-template/g,
+      to: `${this.answers.scope}/${this.answers.name}`,
+    });
 
     replace.sync({
       files: `${this.env.cwd}/**/*`,

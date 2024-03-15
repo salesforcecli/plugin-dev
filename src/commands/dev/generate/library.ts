@@ -5,16 +5,16 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-
 import { Messages } from '@salesforce/core';
 import { SfCommand } from '@salesforce/sf-plugins-core';
 import { generate } from '../../../util.js';
 
-Messages.importMessagesDirectoryFromMetaUrl(import.meta.url)
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.library');
 
 export default class GenerateLibrary extends SfCommand<void> {
   public static enableJsonFlag = false;
+  public static readonly hidden = true;
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
