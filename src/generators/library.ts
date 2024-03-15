@@ -71,7 +71,7 @@ export default class Library extends Generator {
     };
 
     const directory = path.resolve(this.answers.name);
-    shelljs.exec(`git clone -b ew/update-template git@github.com:forcedotcom/library-template.git ${directory}`);
+    shelljs.exec(`git clone git@github.com:forcedotcom/library-template.git ${directory}`);
     fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
     this.destinationRoot(directory);
     this.env.cwd = this.destinationPath();
