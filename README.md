@@ -125,7 +125,7 @@ Audit messages in a plugin's messages directory to locate unused messages and mi
 
 ```
 USAGE
-  $ sf dev audit messages [--json] [-p <value>] [-m <value>] [-s <value>]
+  $ sf dev audit messages [--json] [--flags-dir <value>] [-p <value>] [-m <value>] [-s <value>]
 
 FLAGS
   -m, --messages-dir=<value>  [default: messages] Directory that contains the plugin's message files.
@@ -133,7 +133,8 @@ FLAGS
   -s, --source-dir=<value>    [default: src] Directory that contains the plugin's source code.
 
 GLOBAL FLAGS
-  --json  Format output as json.
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
 
 EXAMPLES
   Audit messages using default directories:
@@ -163,14 +164,15 @@ Convert a .json messages file into Markdown.
 
 ```
 USAGE
-  $ sf dev convert messages -f <value> [--json] [-p <value>]
+  $ sf dev convert messages -f <value> [--json] [--flags-dir <value>] [-p <value>]
 
 FLAGS
   -f, --file-name=<value>...  (required) Filename to convert.
   -p, --project-dir=<value>   [default: .] Location of the project whose messages are to be converted.
 
 GLOBAL FLAGS
-  --json  Format output as json.
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
 
 DESCRIPTION
   Convert a .json messages file into Markdown.
@@ -197,13 +199,14 @@ Convert a script file that contains deprecated sfdx-style commands to use the ne
 
 ```
 USAGE
-  $ sf dev convert script -s <value> [--json]
+  $ sf dev convert script -s <value> [--json] [--flags-dir <value>]
 
 FLAGS
   -s, --script=<value>  (required) Filepath to the script you want to convert.
 
 GLOBAL FLAGS
-  --json  Format output as json.
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
 
 DESCRIPTION
   Convert a script file that contains deprecated sfdx-style commands to use the new sf-style commands instead.
@@ -240,13 +243,16 @@ Generate a new sf command.
 
 ```
 USAGE
-  $ sf dev generate command -n <value> [--force] [--nuts] [--unit]
+  $ sf dev generate command -n <value> [--flags-dir <value>] [--force] [--nuts] [--unit]
 
 FLAGS
   -n, --name=<value>  (required) Name of the new command. Use colons to separate the topic and command names.
       --force         Overwrite existing files.
       --[no-]nuts     Generate a NUT test file for the command.
       --[no-]unit     Generate a unit test file for the command.
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
 
 DESCRIPTION
   Generate a new sf command.
@@ -277,10 +283,13 @@ Generate a flag for an existing command.
 
 ```
 USAGE
-  $ sf dev generate flag [-d]
+  $ sf dev generate flag [--flags-dir <value>] [-d]
 
 FLAGS
   -d, --dry-run  Print new flag code instead of adding it to the command file.
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
 
 DESCRIPTION
   Generate a flag for an existing command.
@@ -314,7 +323,10 @@ Generate a new sf plugin.
 
 ```
 USAGE
-  $ sf dev generate plugin
+  $ sf dev generate plugin [--flags-dir <value>]
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
 
 DESCRIPTION
   Generate a new sf plugin.

@@ -1,74 +1,74 @@
 [
   {
+    "alias": [],
     "command": "dev:audit:messages",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["json", "messages-dir", "project-dir", "source-dir"],
-    "alias": [],
+    "flagAliases": ["messagesdir", "projectdir", "sourcedir"],
     "flagChars": ["m", "p", "s"],
-    "flagAliases": ["messagesdir", "projectdir", "sourcedir"]
+    "flags": ["flags-dir", "json", "messages-dir", "project-dir", "source-dir"],
+    "plugin": "@salesforce/plugin-dev"
   },
   {
+    "alias": [],
     "command": "dev:configure:repo",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["bot", "dry-run", "json", "repository"],
-    "alias": [],
+    "flagAliases": ["dryrun"],
     "flagChars": ["b", "d", "r"],
-    "flagAliases": ["dryrun"]
+    "flags": ["bot", "dry-run", "flags-dir", "json", "repository"],
+    "plugin": "@salesforce/plugin-dev"
   },
   {
+    "alias": [],
     "command": "dev:configure:secrets",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["dry-run", "json", "repository"],
-    "alias": [],
+    "flagAliases": ["dryrun"],
     "flagChars": ["d", "r"],
-    "flagAliases": ["dryrun"]
+    "flags": ["dry-run", "flags-dir", "json", "repository"],
+    "plugin": "@salesforce/plugin-dev"
   },
   {
+    "alias": [],
     "command": "dev:convert:messages",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["file-name", "json", "project-dir"],
-    "alias": [],
+    "flagAliases": ["filename", "projectdir"],
     "flagChars": ["f", "p"],
-    "flagAliases": ["filename", "projectdir"]
+    "flags": ["file-name", "flags-dir", "json", "project-dir"],
+    "plugin": "@salesforce/plugin-dev"
   },
   {
+    "alias": [],
     "command": "dev:convert:script",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["json", "no-prompt", "script"],
-    "alias": [],
+    "flagAliases": [],
     "flagChars": ["s"],
-    "flagAliases": []
+    "flags": ["flags-dir", "json", "no-prompt", "script"],
+    "plugin": "@salesforce/plugin-dev"
   },
   {
+    "alias": [],
     "command": "dev:generate:command",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["force", "name", "nuts", "unit"],
-    "alias": [],
+    "flagAliases": [],
     "flagChars": ["n"],
-    "flagAliases": []
+    "flags": ["flags-dir", "force", "name", "nuts", "unit"],
+    "plugin": "@salesforce/plugin-dev"
   },
   {
+    "alias": [],
     "command": "dev:generate:flag",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": ["dry-run"],
-    "alias": [],
+    "flagAliases": ["dryrun"],
     "flagChars": ["d"],
-    "flagAliases": ["dryrun"]
+    "flags": ["dry-run", "flags-dir"],
+    "plugin": "@salesforce/plugin-dev"
   },
   {
-    "command": "dev:generate:library",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": [],
     "alias": [],
+    "command": "dev:generate:library",
+    "flagAliases": [],
     "flagChars": [],
-    "flagAliases": []
+    "flags": ["flags-dir"],
+    "plugin": "@salesforce/plugin-dev"
   },
   {
-    "command": "dev:generate:plugin",
-    "plugin": "@salesforce/plugin-dev",
-    "flags": [],
     "alias": ["plugins:generate"],
+    "command": "dev:generate:plugin",
+    "flagAliases": [],
     "flagChars": [],
-    "flagAliases": []
+    "flags": ["flags-dir"],
+    "plugin": "@salesforce/plugin-dev"
   }
 ]
