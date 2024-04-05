@@ -15,11 +15,11 @@ import shelljs from 'shelljs';
 import defaultsDeep from 'lodash.defaultsdeep';
 import { PackageJson, Topic } from '../types.js';
 
-export interface CommandGeneratorOptions extends Generator.GeneratorOptions {
+export type CommandGeneratorOptions = {
   name: string;
   nuts: boolean;
   unit: boolean;
-}
+} & Generator.GeneratorOptions
 
 const TEMPLATES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../templates');
 
