@@ -1,3 +1,9 @@
+# [2.3.0](https://github.com/salesforcecli/plugin-dev/compare/2.2.0...2.3.0) (2024-04-10)
+
+### Features
+
+- top-level imports ([5a22f1b](https://github.com/salesforcecli/plugin-dev/commit/5a22f1b20e9c52a3a8c8f9fd75cf9df85ce8d939))
+
 # [2.2.0](https://github.com/salesforcecli/plugin-dev/compare/2.1.15...2.2.0) (2024-03-25)
 
 ### Features
