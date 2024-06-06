@@ -1,3 +1,9 @@
+## [2.3.2](https://github.com/salesforcecli/plugin-dev/compare/2.3.1...2.3.2) (2024-06-06)
+
+### Bug Fixes
+
+- remove "hooks" from the generate help ([e128bcb](https://github.com/salesforcecli/plugin-dev/commit/e128bcb6cebda0f0ef7f30bf796375e8fd616a0b))
+
 ## [2.3.1](https://github.com/salesforcecli/plugin-dev/compare/2.3.0...2.3.1) (2024-05-02)
 
 ### Bug Fixes
