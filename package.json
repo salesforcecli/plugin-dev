@@ -84,7 +84,7 @@
             "description": "Commands to help you convert an sfdx plugin to sf."
           },
           "generate": {
-            "description": "Commands for generating sf plugins, commands, and hooks."
+            "description": "Commands for generating sf plugins, commands, and flags."
           },
           "audit": {
             "description": "Commands for auditing a plugin."
