@@ -36,6 +36,7 @@
     "@types/yeoman-generator": "^5.2.14",
     "eslint-plugin-sf-plugin": "^1.18.0",
     "oclif": "^4.4.17",
+    "strip-ansi": "^7.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   },

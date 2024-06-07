@@ -9,6 +9,7 @@ import path from 'node:path';
 import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
 import shelljs from 'shelljs';
 import { expect } from 'chai';
+import stripAnsi from 'strip-ansi';
 
 function getLocalBin(...parts: string[]): string {
   return path.join(...parts, 'bin', process.platform === 'win32' ? 'dev.cmd' : 'dev.js');
@@ -75,6 +76,6 @@ function getLocalBin(...parts: string[]): string {
 
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
     const helpOutput = shelljs.exec(`${localBin} hello world --help`, { silent: false });
-    expect(helpOutput.stdout).to.contain('-i, --my-integer-flag=<value>...');
+    expect(stripAnsi(helpOutput.stdout)).to.contain('-i, --my-integer-flag=<value>...');
   });
 });
