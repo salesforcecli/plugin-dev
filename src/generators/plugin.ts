@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import Generator from 'yeoman-generator';
 import shelljs from 'shelljs';
 import replace from 'replace-in-file';
@@ -150,6 +151,15 @@ export default class Plugin extends Generator {
   }
 
   public install(): void {
+    try {
+      // Try to dedupe yarn.lock before installing dependencies.
+      const require = createRequire(import.meta.url);
+      const yarnDedupePath = require.resolve('.bin/yarn-deduplicate');
+      shelljs.exec(yarnDedupePath, { cwd: this.env.cwd });
+    } catch {
+      // do nothing
+    }
+
     try {
       shelljs.exec('yarn install', { cwd: this.env.cwd });
     } catch (e) {

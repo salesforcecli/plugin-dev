@@ -22,6 +22,7 @@
     "lodash.defaultsdeep": "^4.6.1",
     "replace-in-file": "^6.3.2",
     "shelljs": "^0.8.5",
+    "yarn-deduplicate": "^6.0.2",
     "yeoman-environment": "^3.19.3",
     "yeoman-generator": "^5.10.0"
   },
