@@ -1,3 +1,9 @@
+## [2.3.4](https://github.com/salesforcecli/plugin-dev/compare/2.3.3...2.3.4) (2024-06-14)
+
+### Bug Fixes
+
+- yarn-deduplicate before install on new plugin ([1ae1f84](https://github.com/salesforcecli/plugin-dev/commit/1ae1f847851c63a41980b81ec211615aa376255e))
+
 ## [2.3.3](https://github.com/salesforcecli/plugin-dev/compare/2.3.2...2.3.3) (2024-06-13)
 
 ### Bug Fixes
