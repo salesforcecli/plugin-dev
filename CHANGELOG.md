@@ -1,3 +1,9 @@
+## [2.3.5](https://github.com/salesforcecli/plugin-dev/compare/2.3.4...2.3.5) (2024-07-19)
+
+### Bug Fixes
+
+- fix when in dir with whitespace ([e638b30](https://github.com/salesforcecli/plugin-dev/commit/e638b303f220c0c36bc70556d004637a237a7013))
+
 ## [2.3.4](https://github.com/salesforcecli/plugin-dev/compare/2.3.3...2.3.4) (2024-06-14)
 
 ### Bug Fixes
