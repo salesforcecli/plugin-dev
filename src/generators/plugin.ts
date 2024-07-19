@@ -91,7 +91,7 @@ export default class Plugin extends Generator {
     const templateRepo = this.answers.internal
       ? 'git clone https://github.com/salesforcecli/plugin-template-sf.git'
       : 'git clone https://github.com/salesforcecli/plugin-template-sf-external.git';
-    shelljs.exec(`${templateRepo} ${directory}`);
+    shelljs.exec(`${templateRepo} "${directory}"`);
     try {
       fs.rmSync(`${path.resolve(this.answers.name, '.git')}`, { recursive: true });
     } catch {
@@ -105,7 +105,7 @@ export default class Plugin extends Generator {
   }
 
   public writing(): void {
-    const pjson = readJson<PackageJson>(path.join(this.env.cwd, 'package.json'));
+    const pjson = readJson<PackageJson>(path.normalize(path.join(this.env.cwd, 'package.json')));
 
     this.sourceRoot(TEMPLATES_DIR);
 
