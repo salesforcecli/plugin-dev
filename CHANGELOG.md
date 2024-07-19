@@ -1,3 +1,9 @@
+## [2.3.6](https://github.com/salesforcecli/plugin-dev/compare/2.3.5...2.3.6) (2024-07-19)
+
+### Bug Fixes
+
+- no empty summary for standard flags ([#516](https://github.com/salesforcecli/plugin-dev/issues/516)) ([f560fac](https://github.com/salesforcecli/plugin-dev/commit/f560fac546165b403222b5bf33b938b1470cfe07))
+
 ## [2.3.5](https://github.com/salesforcecli/plugin-dev/compare/2.3.4...2.3.5) (2024-07-19)
 
 ### Bug Fixes
