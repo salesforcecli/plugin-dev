@@ -87,7 +87,9 @@ const findExistingCommands = async (topicSeparator: string): Promise<string[]> =
     .sort();
 
 const updateMarkdownFile = async (answers: FlagAnswers, commandName: string): Promise<void> =>
-  fs.appendFile(
-    path.join('messages', `${commandName.split(':').join('.')}.md`),
-    `${os.EOL}# flags.${answers.name}.summary${os.EOL}${os.EOL}${answers.summary}${os.EOL}`
-  );
+  answers.summary
+    ? fs.appendFile(
+        path.join('messages', `${commandName.split(':').join('.')}.md`),
+        `${os.EOL}# flags.${answers.name}.summary${os.EOL}${os.EOL}${answers.summary}${os.EOL}`
+      )
+    : undefined;
