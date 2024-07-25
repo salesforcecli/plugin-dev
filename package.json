@@ -15,6 +15,7 @@
     "@salesforce/sf-plugins-core": "^11.1.1",
     "@salesforce/ts-types": "^2.0.10",
     "change-case": "^5.4.2",
+    "ejs": "^3.1.10",
     "fast-glob": "^3.3.2",
     "graphology": "^0.25.4",
     "graphology-types": "^0.24.7",

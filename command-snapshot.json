@@ -44,7 +44,7 @@
     "command": "dev:generate:command",
     "flagAliases": [],
     "flagChars": ["n"],
-    "flags": ["flags-dir", "force", "name", "nuts", "unit"],
+    "flags": ["dry-run", "flags-dir", "force", "name", "nuts", "unit"],
     "plugin": "@salesforce/plugin-dev"
   },
   {
