@@ -92,43 +92,6 @@ export class Generator {
     shelljs.exec(cmd, { cwd: this.cwd });
   }
 
-  public async writePjson(): Promise<void> {
-    const updating = colorize('yellow', 'Updating');
-    if (this.dryRun) {
-      this.ux.log(`[DRY RUN] ${updating} package.json`);
-      return;
-    }
-
-    this.ux.log(`${updating} package.json`);
-    await writeFile(join(this.cwd, 'package.json'), JSON.stringify(this.pjson, null, 2));
-  }
-
-  public replace({ from, to, files }: { files: string; from: RegExp; to: string }): void {
-    const replacing = colorize('yellow', 'Replacing');
-    if (this.dryRun) {
-      this.ux.log(`[DRY RUN] ${replacing} ${from} with ${to} in ${files}`);
-      return;
-    }
-
-    this.logger.debug(`${replacing} ${from} with ${to} in ${files}`);
-    replace.sync({
-      files,
-      from,
-      to,
-    });
-  }
-
-  public async remove(path: string): Promise<void> {
-    const removing = colorize('yellow', 'Removing');
-    if (this.dryRun) {
-      this.ux.log(`[DRY RUN] ${removing} ${path}`);
-      return;
-    }
-
-    this.ux.log(`${removing} ${path}`);
-    await rm(path, { recursive: true });
-  }
-
   public async loadPjson(): Promise<PackageJson> {
     try {
       this.pjson = JSON.parse(await readFile(join(this.cwd, 'package.json'), 'utf-8')) as PackageJson;
@@ -158,5 +121,63 @@ export class Generator {
     }
 
     return this.pjson;
+  }
+
+  public async writePjson(): Promise<void> {
+    const updating = colorize('yellow', 'Updating');
+    if (this.dryRun) {
+      this.ux.log(`[DRY RUN] ${updating} package.json`);
+      return;
+    }
+
+    this.ux.log(`${updating} package.json`);
+    await writeFile(join(this.cwd, 'package.json'), JSON.stringify(this.pjson, null, 2));
+  }
+
+  public replace({ from, to, files }: { files: string; from: RegExp; to: string }): void {
+    const replacing = colorize('yellow', 'Replacing');
+    if (this.dryRun) {
+      this.ux.log(`[DRY RUN] ${replacing} ${from} with ${to} in ${files}`);
+      return;
+    }
+
+    this.logger.debug(`${replacing} ${from} with ${to} in ${files}`);
+    replace.sync({
+      files,
+      from,
+      to,
+    });
+  }
+
+  public async remove(path: string): Promise<void> {
+    const fullPath = join(this.cwd, path);
+    const removing = colorize('yellow', 'Removing');
+    if (this.dryRun) {
+      this.ux.log(`[DRY RUN] ${removing} ${fullPath}`);
+      return;
+    }
+
+    this.ux.log(`${removing} ${fullPath}`);
+    await rm(fullPath, { recursive: true, force: true });
+  }
+
+  public async readJson<T>(path: string): Promise<T> {
+    if (this.dryRun) {
+      return {} as T;
+    }
+
+    return JSON.parse(await readFile(join(this.cwd, path), 'utf-8')) as T;
+  }
+
+  public async writeJson<T>(path: string, data: T): Promise<void> {
+    const fullPath = join(this.cwd, path);
+    const writing = colorize('yellow', 'Writing');
+    if (this.dryRun) {
+      this.ux.log(`[DRY RUN] ${writing} to ${fullPath}`);
+      return;
+    }
+
+    this.ux.log(`${writing} to ${fullPath}`);
+    await writeFile(fullPath, JSON.stringify(data, null, 2));
   }
 }

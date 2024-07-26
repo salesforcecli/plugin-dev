@@ -6,7 +6,7 @@
  */
 
 import { expect } from 'chai';
-import { addTopics } from '../../src/generators/command.js';
+import { addTopics } from '../../src/commands/dev/generate/command.js';
 import { Topic } from '../../src/types.js';
 
 describe('command generator', () => {

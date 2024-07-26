@@ -1,7 +1,3 @@
-# info.start
-
-Time to build an sf plugin!
-
 # question.internal
 
 Are you building a plugin for an internal Salesforce team?

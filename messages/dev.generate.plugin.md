@@ -11,3 +11,7 @@ When the command completes, your new plugin contains the source, message, and te
 # examples
 
 - <%= config.bin %> <%= command.id %>
+
+# flags.dry-run.summary
+
+Display the changes that would be made without writing them to disk.

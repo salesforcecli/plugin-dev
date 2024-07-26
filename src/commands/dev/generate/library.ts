@@ -25,12 +25,14 @@ export default class GenerateLibrary extends SfCommand<void> {
   public static readonly examples = messages.getMessages('examples');
 
   public static readonly flags = {
-    'dry-run': Flags.boolean(),
+    'dry-run': Flags.boolean({
+      summary: messages.getMessage('flags.dry-run.summary'),
+    }),
   };
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(GenerateLibrary);
-    this.log('Time to build a library!');
+    this.log(`Time to build a library!${flags['dry-run'] ? ' (dry-run)' : ''}`);
 
     const generator = new Generator({
       dryRun: flags['dry-run'],
@@ -73,7 +75,8 @@ export default class GenerateLibrary extends SfCommand<void> {
     generator.execute(`git clone git@github.com:forcedotcom/library-template.git ${directory}`);
 
     generator.cwd = join(process.cwd(), answers.name);
-    await generator.remove(resolve(directory, '.git'));
+    await generator.remove('.git');
+    generator.execute('git init');
     await generator.loadPjson();
 
     generator.pjson.name = `${answers.scope}/${answers.name}`;
