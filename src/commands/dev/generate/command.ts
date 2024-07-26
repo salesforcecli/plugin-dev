@@ -95,10 +95,13 @@ export default class GenerateCommand extends SfCommand<void> {
   public async run(): Promise<void> {
     const { flags } = await this.parse(GenerateCommand);
 
-    const generator = await Generator.create({
+    const generator = new Generator({
       force: flags.force,
       dryRun: flags['dry-run'],
     });
+    await generator.loadPjson();
+    if (!generator.pjson) throw messages.createError('errors.InvalidDir');
+
     this.log(`Adding a command to ${generator.pjson.name}!`);
 
     if (Object.keys(generator.pjson.devDependencies).includes('@salesforce/plugin-command-reference')) {

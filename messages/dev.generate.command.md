@@ -28,10 +28,14 @@ Name of the new command. Use colons to separate the topic and command names.
 
 # flags.dry-run.summary
 
-Output the generated files without writing them to disk.
+Display the changes that would be made without writing them to disk.
 
 # examples
 
 - Generate the files for a new "sf my exciting command":
 
   <%= config.bin %> <%= command.id %> --name my:exciting:command
+
+# errors.InvalidDir
+
+This command must be run inside a plugin directory.

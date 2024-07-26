@@ -35,7 +35,11 @@ export type PackageJson = {
   };
   repository: string;
   homepage: string;
-  bugs: string;
+  bugs:
+    | string
+    | {
+        url: string;
+      };
   author: string;
   description: string;
   scripts: {
