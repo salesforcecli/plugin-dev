@@ -12,6 +12,7 @@ import defaultsDeep from 'lodash.defaultsdeep';
 import { pascalCase } from 'change-case';
 import { set } from '@salesforce/kit';
 import { get } from '@salesforce/ts-types';
+import shelljs from 'shelljs';
 import { Generator } from '../../../generator.js';
 import { Topic } from '../../../types.js';
 
@@ -106,7 +107,10 @@ export default class GenerateCommand extends SfCommand<void> {
 
     if (Object.keys(generator.pjson.devDependencies).includes('@salesforce/plugin-command-reference')) {
       // Get a list of all commands in `sf`. We will use this to determine if a topic is internal or external.
-      const commands = this.config.commandIDs.map((command) => command.replace(/:/g, '.').replace(/ /g, '.'));
+      const sfCommandsStdout = shelljs.exec('sf commands --json', { silent: true }).stdout;
+      const commandsJson = JSON.parse(sfCommandsStdout) as Array<{ id: string }>;
+      const commands = commandsJson.map((command) => command.id.replace(/:/g, '.').replace(/ /g, '.'));
+
       const newTopics = addTopics(flags.name, generator.pjson.oclif.topics, commands);
       defaultsDeep(generator.pjson.oclif.topics, newTopics);
     } else {
