@@ -6,7 +6,7 @@
  */
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { dirname, join, relative } from 'node:path';
+import { dirname, join, normalize, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { renderFile } from 'ejs';
 import { Ux } from '@salesforce/sf-plugins-core';
@@ -39,7 +39,7 @@ export class Generator {
   }
 
   public set cwd(value: string) {
-    this.workingDir = value;
+    this.workingDir = normalize(value);
   }
 
   public async render(source: string, destination: string, data?: Record<string, unknown>): Promise<void> {
