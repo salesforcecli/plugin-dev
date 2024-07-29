@@ -18,7 +18,7 @@ export const durationPrompts = async (): Promise<
   Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
   const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.flag');
 
-  const durationUnits = (Object.values(Duration.Unit).filter((unit) => typeof unit === 'string') as string[]).map(
+  const durationUnits = (Object.values(Duration.Unit).filter((unit) => typeof unit === 'string')).map(
     (unit) => unit.toLowerCase()
   );
 
