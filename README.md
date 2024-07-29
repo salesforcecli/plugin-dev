@@ -156,7 +156,7 @@ FLAG DESCRIPTIONS
     The default is the "src" directory in the current working directory.
 ```
 
-_See code: [src/commands/dev/audit/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.3.6/src/commands/dev/audit/messages.ts)_
+_See code: [src/commands/dev/audit/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.4.0/src/commands/dev/audit/messages.ts)_
 
 ## `sf dev convert messages`
 
@@ -191,7 +191,7 @@ EXAMPLES
   $ sf dev convert messages --project-dir ./path/to/plugin --filename my-command.json
 ```
 
-_See code: [src/commands/dev/convert/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.3.6/src/commands/dev/convert/messages.ts)_
+_See code: [src/commands/dev/convert/messages.ts](https://github.com/salesforcecli/plugin-dev/blob/2.4.0/src/commands/dev/convert/messages.ts)_
 
 ## `sf dev convert script`
 
@@ -235,7 +235,7 @@ EXAMPLES
     $ sf dev convert script --script ./myScript.yml
 ```
 
-_See code: [src/commands/dev/convert/script.ts](https://github.com/salesforcecli/plugin-dev/blob/2.3.6/src/commands/dev/convert/script.ts)_
+_See code: [src/commands/dev/convert/script.ts](https://github.com/salesforcecli/plugin-dev/blob/2.4.0/src/commands/dev/convert/script.ts)_
 
 ## `sf dev generate command`
 
@@ -243,10 +243,11 @@ Generate a new sf command.
 
 ```
 USAGE
-  $ sf dev generate command -n <value> [--flags-dir <value>] [--force] [--nuts] [--unit]
+  $ sf dev generate command -n <value> [--flags-dir <value>] [--force] [--dry-run] [--nuts] [--unit]
 
 FLAGS
   -n, --name=<value>  (required) Name of the new command. Use colons to separate the topic and command names.
+      --dry-run       Display the changes that would be made without writing them to disk.
       --force         Overwrite existing files.
       --[no-]nuts     Generate a NUT test file for the command.
       --[no-]unit     Generate a unit test file for the command.
@@ -260,7 +261,7 @@ DESCRIPTION
   You must run this command from within a plugin directory, such as the directory created with the "sf dev generate
   plugin" command.
 
-  The command generates basic source files, messages (\*.md), and test files for your new command.  The Typescript files
+  The command generates basic source files, messages (\*.md), and test files for your new command. The Typescript files
   contain import statements for the minimum required Salesforce libraries, and scaffold some basic code. The new type
   names come from the value you passed to the --name flag.
 
@@ -275,7 +276,7 @@ EXAMPLES
     $ sf dev generate command --name my:exciting:command
 ```
 
-_See code: [src/commands/dev/generate/command.ts](https://github.com/salesforcecli/plugin-dev/blob/2.3.6/src/commands/dev/generate/command.ts)_
+_See code: [src/commands/dev/generate/command.ts](https://github.com/salesforcecli/plugin-dev/blob/2.4.0/src/commands/dev/generate/command.ts)_
 
 ## `sf dev generate flag`
 
@@ -315,7 +316,7 @@ EXAMPLES
     $ sf dev generate flag --dry-run
 ```
 
-_See code: [src/commands/dev/generate/flag.ts](https://github.com/salesforcecli/plugin-dev/blob/2.3.6/src/commands/dev/generate/flag.ts)_
+_See code: [src/commands/dev/generate/flag.ts](https://github.com/salesforcecli/plugin-dev/blob/2.4.0/src/commands/dev/generate/flag.ts)_
 
 ## `sf dev generate plugin`
 
@@ -323,7 +324,10 @@ Generate a new sf plugin.
 
 ```
 USAGE
-  $ sf dev generate plugin [--flags-dir <value>]
+  $ sf dev generate plugin [--flags-dir <value>] [--dry-run]
+
+FLAGS
+  --dry-run  Display the changes that would be made without writing them to disk.
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
@@ -346,6 +350,6 @@ EXAMPLES
   $ sf dev generate plugin
 ```
 
-_See code: [src/commands/dev/generate/plugin.ts](https://github.com/salesforcecli/plugin-dev/blob/2.3.6/src/commands/dev/generate/plugin.ts)_
+_See code: [src/commands/dev/generate/plugin.ts](https://github.com/salesforcecli/plugin-dev/blob/2.4.0/src/commands/dev/generate/plugin.ts)_
 
 <!-- commandsstop -->

@@ -1,3 +1,16 @@
+# [2.4.0](https://github.com/salesforcecli/plugin-dev/compare/2.3.6...2.4.0) (2024-07-29)
+
+### Bug Fixes
+
+- ensure cwd is normalized ([c0b4440](https://github.com/salesforcecli/plugin-dev/commit/c0b444048f9ef55088adccb9aea108f83abdacf8))
+- use sf for finding existing commands ([541ed1b](https://github.com/salesforcecli/plugin-dev/commit/541ed1be6e2b8f1db960e392cc38cd79a07944e0))
+
+### Features
+
+- generate command without yeoman ([da1b265](https://github.com/salesforcecli/plugin-dev/commit/da1b265aceca0c09ff22a03ef349d0c273bc213d))
+- generate library without yeoman ([33274d1](https://github.com/salesforcecli/plugin-dev/commit/33274d18d4ca933e2dc4a2785f4e02bc83ef3f99))
+- generate plugin without yeoman ([6cc0f88](https://github.com/salesforcecli/plugin-dev/commit/6cc0f887640097eb78cf3f08df6a8e6833e65bb5))
+
 ## [2.3.6](https://github.com/salesforcecli/plugin-dev/compare/2.3.5...2.3.6) (2024-07-19)
 
 ### Bug Fixes
