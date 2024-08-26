@@ -80,6 +80,7 @@ export default class GenerateLibrary extends SfCommand<void> {
     await generator.loadPjson();
 
     generator.pjson.name = `${answers.scope}/${answers.name}`;
+    generator.pjson.version = '1.0.0';
     generator.pjson.description = answers.description;
     generator.pjson.repository = `${answers.org}/${answers.name}`;
     generator.pjson.homepage = `https://github.com/${answers.org}/${answers.name}`;

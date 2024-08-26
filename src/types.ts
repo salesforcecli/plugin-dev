@@ -25,6 +25,7 @@ export type NYC = {
 
 export type PackageJson = {
   name: string;
+  version: string;
   devDependencies: Record<string, string>;
   dependencies: Record<string, string>;
   files: string[];

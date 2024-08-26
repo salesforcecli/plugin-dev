@@ -40,6 +40,7 @@ describe('dev generate plugin NUTs', () => {
     const packageJson = readJson<PackageJson>(packageJsonPath);
 
     expect(packageJson.name).to.equal('@salesforce/plugin-awesome');
+    expect(packageJson.version).to.equal('1.0.0');
     expect(packageJson.author).to.equal('Salesforce');
     expect(packageJson.description).to.equal('a description');
     expect(packageJson.bugs).to.equal('https://github.com/forcedotcom/cli/issues');
@@ -85,6 +86,7 @@ describe('dev generate plugin NUTs', () => {
     const packageJson = readJson<PackageJson>(packageJsonPath);
 
     expect(packageJson.name).to.equal('my-plugin');
+    expect(packageJson.version).to.equal('1.0.0');
     expect(packageJson.author).to.equal('me');
     expect(packageJson.description).to.equal('a description');
 
@@ -140,6 +142,7 @@ describe('dev generate plugin NUTs', () => {
     const packageJson = readJson<PackageJson>(packageJsonPath);
 
     expect(packageJson.name).to.equal('my-plugin');
+    expect(packageJson.version).to.equal('1.0.0');
     expect(packageJson.author).to.equal('me');
     expect(packageJson.description).to.equal('a description');
     const nycConfig = readJson<NYC>(path.join(session.dir, 'my-plugin', '.nycrc'));
