@@ -140,12 +140,13 @@ export default class GeneratePlugin extends SfCommand<void> {
           name: `@salesforce/${answers.name}`,
           repository: `salesforcecli/${answers.name}`,
           homepage: `https://github.com/salesforcecli/${answers.name}`,
-          description: answers.description,
         }
       : {
           name: answers.name,
-          description: answers.description,
         };
+
+    updated.version = '1.0.0';
+    updated.description = answers.description;
 
     if (answers.author) {
       updated.author = answers.author;
