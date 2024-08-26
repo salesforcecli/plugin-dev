@@ -1,3 +1,9 @@
+## [2.4.1](https://github.com/salesforcecli/plugin-dev/compare/2.4.0...2.4.1) (2024-08-26)
+
+### Bug Fixes
+
+- use 1.0.0 on plugins and libs ([9fe9619](https://github.com/salesforcecli/plugin-dev/commit/9fe9619935bd9acc294096635256e829de5d30ac))
+
 # [2.4.0](https://github.com/salesforcecli/plugin-dev/compare/2.3.6...2.4.0) (2024-07-29)
 
 ### Bug Fixes
