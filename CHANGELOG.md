@@ -1,3 +1,9 @@
+## [2.4.2](https://github.com/salesforcecli/plugin-dev/compare/2.4.1...2.4.2) (2024-08-27)
+
+### Bug Fixes
+
+- **deps:** bump micromatch from 4.0.5 to 4.0.8 ([8aa3ee5](https://github.com/salesforcecli/plugin-dev/commit/8aa3ee55919092bee259a1dbfe9685cddd3dc042))
+
 ## [2.4.1](https://github.com/salesforcecli/plugin-dev/compare/2.4.0...2.4.1) (2024-08-26)
 
 ### Bug Fixes
