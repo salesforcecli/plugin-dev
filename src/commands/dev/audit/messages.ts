@@ -163,71 +163,52 @@ export default class AuditMessages extends SfCommand<AuditResults> {
       }
       const data = this.auditResults.missingMessages.map(({ File, SourceVar, Name, IsLiteral, Bundle }) => ({
         File,
-        SourceVar,
+        'Message Bundle Var': SourceVar,
         Name,
         IsLiteral: IsLiteral ? '' : '*',
-        Bundle,
+        'Referenced Bundle': Bundle,
       }));
-      this.table(
-        data,
-        hasNonLiteralReferences
-          ? {
-              File: { header: 'File' },
-              SourceVar: { header: 'Message Bundle Var' },
-              Name: { header: 'Name' },
-              IsLiteral: { header: '*' },
-              Bundle: { header: 'Referenced Bundle' },
-            }
-          : {
-              File: { header: 'File' },
-              SourceVar: { header: 'Message Bundle Var' },
-              Name: { header: 'Name' },
-              Bundle: { header: 'Referenced Bundle' },
-            },
-        { 'no-truncate': true }
-      );
+      this.table({ data, overflow: 'wrap' });
     }
 
     this.log();
     if (this.auditResults.unusedMessages.length === 0) {
       this.styledHeader(messages.getMessage('noUnusedMessagesFound'));
     } else {
-      this.styledHeader(messages.getMessage('unusedMessagesFound'));
       const hasReferencedInNonLiteral = this.auditResults.unusedMessages.some((msg) => msg.ReferencedInNonLiteral);
-      this.table(
-        this.auditResults.unusedMessages,
-        hasReferencedInNonLiteral
+      this.table({
+        data: this.auditResults.unusedMessages,
+        ...(hasReferencedInNonLiteral
           ? {
-              Bundle: { header: 'Bundle' },
-              Name: { header: 'Name' },
-              ReferencedInNonLiteral: { header: '*' },
+              Bundle: 'Bundle',
+              Name: 'Name',
+              ReferencedInNonLiteral: '*',
             }
           : {
-              Bundle: { header: 'Bundle' },
-              Name: { header: 'Name' },
-            }
-      );
+              Bundle: 'Bundle',
+              Name: 'Name',
+            }),
+        title: messages.getMessage('unusedMessagesFound'),
+      });
     }
 
     this.log();
     if (this.auditResults.unusedBundles.length === 0) {
       this.styledHeader(messages.getMessage('noUnusedBundlesFound'));
     } else {
-      this.styledHeader(messages.getMessage('unusedBundlesFound'));
-      this.table(
-        this.auditResults.unusedBundles.map((Bundle) => ({ Bundle })),
-        { Bundle: { header: 'Bundle' } }
-      );
+      this.table({
+        data: this.auditResults.unusedBundles.map((Bundle) => ({ Bundle })),
+        title: messages.getMessage('unusedBundlesFound'),
+      });
     }
     this.log();
     if (this.auditResults.missingBundles.length === 0) {
       this.styledHeader(messages.getMessage('noMissingBundlesFound'));
     } else {
-      this.styledHeader(messages.getMessage('missingBundlesFound'));
-      this.table(this.auditResults.missingBundles, {
-        File: { header: 'File' },
-        SourceVar: { header: 'Message Bundle Var' },
-        Bundle: { header: 'Bundle' },
+      this.table({
+        data: this.auditResults.missingBundles,
+        columns: ['File', { key: 'SourceVar', name: 'Message Bundle Var' }, 'Bundle'],
+        title: messages.getMessage('missingBundlesFound'),
       });
     }
   }
