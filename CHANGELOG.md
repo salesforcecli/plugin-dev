@@ -1,3 +1,9 @@
+# [2.5.0](https://github.com/salesforcecli/plugin-dev/compare/2.4.2...2.5.0) (2024-10-28)
+
+### Features
+
+- update new table ([d1a08d2](https://github.com/salesforcecli/plugin-dev/commit/d1a08d254b87c6fb52fc92fd4414997f6c1eed0b))
+
 ## [2.4.2](https://github.com/salesforcecli/plugin-dev/compare/2.4.1...2.4.2) (2024-08-27)
 
 ### Bug Fixes
