@@ -1,3 +1,9 @@
+## [2.5.1](https://github.com/salesforcecli/plugin-dev/compare/2.5.0...2.5.1) (2024-11-19)
+
+### Bug Fixes
+
+- **deps:** bump cross-spawn from 7.0.3 to 7.0.6 ([058af98](https://github.com/salesforcecli/plugin-dev/commit/058af98795e6bb9a6feb717de28f831d5e3310d1))
+
 # [2.5.0](https://github.com/salesforcecli/plugin-dev/compare/2.4.2...2.5.0) (2024-10-28)
 
 ### Features
