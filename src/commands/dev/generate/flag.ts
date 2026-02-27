@@ -15,7 +15,7 @@ import { Messages } from '@salesforce/core';
 import { toStandardizedId } from '@oclif/core';
 import fg from 'fast-glob';
 import { askQuestions } from '../../../prompts/series/flagPrompts.js';
-import { fileExists, build, apply } from '../../../util.js';
+import { fileExists, build, apply, resolveCommandFilePath } from '../../../util.js';
 import { FlagAnswers } from '../../../types.js';
 import { stringToChoice } from '../../../prompts/functions.js';
 
@@ -50,7 +50,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     const answers = await askQuestions(standardizedCommandId);
 
-    const commandFilePath = `${path.join('.', 'src', 'commands', ...standardizedCommandId.split(':'))}.ts`;
+    const commandFilePath = resolveCommandFilePath(standardizedCommandId);
 
     const newFlag = build(answers);
 
@@ -64,7 +64,7 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     await fs.writeFile(commandFilePath, updatedFile);
 
-    await updateMarkdownFile(answers, standardizedCommandId);
+    await updateMarkdownFile(answers, existing, standardizedCommandId);
 
     shelljs.exec(`yarn prettier --write ${commandFilePath}`);
 
@@ -86,10 +86,27 @@ const findExistingCommands = async (topicSeparator: string): Promise<string[]> =
     })
     .sort();
 
-const updateMarkdownFile = async (answers: FlagAnswers, commandName: string): Promise<void> =>
-  answers.summary
-    ? fs.appendFile(
-        path.join('messages', `${commandName.split(':').join('.')}.md`),
-        `${os.EOL}# flags.${answers.name}.summary${os.EOL}${os.EOL}${answers.summary}${os.EOL}`
-      )
-    : undefined;
+/**
+ * Extracts the message bundle name from Messages.loadMessages(pluginName, 'bundleName').
+ * Needed because commands may use short names (e.g. 'flexipage') or full paths ('template.generate.flexipage');
+ * inferring from the command path alone can write to the wrong file.
+ * Works for string literals only; falls back to standardizedCommandId when no match.
+ */
+const getMessageBundleFromCommand = (commandContent: string): string | undefined => {
+  const match = commandContent.match(/Messages\.loadMessages\s*\(\s*[^,]+,\s*['"]([^'"]+)['"]\s*\)/);
+  return match?.[1];
+};
+
+/** Appends the flag summary to the command's messages file. Uses bundle from command, else command path. */
+const updateMarkdownFile = async (
+  answers: FlagAnswers,
+  commandContent: string,
+  standardizedCommandId: string
+): Promise<void> => {
+  if (!answers.summary) return;
+  const messageBundle = getMessageBundleFromCommand(commandContent) ?? standardizedCommandId.split(':').join('.');
+  await fs.appendFile(
+    path.join('messages', `${messageBundle}.md`),
+    `${os.EOL}# flags.${answers.name}.summary${os.EOL}${os.EOL}${answers.summary}${os.EOL}`
+  );
+};
