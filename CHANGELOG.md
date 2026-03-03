@@ -1,3 +1,9 @@
+## [2.5.2](https://github.com/salesforcecli/plugin-dev/compare/2.5.1...2.5.2) (2026-03-03)
+
+### Bug Fixes
+
+- support command/index.ts layout and correct message file in flag generator ([9ddec7d](https://github.com/salesforcecli/plugin-dev/commit/9ddec7d62e52093131be2f37289deae09f318296))
+
 ## [2.5.1](https://github.com/salesforcecli/plugin-dev/compare/2.5.0...2.5.1) (2024-11-19)
 
 ### Bug Fixes
