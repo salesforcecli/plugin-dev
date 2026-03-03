@@ -6,8 +6,11 @@
  */
 
 import os from 'node:os';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, config as chaiConfig } from 'chai';
-import { build, apply, validatePluginName } from '../src/util.js';
+import { build, apply, validatePluginName, resolveCommandFilePath } from '../src/util.js';
 import { FlagAnswers } from '../src/types.js';
 
 chaiConfig.truncateThreshold = 0;
@@ -849,5 +852,58 @@ describe('validatePluginName', () => {
           .to.be.false;
       }
     });
+  });
+});
+
+describe('resolveCommandFilePath', () => {
+  const testDir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'tmpResolveCommandFilePath');
+  const commandsDir = path.join(testDir, 'src', 'commands');
+
+  before(async () => {
+    await fs.mkdir(commandsDir, { recursive: true });
+  });
+
+  after(async () => {
+    await fs.rm(testDir, { recursive: true, force: true });
+  });
+
+  it('should return index.ts path when command uses directory layout', async () => {
+    const flexipageDir = path.join(commandsDir, 'template', 'generate', 'flexipage');
+    await fs.mkdir(flexipageDir, { recursive: true });
+    await fs.writeFile(path.join(flexipageDir, 'index.ts'), 'export default class Flexipage {}');
+
+    const result = resolveCommandFilePath('template:generate:flexipage', testDir);
+    expect(result).to.equal(path.join(testDir, 'src', 'commands', 'template', 'generate', 'flexipage', 'index.ts'));
+
+    await fs.rm(path.join(commandsDir, 'template'), { recursive: true, force: true });
+  });
+
+  it('should return single file path when command uses single-file layout', async () => {
+    const flexipageFile = path.join(commandsDir, 'template', 'generate', 'flexipage.ts');
+    await fs.mkdir(path.dirname(flexipageFile), { recursive: true });
+    await fs.writeFile(flexipageFile, 'export default class Flexipage {}');
+
+    const result = resolveCommandFilePath('template:generate:flexipage', testDir);
+    expect(result).to.equal(path.join(testDir, 'src', 'commands', 'template', 'generate', 'flexipage.ts'));
+
+    await fs.rm(path.join(commandsDir, 'template'), { recursive: true, force: true });
+  });
+
+  it('should prefer index.ts over single file when both exist', async () => {
+    const flexipageDir = path.join(commandsDir, 'foo', 'bar');
+    const flexipageFile = path.join(commandsDir, 'foo', 'bar.ts');
+    await fs.mkdir(flexipageDir, { recursive: true });
+    await fs.writeFile(path.join(flexipageDir, 'index.ts'), 'export default class Bar {}');
+    await fs.writeFile(flexipageFile, 'export default class Bar {}');
+
+    const result = resolveCommandFilePath('foo:bar', testDir);
+    expect(result).to.equal(path.join(testDir, 'src', 'commands', 'foo', 'bar', 'index.ts'));
+
+    await fs.rm(path.join(commandsDir, 'foo'), { recursive: true, force: true });
+  });
+
+  it('should return single file path when neither exists (fallback)', () => {
+    const result = resolveCommandFilePath('nonexistent:command', testDir);
+    expect(result).to.equal(path.join(testDir, 'src', 'commands', 'nonexistent', 'command.ts'));
   });
 });

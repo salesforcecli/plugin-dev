@@ -6,7 +6,21 @@
  */
 import fs from 'node:fs';
 import os from 'node:os';
+import path from 'node:path';
 import { FlagAnswers } from './types.js';
+
+export const resolveCommandFilePath = (standardizedCommandId: string, baseDir = '.'): string => {
+  const basePath = path.join(baseDir, 'src', 'commands', ...standardizedCommandId.split(':'));
+  const indexPath = path.join(basePath, 'index.ts');
+  const singleFilePath = `${basePath}.ts`;
+  if (fs.existsSync(indexPath)) {
+    return indexPath;
+  }
+  if (fs.existsSync(singleFilePath)) {
+    return singleFilePath;
+  }
+  return singleFilePath;
+};
 
 export function readJson<T>(filePath: string): T {
   const pjsonRaw = fs.readFileSync(filePath, 'utf-8');

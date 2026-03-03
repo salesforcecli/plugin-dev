@@ -6,7 +6,8 @@
  */
 
 import path from 'node:path';
-import { TestSession, execInteractiveCmd, Interaction } from '@salesforce/cli-plugins-testkit';
+import fs from 'node:fs/promises';
+import { TestSession, execInteractiveCmd, execCmd, Interaction } from '@salesforce/cli-plugins-testkit';
 import shelljs from 'shelljs';
 import { expect } from 'chai';
 import stripAnsi from 'strip-ansi';
@@ -77,5 +78,41 @@ function getLocalBin(...parts: string[]): string {
     const localBin = getLocalBin(session.dir, 'plugin-awesome');
     const helpOutput = shelljs.exec(`${localBin} hello world --help`, { silent: false });
     expect(stripAnsi(helpOutput.stdout)).to.contain('-i, --my-integer-flag=<value>...');
+  });
+
+  it('should generate a flag for command with index.ts layout', async () => {
+    const pluginDir = path.join(session.dir, 'plugin-awesome');
+
+    execCmd('dev generate command --name template:generate:flexipage --force --nuts --unit', {
+      cwd: pluginDir,
+      ensureExitCode: 0,
+      silent: true,
+    });
+
+    const singleFilePath = path.join(pluginDir, 'src', 'commands', 'template', 'generate', 'flexipage.ts');
+    const indexDir = path.join(pluginDir, 'src', 'commands', 'template', 'generate', 'flexipage');
+    await fs.mkdir(indexDir, { recursive: true });
+    await fs.rename(singleFilePath, path.join(indexDir, 'index.ts'));
+
+    await execInteractiveCmd(
+      'dev generate flag',
+      {
+        'Select the command': ['template generate flexipage', Interaction.ENTER],
+        'Select the type': ['boolean', Interaction.ENTER],
+        "flag's name": ['index-layout-flag', Interaction.ENTER],
+        'short description': Interaction.ENTER,
+        'single-character short name': ['x', Interaction.ENTER],
+        'flag required': Interaction.No,
+      },
+      { cwd: pluginDir, ensureExitCode: 0 }
+    );
+
+    const indexPath = path.join(indexDir, 'index.ts');
+    const contents = await fs.readFile(indexPath, 'utf-8');
+    expect(contents).to.contain("'index-layout-flag': Flags.boolean(");
+
+    const localBin = getLocalBin(session.dir, 'plugin-awesome');
+    const helpOutput = shelljs.exec(`${localBin} template generate flexipage --help`, { silent: false });
+    expect(helpOutput.stdout).to.contain('-x, --index-layout-flag');
   });
 });
