@@ -20,7 +20,7 @@
     "got": "^13",
     "graphology": "^0.25.4",
     "graphology-types": "^0.24.7",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "lodash.defaultsdeep": "^4.6.1",
     "proxy-agent": "^6.4.0",
     "replace-in-file": "^6.3.2",
