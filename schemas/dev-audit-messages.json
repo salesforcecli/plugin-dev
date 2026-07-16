@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/AuditResults",
+  "definitions": {
+    "AuditResults": {
+      "type": "object",
+      "properties": {
+        "unusedBundles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unusedMessages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Bundle": {
+                "type": "string"
+              },
+              "Name": {
+                "type": "string"
+              },
+              "ReferencedInNonLiteral": {
+                "type": "string"
+              }
+            },
+            "required": ["Bundle", "Name", "ReferencedInNonLiteral"],
+            "additionalProperties": false
+          }
+        },
+        "missingBundles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Bundle": {
+                "type": "string"
+              },
+              "File": {
+                "type": "string"
+              },
+              "SourceVar": {
+                "type": "string"
+              }
+            },
+            "required": ["Bundle", "File", "SourceVar"],
+            "additionalProperties": false
+          }
+        },
+        "missingMessages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "File": {
+                "type": "string"
+              },
+              "Name": {
+                "type": "string"
+              },
+              "SourceVar": {
+                "type": "string"
+              },
+              "Bundle": {
+                "type": "string"
+              },
+              "IsLiteral": {
+                "type": "boolean"
+              }
+            },
+            "required": ["File", "Name", "SourceVar", "Bundle", "IsLiteral"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["unusedBundles", "unusedMessages", "missingBundles", "missingMessages"],
+      "additionalProperties": false
+    }
+  }
+}
