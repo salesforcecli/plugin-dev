@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/ConfigureRepoResult",
+  "definitions": {
+    "ConfigureRepoResult": {
+      "type": "object",
+      "properties": {
+        "botAccess": {
+          "type": "boolean"
+        },
+        "labels": {
+          "type": "boolean"
+        },
+        "prRestrictions": {
+          "type": "boolean"
+        },
+        "prBypass": {
+          "type": "boolean"
+        }
+      },
+      "required": ["botAccess", "labels", "prRestrictions", "prBypass"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -19,10 +19,12 @@ export type DevConvertMessagesResult = {
   contents: string;
 };
 
+export type DevConvertMessagesResults = DevConvertMessagesResult[];
+
 type ValueType = string | string[] | Record<string, string>;
 
 const skip1Line = `${EOL}${EOL}`;
-export default class DevConvertMessages extends SfCommand<DevConvertMessagesResult[]> {
+export default class DevConvertMessages extends SfCommand<DevConvertMessagesResults> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
@@ -44,7 +46,7 @@ export default class DevConvertMessages extends SfCommand<DevConvertMessagesResu
     }),
   };
 
-  public async run(): Promise<DevConvertMessagesResult[]> {
+  public async run(): Promise<DevConvertMessagesResults> {
     const { flags } = await this.parse(DevConvertMessages);
     const projectDir = path.resolve(flags['project-dir']);
     const { name: pluginName } = JSON.parse(
