@@ -49,7 +49,9 @@ async function fetchGithubUserFromAPI(): Promise<{ login: string; name: string }
 
 function fetchGithubUserFromGit(): string | undefined {
   try {
-    const result = shelljs.exec('git config --get user.name', { silent: true });
+    const gitBin = shelljs.which('git');
+    if (!gitBin) return undefined;
+    const result = shelljs.exec(`${gitBin} config --get user.name`, { silent: true });
     return result.stdout.trim();
   } catch {
     // ignore
