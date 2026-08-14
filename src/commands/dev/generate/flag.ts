@@ -9,7 +9,6 @@ import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs/promises';
 import select from '@inquirer/select';
-import shelljs from 'shelljs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { toStandardizedId } from '@oclif/core';
@@ -18,6 +17,7 @@ import { askQuestions } from '../../../prompts/series/flagPrompts.js';
 import { fileExists, build, apply, resolveCommandFilePath } from '../../../util.js';
 import { FlagAnswers } from '../../../types.js';
 import { stringToChoice } from '../../../prompts/functions.js';
+import { Generator } from '../../../generator.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 export const messages = Messages.loadMessages('@salesforce/plugin-dev', 'dev.generate.flag');
@@ -66,9 +66,10 @@ export default class DevGenerateFlag extends SfCommand<void> {
 
     await updateMarkdownFile(answers, existing, standardizedCommandId);
 
-    shelljs.exec(`yarn prettier --write ${commandFilePath}`);
+    const generator = new Generator({ dryRun: flags['dry-run'] });
+    generator.execute(`yarn prettier --write ${commandFilePath}`);
 
-    shelljs.exec('yarn compile');
+    generator.execute('yarn compile');
 
     this.log(`Added ${answers.name} flag to ${commandFilePath}`);
   }

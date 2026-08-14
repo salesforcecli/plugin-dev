@@ -107,7 +107,9 @@ export default class GenerateCommand extends SfCommand<void> {
 
     if (Object.keys(generator.pjson.devDependencies).includes('@salesforce/plugin-command-reference')) {
       // Get a list of all commands in `sf`. We will use this to determine if a topic is internal or external.
-      const sfCommandsStdout = shelljs.exec('sf commands --json', { silent: true }).stdout;
+      const sfBin = shelljs.which('sf');
+      if (!sfBin) throw messages.createError('errors.InvalidDir');
+      const sfCommandsStdout = shelljs.exec(`${sfBin} commands --json`, { silent: true }).stdout;
       const commandsJson = JSON.parse(sfCommandsStdout) as Array<{ id: string }>;
       const commands = commandsJson.map((command) => command.id.replace(/:/g, '.').replace(/ /g, '.'));
 

@@ -88,8 +88,17 @@ export class Generator {
       return;
     }
 
-    this.logger.debug(`Executing command: ${cmd}`);
-    shelljs.exec(cmd, { cwd: this.cwd });
+    const args = cmd.split(' ');
+    const bin = args[0];
+    const isBinPath = bin.includes('/') || bin.includes('\\');
+    const resolved = isBinPath ? bin : shelljs.which(bin);
+    if (!resolved) {
+      throw new Error(`Could not find "${bin}" on PATH`);
+    }
+    const resolvedCmd = [resolved.toString(), ...args.slice(1)].join(' ');
+
+    this.logger.debug(`Executing command: ${resolvedCmd}`);
+    shelljs.exec(resolvedCmd, { cwd: this.cwd });
   }
 
   public async loadPjson(): Promise<PackageJson> {
