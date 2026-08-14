@@ -1,3 +1,11 @@
+## [2.5.3](https://github.com/salesforcecli/plugin-dev/compare/2.5.3-qa.0...2.5.3) (2026-08-14)
+
+## [2.5.3-qa.0](https://github.com/salesforcecli/plugin-dev/compare/2.5.2...2.5.3-qa.0) (2026-08-14)
+
+### Bug Fixes
+
+- resolve binaries from PATH to prevent CWD-based RCE ([1414109](https://github.com/salesforcecli/plugin-dev/commit/14141096ee8a2762edf2e075ce797fe94b8631a6))
+
 ## [2.5.2](https://github.com/salesforcecli/plugin-dev/compare/2.5.1...2.5.2) (2026-03-03)
 
 ### Bug Fixes
