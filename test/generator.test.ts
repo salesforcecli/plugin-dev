@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { normalize } from 'node:path';
 import { expect } from 'chai';
 import spawn from 'cross-spawn';
 import shelljs from 'shelljs';
@@ -63,7 +64,8 @@ describe('Generator.execute', () => {
     expect(calls).to.have.length(1);
     expect(calls[0].bin).to.equal('/usr/bin/git');
     expect(calls[0].args).to.deep.equal(['clone', 'https://x.git', '/repo/dir&calc.exe&']);
-    expect(calls[0].options).to.include({ cwd: '/tmp/project' });
+    // The cwd setter normalizes paths, so compare against the platform-normalized form.
+    expect(calls[0].options).to.include({ cwd: normalize('/tmp/project') });
   });
 
   it('should keep a quoted argument containing spaces as a single token', () => {
