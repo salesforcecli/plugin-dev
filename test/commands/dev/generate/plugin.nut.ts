@@ -64,7 +64,9 @@ describe('dev generate plugin NUTs', () => {
     });
 
     expect(readFileSync(path.join(pluginDir, 'src', 'commands', 'hello', 'world.ts'), 'utf8')).to.include('Copyright');
-    expect(readFileSync(path.join(pluginDir, '.eslintrc.cjs'), 'utf8')).to.include('eslint-config-salesforce-license');
+    expect(readFileSync(path.join(pluginDir, 'eslint.config.mjs'), 'utf8')).to.include(
+      'eslint-config-salesforce-license'
+    );
   });
 
   it('should generate a 3PP plugin', async () => {
