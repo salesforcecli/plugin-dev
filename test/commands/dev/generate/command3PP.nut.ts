@@ -62,6 +62,11 @@ describe('3PP', () => {
         env: {
           ...process.env,
           TESTKIT_EXECUTABLE_PATH: pluginExecutable,
+          // Disable wireit's GitHub Actions cache for the generated sub-project. In CI the
+          // outer job sets WIREIT_CACHE=github (plus cache credentials), which this child
+          // process would otherwise inherit and use to hit GitHub's cache service — a source
+          // of transient HTTP failures. Locally WIREIT_CACHE is unset (local disk cache).
+          WIREIT_CACHE: 'none',
         },
       });
       expect(result.code).to.equal(0);
@@ -73,7 +78,15 @@ describe('3PP', () => {
       const cmd = parts.pop();
       const unitTestFile = path.join(session.project.dir, 'test', 'commands', ...parts, `${cmd}.test.ts`);
       expect(await fileExists(unitTestFile)).to.be.true;
-      const result = shelljs.exec('yarn test:only', { cwd: session.project.dir });
+      const result = shelljs.exec('yarn test:only', {
+        cwd: session.project.dir,
+        env: {
+          ...process.env,
+          // See note above: avoid inheriting WIREIT_CACHE=github in CI, which makes the
+          // generated sub-project hit GitHub's flaky cache service.
+          WIREIT_CACHE: 'none',
+        },
+      });
       expect(result.code).to.equal(0);
       expect(result.stdout).include(name.replace(/:/g, ' '));
     });
