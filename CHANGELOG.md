@@ -1,3 +1,13 @@
+## [2.5.4](https://github.com/salesforcecli/plugin-dev/compare/2.5.3...2.5.4) (2026-08-19)
+
+### Bug Fixes
+
+- another flappy NUT (W-23905795) ([d35b335](https://github.com/salesforcecli/plugin-dev/commit/d35b33548e15dbae996e8114a27d239b423aec23))
+- broken NUT (W-23905795) ([0ba52bb](https://github.com/salesforcecli/plugin-dev/commit/0ba52bb0ea44f0871afb8d71ec84dc704da1aa20))
+- fixed broken NUT (W-23905795) ([fdea6c5](https://github.com/salesforcecli/plugin-dev/commit/fdea6c52bf4ada9e8cd602911d6fa8a95fc5616d))
+- fixed failing unit test (W-23905795) ([0d3b519](https://github.com/salesforcecli/plugin-dev/commit/0d3b519337fc78cad71c0751ad72e2952129c95e))
+- resolve path hijack (W-23905795) ([5e53e9b](https://github.com/salesforcecli/plugin-dev/commit/5e53e9b3f20899c0729d8ac84056ab192fb83ee3))
+
 ## [2.5.3](https://github.com/salesforcecli/plugin-dev/compare/2.5.3-qa.0...2.5.3) (2026-08-14)
 
 ## [2.5.3-qa.0](https://github.com/salesforcecli/plugin-dev/compare/2.5.2...2.5.3-qa.0) (2026-08-14)
