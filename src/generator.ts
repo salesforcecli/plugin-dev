@@ -13,6 +13,7 @@ import { Ux } from '@salesforce/sf-plugins-core';
 import { Logger } from '@salesforce/core';
 import { colorize } from '@oclif/core/ux';
 import shelljs from 'shelljs';
+import spawn from 'cross-spawn';
 import replace from 'replace-in-file';
 import { fileExists } from './util.js';
 import { PackageJson } from './types.js';
@@ -88,17 +89,23 @@ export class Generator {
       return;
     }
 
-    const args = cmd.split(' ');
-    const bin = args[0];
+    // Tokenize into discrete argv entries so arguments are passed to the child
+    // process individually rather than as one shell-interpreted string. Callers
+    // double-quote arguments that may contain spaces (e.g. paths), so keep a
+    // quoted span as a single token and strip its surrounding quotes.
+    const [bin, ...args] = (cmd.match(/"[^"]*"|\S+/g) ?? []).map((token) => token.replace(/^"|"$/g, ''));
     const isBinPath = bin.includes('/') || bin.includes('\\');
-    const resolved = isBinPath ? bin : shelljs.which(bin);
+    const resolved = isBinPath ? bin : shelljs.which(bin)?.toString();
     if (!resolved) {
       throw new Error(`Could not find "${bin}" on PATH`);
     }
-    const resolvedCmd = [resolved.toString(), ...args.slice(1)].join(' ');
 
-    this.logger.debug(`Executing command: ${resolvedCmd}`);
-    shelljs.exec(resolvedCmd, { cwd: this.cwd });
+    this.logger.debug(`Executing command: ${[resolved, ...args].join(' ')}`);
+
+    // Pass argv as an array with no shell so a value like `C:\path\repo&calc.exe&\`
+    // is treated as literal data and cannot break out to hijack the shell.
+    // cross-spawn handles Windows .cmd/.bat shims (e.g. yarn.cmd) safely.
+    spawn.sync(resolved, args, { cwd: this.cwd, stdio: 'inherit' });
   }
 
   public async loadPjson(): Promise<PackageJson> {
