@@ -64,8 +64,10 @@ describe('dev generate plugin NUTs', () => {
     });
 
     expect(readFileSync(path.join(pluginDir, 'src', 'commands', 'hello', 'world.ts'), 'utf8')).to.include('Copyright');
+    // The template's flat config re-exports eslint-config-salesforce-typescript, which now
+    // bundles the Apache license-header rule that used to come from eslint-config-salesforce-license.
     expect(readFileSync(path.join(pluginDir, 'eslint.config.mjs'), 'utf8')).to.include(
-      'eslint-config-salesforce-license'
+      'eslint-config-salesforce-typescript'
     );
   });
 
