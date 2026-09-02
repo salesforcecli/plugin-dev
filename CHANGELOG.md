@@ -1,3 +1,10 @@
+## [2.5.7](https://github.com/salesforcecli/plugin-dev/compare/2.5.6...2.5.7) (2026-09-02)
+
+### Bug Fixes
+
+- **deps:** bump handlebars from 4.7.8 to 4.7.9 ([6a3a9c8](https://github.com/salesforcecli/plugin-dev/commit/6a3a9c80a02b6e5d54ea70a77787967951037b54))
+- **deps:** bump js-yaml from 4.1.0 to 4.3.1 ([0a791c5](https://github.com/salesforcecli/plugin-dev/commit/0a791c5dbffddba4bdc9c806914a6216bf2d2352))
+
 ## [2.5.6](https://github.com/salesforcecli/plugin-dev/compare/2.5.5...2.5.6) (2026-09-01)
 
 ### Bug Fixes
