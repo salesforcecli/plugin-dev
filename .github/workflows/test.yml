@@ -16,7 +16,7 @@ jobs:
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsWindows.yml@main
   nuts:
     needs: linux-unit-tests
-    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
+    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@e3d60e3f66cf276f224146acaf92159806b70763
     secrets: inherit
     strategy:
       matrix:
