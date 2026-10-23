@@ -1,3 +1,9 @@
+## [2.5.18](https://github.com/salesforcecli/plugin-dev/compare/2.5.17...2.5.18) (2026-10-23)
+
+### Bug Fixes
+
+- **deps:** bump browserslist from 4.23.2 to 4.28.8 ([ec28164](https://github.com/salesforcecli/plugin-dev/commit/ec2816447bf74fae5e36ecdb8f73c7e1e3764336))
+
 ## [2.5.17](https://github.com/salesforcecli/plugin-dev/compare/2.5.16...2.5.17) (2026-10-23)
 
 ### Bug Fixes
