@@ -15,7 +15,7 @@
 ## One-time Setup
 
 1.  Install NodeJS. If you need to work with multiple versions of Node, you
-    might consider using [nvm](https://github.com/creationix/nvm). </br>_Suggestion: use the current [LTS version of node](https://github.com/nodejs/release#release-schedule)._
+    might consider using [nvm](https://github.com/nvm-sh/nvm). </br>_Suggestion: use the current [LTS version of node](https://github.com/nodejs/release#release-schedule)._
 1.  Install [yarn](https://yarnpkg.com/) to manage node dependencies. </br>_Suggestion: install yarn globally using `npm install --global yarn`_
 1.  Clone this repository from git. E.g., (ssh): </br>`git clone git@github.com:salesforcecli/plugin-dev.git`
 1.  Configure [git commit signing](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
