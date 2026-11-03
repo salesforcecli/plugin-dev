@@ -1,3 +1,11 @@
+## [2.5.19](https://github.com/salesforcecli/plugin-dev/compare/2.5.18...2.5.19) (2026-11-03)
+
+### Bug Fixes
+
+- update md file ([9104eba](https://github.com/salesforcecli/plugin-dev/commit/9104ebaaf6a0bb684baa22c39fe2c11e93592d2e))
+- update nvm link ([00fcff1](https://github.com/salesforcecli/plugin-dev/commit/00fcff15414aca48786f9230451eb5580634ad48))
+- update the readme ([704daf6](https://github.com/salesforcecli/plugin-dev/commit/704daf6b7b40bb90882e8d965c6ea5235d1ce248))
+
 ## [2.5.18](https://github.com/salesforcecli/plugin-dev/compare/2.5.17...2.5.18) (2026-10-23)
 
 ### Bug Fixes
