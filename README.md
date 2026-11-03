@@ -10,14 +10,15 @@
     - [Generate a hook that will be used for existing `sf` commands](#generate-a-hook-that-will-be-used-for-existing-sf-commands)
   - [Issues](#issues)
   - [Contributing](#contributing)
+    - [CLA](#cla)
     - [Build](#build)
   - [Commands](#commands)
-  - [`sf dev audit messages`](#sf-dev-audit-messages)
-  - [`sf dev convert messages`](#sf-dev-convert-messages)
-  - [`sf dev convert script`](#sf-dev-convert-script)
   - [`sf dev generate command`](#sf-dev-generate-command)
   - [`sf dev generate flag`](#sf-dev-generate-flag)
+  - [`sf dev generate hook`](#sf-dev-generate-hook)
+  - [`sf dev generate library`](#sf-dev-generate-library)
   - [`sf dev generate plugin`](#sf-dev-generate-plugin)
+  - [`sf dev hook HOOK`](#sf-dev-hook-hook)
 
 ## Install
 
@@ -96,22 +97,12 @@ sf plugins
 
 <!-- commands -->
 
-- [plugin-dev](#plugin-dev)
-  - [Install](#install)
-  - [Usage](#usage)
-    - [Generate a new `sf` plugin](#generate-a-new-sf-plugin)
-    - [Generate a new `sf` command in your plugin](#generate-a-new-sf-command-in-your-plugin)
-    - [Generate a hook that will be used for existing `sf` commands](#generate-a-hook-that-will-be-used-for-existing-sf-commands)
-  - [Issues](#issues)
-  - [Contributing](#contributing)
-    - [Build](#build)
-  - [Commands](#commands)
-  - [`sf dev audit messages`](#sf-dev-audit-messages)
-  - [`sf dev convert messages`](#sf-dev-convert-messages)
-  - [`sf dev convert script`](#sf-dev-convert-script)
-  - [`sf dev generate command`](#sf-dev-generate-command)
-  - [`sf dev generate flag`](#sf-dev-generate-flag)
-  - [`sf dev generate plugin`](#sf-dev-generate-plugin)
+- [`sf dev audit messages`](#sf-dev-audit-messages)
+- [`sf dev convert messages`](#sf-dev-convert-messages)
+- [`sf dev convert script`](#sf-dev-convert-script)
+- [`sf dev generate command`](#sf-dev-generate-command)
+- [`sf dev generate flag`](#sf-dev-generate-flag)
+- [`sf dev generate plugin`](#sf-dev-generate-plugin)
 
 ## `sf dev audit messages`
 
